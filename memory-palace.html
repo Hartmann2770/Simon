@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hukommelsespalads</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #161a24;
+      --surface-raised: #1e2436;
+      --accent: #7c6af7;
+      --accent-light: #9d8ff9;
+      --teal: #4ecdc4;
+      --danger: #e05c6b;
+      --gold: #f0b429;
+      --text: #e8eaf6;
+      --muted: #6b7394;
+      --border: #252c40;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    html { height: 100%; }
+    body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* APP BAR */
+    #app-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(13,15,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+    .app-title {
+      font-family: 'Cinzel', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-light);
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    /* MAIN */
+    #app-root {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 16px 40px;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .view.active { animation: fadeSlideIn 0.2s ease-out; }
+
+    /* TYPOGRAPHY */
+    h1 { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    h2 { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+    h3 { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 600; }
+    .muted { color: var(--muted); font-size: 13px; }
+
+    /* BUTTONS */
+    button {
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 9px 18px;
+      transition: transform 0.1s, opacity 0.1s, background 0.15s;
+    }
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-light); }
+    .btn-teal { background: var(--teal); color: #0d0f14; }
+    .btn-teal:hover { background: #66d9d1; }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 7px 14px; }
+    .btn-danger:hover { background: rgba(224,92,107,0.1); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--surface-raised); color: var(--text); }
+    .btn-sm { padding: 5px 12px; font-size: 12px; }
+    .btn-icon { background: transparent; color: var(--muted); padding: 4px 8px; font-size: 16px; border-radius: 6px; }
+    .btn-icon:hover { background: var(--surface-raised); color: var(--text); }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    /* FORM ELEMENTS */
+    input[type="text"], textarea {
+      width: 100%;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    input[type="text"]::placeholder, textarea::placeholder {
+      color: var(--muted);
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .form-group { margin-bottom: 16px; }
+
+    /* DASHBOARD */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .palaces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .palace-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+      position: relative;
+    }
+    .palace-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .palace-card-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: var(--gold);
+      color: #111;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .palace-card-name {
+      font-family: 'Cinzel', serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      padding-right: 60px;
+    }
+    .palace-card-desc {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .palace-card-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .palace-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state p { margin-bottom: 20px; font-size: 15px; }
+
+    /* PALACE DETAIL */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .back-btn:hover { color: var(--text); transform: none; }
+
+    .palace-detail-header {
+      margin-bottom: 24px;
+    }
+    .palace-detail-srs {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .palace-detail-srs span { display: flex; align-items: center; gap: 5px; }
+    .srs-due { color: var(--accent); font-weight: 600; }
+
+    .locations-list { margin-top: 20px; }
+    .location-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .location-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      gap: 12px;
+    }
+    .location-number {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .location-name {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      flex: 1;
+    }
+    .location-actions { display: flex; gap: 4px; }
+    .location-memories {
+      padding: 0 16px 14px 52px;
+    }
+    .memory-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .memory-item:last-child { border-bottom: none; }
+    .memory-text { flex: 1; }
+    .memory-item .btn-icon { font-size: 13px; padding: 3px 6px; flex-shrink: 0; }
+
+    .add-memory-form {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .add-memory-form input { width: 100%; }
+
+    .add-location-form {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .add-location-form .form-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .add-location-form input { flex: 1; }
+
+    /* RUMKORT */
+    .room-map-wrap { padding: 0 10px 10px; }
+    .room-map-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      user-select: none;
+    }
+    .room-map-container.pinning { cursor: crosshair; }
+    .room-map-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+    }
+    .map-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+    .room-map-container.pinning .map-pin { pointer-events: all; }
+    .map-pin-num {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .map-pin-num span { transform: rotate(45deg); display:block; }
+    .map-pin-del {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: var(--danger);
+      border: none;
+      color: #fff;
+      font-size: 9px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 0;
+    }
+    .room-map-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 2px 2px;
+      font-size: 13px;
+    }
+    .map-hint { flex: 1; color: var(--muted); }
+    .map-hint strong { color: var(--text); }
+
+    /* TRIVIA CARDS */
+    .trivia-card {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+    .trivia-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .trivia-a {
+      font-size: 14px;
+      color: var(--teal);
+      padding-left: 10px;
+      border-left: 2px solid var(--teal);
+      margin-bottom: 4px;
+    }
+    .trivia-m {
+      font-size: 12px;
+      color: var(--muted);
+      padding-left: 10px;
+    }
+
+    /* FRIE ERINDRINGER */
+    .room-notes-divider {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 8px 0 4px;
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+    }
+
+    /* ROOMS */
+    .room-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .room-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface-raised);
+      border-bottom: 1px solid var(--border);
+    }
+    .room-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--accent-light);
+    }
+    .room-locations {
+      padding: 8px 10px;
+    }
+    .room-locations .location-item {
+      margin-bottom: 8px;
+    }
+    .room-select {
+      font-size: 12px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      padding: 2px 4px;
+      cursor: pointer;
+      max-width: 110px;
+    }
+    .room-select:focus { outline: none; border-color: var(--accent); }
+
+    /* REVIEW SESSION */
+    .review-progress {
+      height: 4px;
+      background: var(--surface-raised);
+      border-radius: 2px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .review-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .review-card {
+      perspective: 1000px;
+      margin-bottom: 24px;
+      height: calc(100vh - 280px);
+      min-height: 300px;
+      max-height: 600px;
+    }
+    .review-card-inner {
+      position: relative;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+    }
+    .review-card-inner.flipped { transform: rotateY(180deg); }
+
+    .review-card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      overflow-y: auto;
+    }
+    .review-card-back {
+      transform: rotateY(180deg);
+      align-items: flex-start;
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .review-loc-number {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .review-loc-name {
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .review-tap-hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .review-memories-list {
+      width: 100%;
+    }
+    .review-memory-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .review-memory-item:last-child { border-bottom: none; }
+    .review-memory-dot {
+      width: 8px; height: 8px;
+      background: var(--teal);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 8px;
+    }
+    .review-back-label {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .review-nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* RATING */
+    .rating-section {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .rating-section h2 { margin-bottom: 8px; }
+    .rating-section p { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+    .rating-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .rating-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.1s;
+    }
+    .rating-btn:hover { border-color: var(--accent); background: var(--surface-raised); transform: translateY(-2px); }
+    .rating-btn:active { transform: translateY(0); }
+    .rating-btn .rating-label { font-size: 10px; font-weight: 500; color: var(--muted); text-align: center; }
+    .rating-btn[data-q="1"] { --c: #e05c6b; }
+    .rating-btn[data-q="2"] { --c: #f0a050; }
+    .rating-btn[data-q="3"] { --c: #f0b429; }
+    .rating-btn[data-q="4"] { --c: #50c878; }
+    .rating-btn[data-q="5"] { --c: #4ecdc4; }
+    .rating-btn:hover { border-color: var(--c); }
+    .rating-btn .rating-num { color: var(--c); }
+
+    /* PALACE EDITOR */
+    .editor-header { margin-bottom: 28px; }
+
+    /* REVIEW SUMMARY */
+    .review-summary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .review-summary h2 { margin-bottom: 8px; }
+    .review-summary .next-date {
+      font-size: 18px;
+      color: var(--teal);
+      font-weight: 600;
+      margin: 16px 0 8px;
+    }
+
+    /* INLINE EDIT */
+    .inline-edit-form {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      padding: 10px 0 4px;
+    }
+    .inline-edit-form input { flex: 1; }
+
+    /* UTILS */
+    .flex { display: flex; }
+    .gap-8 { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mb-8 { margin-bottom: 8px; }
+    .text-center { text-align: center; }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* PEG SIDEBAR */
+    #peg-sidebar {
+      position: fixed;
+      top: 60px;
+      right: 0;
+      bottom: 0;
+      width: 320px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 150;
+    }
+    #peg-sidebar.open { transform: translateX(0); }
+    #peg-sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--accent-light);
+      flex-shrink: 0;
+    }
+    #peg-sidebar-header button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    #peg-sidebar-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 4px 6px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(25, auto);
+      grid-auto-flow: column;
+      align-content: start;
+      gap: 1px;
+    }
+    .peg-row {
+      display: flex;
+      gap: 5px;
+      align-items: baseline;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .peg-row:hover { background: var(--surface-raised); }
+    .peg-num {
+      font-family: 'Cinzel', serif;
+      color: var(--accent-light);
+      font-size: 11px;
+      min-width: 18px;
+      flex-shrink: 0;
+    }
+    .peg-word { color: var(--text); font-size: 12px; line-height: 1.4; }
+    .peg-edit-input {
+      width: 100%;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 12px;
+      padding: 1px 4px;
+    }
+    .peg-edit-input:focus { outline: none; border-color: var(--accent); }
+    #peg-toggle-btn.active {
+      background: var(--surface-raised);
+      color: var(--accent-light);
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<header id="app-bar">
+  <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="btn-ghost btn-sm" id="peg-toggle-btn" onclick="togglePegSidebar()" style="font-size:13px">&#128220; Peg-liste</button>
+    <button class="btn-ghost btn-sm" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;">&#9881;</button>
+  </div>
+</header>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:320px;width:90%;box-shadow:var(--shadow);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <h2 style="font-size:16px;">&#9881; Indstillinger</h2>
+      <button onclick="closeSettingsModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
+    </div>
+    <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px;">Genopfriskningsinterval (dage)</label>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input type="number" id="settings-interval-input" min="1" max="365"
+        style="width:70px;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;color:var(--text);font-size:15px;">
+      <span style="color:var(--muted);font-size:13px;">dage</span>
+      <button class="btn-primary btn-sm" onclick="saveSettings()">Gem</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">Notifikation vises på paladskortet efter dette antal dage.</p>
+  </div>
+</div>
+
+<!-- PEG SIDEBAR -->
+<div id="peg-sidebar">
+  <div id="peg-sidebar-header">
+    <span>&#128220; Peg-liste</span>
+    <div style="display:flex;gap:6px;">
+      <button id="peg-edit-btn" onclick="togglePegEdit()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:12px;padding:2px 8px;cursor:pointer;">Rediger</button>
+      <button onclick="togglePegSidebar()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>
+    </div>
+  </div>
+  <div id="peg-sidebar-list"></div>
+</div>
+
+<main id="app-root">
+  <section id="view-dashboard" class="view"></section>
+  <section id="view-palace-editor" class="view"></section>
+  <section id="view-palace-detail" class="view"></section>
+  <section id="view-review-session" class="view"></section>
+  <section id="view-review-rating" class="view"></section>
+</main>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'memoryPalaceApp';
+  const SM2_EF_DEFAULT = 2.5;
+  const SM2_EF_MIN = 1.3;
+
+  // ── HISTORY PALACE DATA (korrekte event↔mnemonic-par via major peg) ─
+  // Format: [år, 'E'|'M', tekst]  – E=begivenhed, M=🧠-erindring
+  const HISTORY_PALACE_DATA = [
+    [1800,'E','1800: Voltas første batteri'],
+    [1800,'M','Voltas batterisøjle står langs hegnet med sauce hældt over'],
+    [1801,'E','1801: Thomas Jefferson bliver præsident i USA'],
+    [1801,'M','Thomas står på pladsen med en sut i munden og et amerikansk flag i hånden'],
+    [1801,'E','1801: Beethoven skriver Moonlight Sonata'],
+    [1801,'M','Beethoven med en sut i munden og kigger mod månen'],
+    [1804,'E','1804: Det første damplokomotiv'],
+    [1804,'E','1804: Morfin isoleret'],
+    [1804,'E','1804: Verdens befolkning runder 1 milliard'],
+    [1804,'E','1804: Napoleon bliver kejser af Frankrig'],
+    [1804,'M','Napoleon og Zorro kæmper om en flaske morfin i loungen med 1 milliard tilskuere der circulerer rundt om i tog'],
+    [1805,'E','1805: Kampen ved Trafalgar – Nelson sikrer Brittisk flådedominans'],
+    [1805,'M','Med admiral-hat, står Niels Hausgaard på et træ der er faldet over vejen med armene i vejret holdene en sol op'],
+    [1806,'E','1806: Det Hellige Romerske Rige bliver opløst efter Franske angreb'],
+    [1806,'M','Et stort kors står på bygningen som skælver og soja flyder ud alle vegne'],
+    [1807,'E','1807: Napoleon bomber København og overtager den danske flåde'],
+    [1807,'M','Napoleon står i Københavns havn og putter skibe i en julesok'],
+    [1808,'E','1808: Beethoven\'s 5. symfoni'],
+    [1808,'M','Beethoven sidder på en Sofa og spiller sin 5. symfoni'],
+    [1809,'E','1808-1809: Den Finske Krig – Finland bliver russisk'],
+    [1809,'M','En russisk bjørn vasker en blå-gul sauna med sæbe'],
+    [1810,'E','1810: Første atommodel af John Dalton'],
+    [1810,'M','John triller atomkerner på bænken mod en dåse der står for enden'],
+    [1812,'E','1812: Snehvide af brødrene Grimm'],
+    [1812,'M','Snehvide sidder i en tønde midt i tunnellen og poser for SoMe'],
+    [1813,'E','1813: Simón Bolivar bliver befrieren – den venezuleanske republik'],
+    [1813,'E','1813: Jane Austen udgiver Pride and Prejudice'],
+    [1813,'M','Simon med et dame-kort i panden ridder på hajen der drypper olie ud af munden. Hajen spiser Jane (fra Tarzan)'],
+    [1815,'E','1815: Slaget ved Waterloo – Napoleon besejret endeligt'],
+    [1815,'E','1815: Det største vulkanudbrud nogensinde – Tambora, Indonesien'],
+    [1815,'M','Napoleon betaler parkering iført tyl-skørt efter sit nederlag ved Waterloo. En kæmpe vulkan eksploderer med tamponer under ham'],
+    [1816,'E','1816: Året uden sommer – pga. askesky fra Tambora'],
+    [1816,'M','En DJ står under træerne med en kæmpe askesky over ham'],
+    [1818,'E','1818: Frankenstein af Mary Shelley'],
+    [1818,'M','Frankenstein bliver vist på et TV inde i saunaen'],
+    [1819,'E','1819: Singapore grundlagt som britisk handelsstation'],
+    [1819,'M','En tuba ligger på en seng med en porre i omklædningsrummet'],
+    [1823,'E','1823: Monroe Doktrinen – Amerika for amerikanerne'],
+    [1823,'M','Marilyn Monroe står med armene ud til hver sin side og snakker med Nemo i vandet om at patruljere atlanterhavet'],
+    [1825,'E','1825: Første jernbane'],
+    [1825,'E','1825: Erie-kanalen åbner og forbinder de store søer med Atlanterhavet'],
+    [1825,'M','Første jernbane bliver syet fast (nål) i asfalten. Et tog suser afsted og river en kanal med sig.'],
+    [1826,'E','1826: Opfindelsen af fotografiet af Niepce'],
+    [1826,'M','En Ninja står i restauranten med et fotografiapparat og tager de første selfies med mad'],
+    [1829,'E','1808-1829: De sydamerikanske uafhængighedskrige fra Spanien og Portugal'],
+    [1829,'M','Et kæmpe karneval med mennesker med store næb der danser i en kæmpe sofa midt på pladsen'],
+    [1830,'E','1830: Belgien løsriver sig fra Nederlandene'],
+    [1830,'M','En mus løber på legepladsen, på vej væk fra en kæmpe bunke tulipaner med Guylian chokolade og en Leffe øl i poterne'],
+    [1836,'E','1836: Samuel Colt opfinder revolveren'],
+    [1836,'E','1836: Slaget om Alamo'],
+    [1836,'M','Den første revolver bliver fremstillet på toilettet, men en måge flyver væk med den og giver den til den mexikanske hær der vinder slaget om Alamo mod Texas'],
+    [1843,'E','1843: Opdagelsen af Neptun'],
+    [1844,'E','1844: Første morsekode sendt af Samuel Morse'],
+    [1844,'M','Morsekode bliver sendt gennem et rør der står i sandet'],
+    [1847,'E','1847: Thomson patenterede det pneumatiske dæk'],
+    [1848,'E','1848: Californian Gold Rush'],
+    [1848,'E','1848: \'Det kommunistiske manifest\' af Marx og Engels'],
+    [1848,'M','Karl Marx står med ræveskin på og en surfer på en guld-surfboard er på vej afsted'],
+    [1849,'E','1845-1849: Den store hungersnød i Irland (Kartoffelpest)'],
+    [1849,'M','En gammel, sort kartoffel ligger på molen og er pakket ind i en rulle gavepapir og reb'],
+    [1850,'E','1850: Californien bliver den 31. stat'],
+    [1850,'M','En surfer kaster en lasso op mod broen'],
+    [1856,'E','1853-1856: Krimkrigen'],
+    [1856,'M','Krim-øen hænger til tørre i klatrestativet og bliver indvaderet af løg i den ene ende og lime i den anden'],
+    [1857,'E','1857: Videnskabsmuseet i London'],
+    [1859,'E','1859: Darwin udgiver Arternes Oprinden'],
+    [1859,'M','Darwin står på toppen af en bil og kysser (læber) Arternes Oprinden'],
+    [1860,'E','1860: Pony Ekspressen mellem Missouri og Californien'],
+    [1860,'M','En Pony løber på minigolf-banen med en Miss på ryggen der drikker Juice'],
+    [1862,'E','1862: The Flying Scotsman – togforbindelse mellem Edinburgh og London'],
+    [1862,'M','Et tog flyver igennem bakkekurven med Genie som lokofører'],
+    [1865,'E','1865: Abraham Lincoln myrdet'],
+    [1865,'E','1865: Enden på slaveriet i USA'],
+    [1865,'E','1861-1865: Den Amerikanske Borgerkrig slutter'],
+    [1865,'M','Nordstatssoldater sidder med tidligere slaver og fejrer sejren med Chili i munden og en Jedi med den anden enden af chilien i munden'],
+    [1865,'M','En abe ligger død med en Chili i munden'],
+    [1869,'E','1869: Suezkanalen åbner'],
+    [1869,'E','1869: Mendeleev opfinder den periodiske tabel'],
+    [1869,'M','En Jeep med det periodiske system bag kører i sandet og trækker et spor til Suezkanalen. I vandet kæmper en ubåd med en kæmpeblæksprutte.'],
+    [1869,'E','1869: Jules Verne udgiver \'En verdensomsejling under havet\''],
+    [1870,'E','1812-1870: Charles Dickens lever'],
+    [1870,'M','Charles Dickens på toppen af en sivklit i en kasse og skubber til en tønde med Oliver Twist i som ruller ned'],
+    [1872,'E','1872: Yellowstone – første nationalpark'],
+    [1872,'E','1872: Første internationale fodboldkamp – England mod Skotland'],
+    [1875,'E','1875: Mathew Webb svømmer Den Engelske Kanal'],
+    [1875,'E','1875: Bizet\'s Carmen-opera åbner'],
+    [1876,'E','1876: Graham Bells første telefonsamtale'],
+    [1879,'E','1879: Thomas Edison opfinder glødepæren'],
+    [1879,'M','Thomas står på en lygtepæl og en kop med en glødepære i der lyser vejen op'],
+    [1881,'E','1821-1881: Fjodor Dostojevskij'],
+    [1881,'M','Dostojevskij sidder på bænken og bruger sin fod til at skrive i DOS midt om natten kun oplyst af månen'],
+    [1882,'E','1809-1882: Charles Darwin lever'],
+    [1882,'M','Charles Darwin sidder på en vindmølle og drikker vin og vasker møllebladene med sæbe'],
+    [1884,'E','1884: Parsons opfinder dampturbinen'],
+    [1884,'M','Et får går i sandet med en dampturbine på ryggen'],
+    [1885,'E','1885: Verdens første skyskraber bygget i Chicago'],
+    [1885,'M','Skyskraberen står i stedet for livreddertårnet og et fly lander på toppen'],
+    [1885,'E','1884-1885: Berlin-konferencen om opdeling af Afrika (Kapløbet om Afrika)'],
+    [1885,'M','I flyet sidder ledere og skærer i snitzler formet som Afrika'],
+    [1887,'E','1887: Sherlock Holmes af Arthur Conan Doyle'],
+    [1887,'M','Sherlock Holmes og sin hjælper Viggo leder efter spor i skraldespanden'],
+    [1889,'E','1889: Starry Night af Vincent van Gogh'],
+    [1889,'E','1889: Eiffeltårnet færdigbygget'],
+    [1889,'E','1889: Moulin Rouge åbner i Paris'],
+    [1889,'M','Eiffeltårnet står midt på pladsen og Fup kravler op for at sætte Starry Night på siden. Øverst i tårnet er den røde mølle (Moulin Rouge)'],
+    [1894,'E','1894: Maxim bygger den første dampflyvemaskine'],
+    [1894,'M','Max bygger en flyvemaskine der skal transportere en kæmpestor pære'],
+    [1895,'E','1895: Røntgenbilledet opfindes af W. C. Roentgen'],
+    [1895,'M','Roentgen sidder i saunaen og tager et Røntgenbillede af en bil'],
+    [1897,'E','1897: J.J. Thomson opdager elektronen'],
+    [1897,'M','Thomas\' søn holder en bog op og man ser elektroner flyve rundt om den'],
+    [1898,'E','1898: Marie Curie opdager Polonium og Radium'],
+    [1898,'M','Marie Curie sidder på fyret og steger en bøf med to sten af polonium og radium'],
+    [1899,'E','1899: Første radiosignal over Den Engelske Kanal af Marconi'],
+    [1899,'M','Marconi (En Marcaroni) står med en pibe i munden og sender radiosignaler over kanalen'],
+    [1900,'E','1900: Wizard of Oz af Frank Baum'],
+    [1900,'M','Troldmanden er på vej ud over rælingen med et dosis bæger med piller fordi han tænker på en løve, en tinmand og et fugleskræmsel'],
+    [1901,'E','1837-1901: Victorias regeringsperiode'],
+    [1901,'M','Queen Victoria plasker i vandet med en sut i munden og en Mickey Mouse bamse'],
+  ];
+
+  // IGNORE everything below until closing backtick – old CSV kept for reference only
+  const _UNUSED_CSV = `"1900"
+"1837-1901 Victorias regeringsperiode"
+"Queen Victoria plasker i vandet med en sut i munden og en Mickey Mouse bamse"
+"1900 Wizard of Oz af Frank Baum"
+"Troldmanden er på vej ud over rælingen med et   dosis bæger med piller fordi han tænker på en løve, en tinmand og et fugleskræmsel"
+"1899 Første radiosignal over den engelske kanal af Marconi"
+"1898 Marie Curie opdager Polonium of radium"
+"Marconi (En Marcaroni) står med en pibe i munden og sender radiosignaler over kanalen"
+"Marie Curie sidder på fyret og steger en bøf med to sten af polonium og radium"
+"1897 J.J. Thomson opdager elektronen"
+"Thomas' søn holder en bog op og man ser elektroner flyve rundt om den."
+"1896"
+"1895 Røntgenbillede opfindes af W. C. Roentgen"
+"Roentgen sidder i saunaen og tager et Røgtenbillede af en bil"
+"1894 Maxim bygger den første dampflyvemaskine"
+"Max bygger en flyvemaskine der skal transportere en kæmpestor pære"
+"1893"
+"1892"
+"1891"
+"1889 Starry Night af Vincent van Gogh"
+"1889 Eiffeltårnet færdigbygget"
+"1889 Moulin Rouge åbner i Paris"
+"1890"
+"Eiffeltårnet står midt på pladsen og Fup kravler op for at sætte Starry Night på siden. Øverst i tårnet er den røde mølle (Moulin Rouge)"
+"1887 Sherlock Holmes af Arthur Conan Doyle"
+"Sherlock Homes og sin hjælper Viggo leder efter spor i skraldespanden"
+"1888"
+"1885  Verdens første skyskraber bygget i Chicago"
+"Skyskraben står i stedet for livreddertårnet og et fly lander på toppen"
+"1886"
+"1884-1885 Berlin-konferencen om opdeling af Afrika (Kapløbet om Afrika"
+"I flyet sidder ledere og skærer i snitzler formet som Afrika"
+"Et får går i sandet med en dampturbine på ryggen"
+"1884 Parson opfinder dampturbinen"
+"1882"
+"1809-1882 Charles Darwin lever"
+"Charles Darwin sidder på en vindmølle og drikker vin og vasker møllebladene med sæbe"
+"1883"
+"1821-1881 Fjodor Dostojevskij"
+"Dostojevskij sidder på bænken og bruger sin fod til at skrive i DOS midt om natten kun oplyst af månen"
+"1880"
+"1879  Thomas Edison opfinder glødepæren."
+"Thomas står på en lygtepæk og en kop med en glødepære i der lyser vejen op"
+"1878"
+"1877"
+"1877"
+"1876 Graham Bells første telefonsamtale"
+"1874"
+"1873"
+"1875"
+"1872 Yellowstone - første nationalpark"
+"1872 Første internationale fodboldkamp mellem England og Skotland"
+"1875 Mathew Webb svømmer den Engelske Kanal"
+"1875 Bizet's 'Carmen' opera åbner"
+"Charles dickens på toppen af en sivklit i en kasse og skubber til en tønde med Oliver Twist i som ruller ned"
+"1812-1870 Charles Dickens lever"
+"1869 Suez kanal åbner"
+"1869 Mendeleev opfandt den periodiske tabel"
+"En Jeep med det periodiske system bag kører i sandet og trækker et spor til Suez kanalen.  I vandet i kanalen kæmper en ubåd med en kæmpeblæksprutte."
+"1869 Julies Verne udgiver 'En verdensomsejling under havet'"
+"1868"
+"1866"
+"1864"
+"1867"
+"1865 Abraham Lincoln myrdet"
+"1865 Enden på slaveriet i USA"
+"1861-1865 Amerikanske borgerkrig slutter"
+"Nordstatssoldater sidder med tidligere slaver og fejrer sejren med  Chili i munden og en Jedi med den anden enden af chilien i munden"
+"En abe ligger død med en Chili i munden"
+"1863"
+"1862 - 'The Flying Scotsman' togforbindelse mellem Edinburg og London"
+"Et tog flyver igennem baksetkurven med Genie som lokofører"
+"1861"
+"1860 Pony ekspressen mellem Missouri og Californien"
+"En Pony  løber på minigolf banen med en Miss på ryggen der drikker Juice"
+"1859 Darwin udgiver arternes oprindelse"
+"Darwin står på toppen af en bil og kysser (læber) Arternes oprindelse"
+"1858"
+"1857 Videnskabsmuseet i London"
+"1856"
+"1853-1856 Krim krigen"
+"Krim-øen hænger til tørre i klatrestativet of bliver indvaderet af løg i den ene ende og lime i den anden"
+"1855"
+"1854"
+"1850"
+"1853"
+"1852"
+"1851"
+"1850 Californien bliver den 31. stat"
+"En surfer kaster en lasso op mod broen"
+"1845-1849  Den store hungersnød i Irland (""Kartoffelpest"")"
+"En gammel, sort kartoffel ligger på molen og er pakket ind i en rulle gavepapir og reb"
+"1848 Californian  Gold Rush"
+"1848 'Det kommunistiske manifest' af Marx og Engels"
+"Karl Marx står med ræveskin på og en surfer på en guld-surfboard er på vej afsten"
+"1847 Thomson patententerede det pneumatiske dæk"
+"1846"
+"1844 Første morsekode sendt af Samuel Morse"
+"1843 Opdagelsen af Neptun"
+"1845"
+"Morsekode bliver sendt gennem et rør der står i sandet"
+"1842"
+"1841"
+"1840"
+"1838"
+"1839"
+"1837"
+"1836 Samuel Colt opfinder revolveren"
+"1836 Slaget om Alamo"
+"Den første revolver bliver fremstillet på toilettet, men en måge flyver væk med den og giver den til den mexikanske hær der vindet slaget om Alamo mod Texas"
+"1835"
+"1834"
+"1833"
+"1831"
+"1828"
+"1832"
+"1808-1829 De sydamerikanske uafhængighedskrige fra Spanien og portugal"
+"Et kæmpe karneval med mennesker med store næb der danser i en kæmpe sofa midt på pladsen"
+"1825"
+"en mus løber på legepladsen, på vej væk fra en kæmpe bunke tulipaner med Guylian chokolade og en Leffe øl i poterne."
+"1830 Belgien løsriver sig fra Nederlandende"
+"1827"
+"1825  Første jernbane"
+"1825  Erie-kanaler åbner og forbinder de store søer med atlanterhavet"
+"Første jernbane bliver syet fast (nål) i asfalten. Et tog suser afsted og river en kanal med sig."
+"1824"
+"1826 Opfindelsen af fotografiet af Niepce."
+"En Ninja står i restaurenten med et fotografiapparat og tager de første selfies med mad."
+"1823"
+"Marilyn Monroe står med armene ud til hver sin side, som for at skille to parter ad og snakker med Nemo i vandet om at paltruljere atlanterhavet."
+"1823 Monroe Doktrinen blev vedtaget i den Amerikanske kongres (Amerika for amerikanerne)"
+"1822"
+"1819 Singapore grundlagt som british handelsstation"
+"En tuba ligger på en seng med en porre i omklædningsrummet"
+"1820"
+"1818  Frankenstein af Mary Shelley"
+"Frankenstein bliver vist på et TV inde i saunaen"
+"1817"
+"1816  Året uden sommer - pga.askesyer fra Tambora"
+"1815 En DJ står under træerne med en kæmpe askesky over ham"
+"1815 Slaget ved Waterloo, hvor Napoleon endeligt blev besejret"
+"1815 Napoleon betaler parkering iført tyl-skørt efter under sit nederlag ved waterloo. En kæmpe vulkan eksploderer med tamponer under ham"
+"1814"
+"1815 Det største vulkanudbrud nogensinde i Indonesien Tambora"
+"1813 Simón Bolivar bliver kendt som befrieren da han etablere den venezuleanske republik"
+"Simon med et dame-kort i panden ridder på hajen der drypper olie ud af munden.  Hajen spiser Jane (fra Tarzan)"
+"1813 Jane Austin udgiver pride and Prejudice"
+"1812 Snehvide af brødrene Grimm"
+"Snehvide sidder i en tønde midt i tunnellen og poser for SoMe"
+"1811"
+"1810 Første atommodel af John Dalton"
+"John triller atomkerner på bænken mod en dåse der står for enden"
+"En russisk bjørn vasker en blå-gul sauna med sæbe"
+"1808-1809 Den Finske Krig mellem Rusland og Sverige. Finland bliver russisk"
+"1808 Beethoven's 5. symfoni"
+"Beethoven sidder på en Sofa og spiller sin 5. symfoni"
+"Napoleon st\u00f8r i Københavns havn og putter skibe i en julesok"
+"1807 Napoleon bomber københavn og overtager den danske flåde"
+"1806 Det Hellige Romerske Rige bliver opløst efter Franske angreb"
+"Et stort kors står på bygningen som skælver og soja flyder ud alle vegne"
+"1805 Kampen ved Trafalgar, hvor Nelson vinder et søslag og sikrer Brittisk flådedominans"
+"Med admiral-hat, står Niels Hausgaard  på et træ der er faldet over vejen med armene i vejret holdene en sol op"
+"1804 Det første damplokomotiv"
+"1804 Morfin isoleret"
+"Napoleon og Zorro kæmper om en flaske morfin i loungen med 1 milliard tilskuere der circulerer rundt om i tog"
+"1804 Verdens befolkning runder 1 milliard"
+"1804 Napoleon bliver kejser af Frankrig"
+"1802"
+"1801 Thomas Jefferson bliver præsident i USA"
+"1801 Beethoven skriver Moonlight Sonata "
+"Thomas står på pladsen med en sut i munden og et amerikansk flag i hånden"
+"Beethoven med en sut i munden og kigger mod månen"
+"1800 Voltas første batteri"
+"Voltas batterisøjle står langs hegnet med sauce hældt over"
+"1800"`;
+
+  // ── TILSTAND ───────────────────────────────────────────────────────
+  let data = loadData();
+  const HISTORY_VERSION = 5; // bump to force rebuild
+  // Remove old quarter palaces if present (from previous version)
+  data.palaces = data.palaces.filter(p => !p._histTag || p._histTag === 'hist-all');
+  const histIdx = data.palaces.findIndex(p => p._histTag === 'hist-all');
+  if (histIdx === -1 || (data.palaces[histIdx]._v || 0) < HISTORY_VERSION) {
+    const built = buildHistoryPalace(1800, 1901, '1800-tallet');
+    built._v = HISTORY_VERSION;
+    built._histTag = 'hist-all';
+    if (histIdx !== -1) {
+      built.srs = data.palaces[histIdx].srs;
+      built.id  = data.palaces[histIdx].id;
+      data.palaces.splice(histIdx, 1, built);
+    } else {
+      data.palaces.unshift(built);
+    }
+  }
+  saveData();
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set() };
+
+  // ── LAGERLAG ───────────────────────────────────────────────────────
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const d = raw ? JSON.parse(raw) : { palaces: [] };
+      if (!d.settings) d.settings = { reviewIntervalDays: 7 };
+      return d;
+    } catch { return { palaces: [], settings: { reviewIntervalDays: 7 } }; }
+  }
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function genId() {
+    return typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+
+  function buildHistoryPalace(fromYear, toYear, label) {
+    const now = Date.now();
+    const byYear = new Map();
+    for (const [yr, type, text] of HISTORY_PALACE_DATA) {
+      if (!byYear.has(yr)) byYear.set(yr, []);
+      byYear.get(yr).push({ type, text });
+    }
+    const quarterDefs = [
+      { name: '1800–1825', from: 1800, to: 1825 },
+      { name: '1826–1850', from: 1826, to: 1850 },
+      { name: '1851–1875', from: 1851, to: 1875 },
+      { name: '1876–1901', from: 1876, to: 1901 },
+    ];
+    const rooms = quarterDefs.map(q => ({ id: genId(), name: q.name, notes: [] }));
+    const locations = [];
+    for (let year = fromYear; year <= toYear; year++) {
+      const entries = byYear.get(year) || [];
+      const memories = [];
+      for (const e of entries) {
+        const t = e.type === 'M' ? '\uD83E\uDDE0 ' + e.text : e.text;
+        memories.push({ id: genId(), text: t, createdAt: now });
+      }
+      const roomIdx = quarterDefs.findIndex(q => year >= q.from && year <= q.to);
+      const roomId = roomIdx !== -1 ? rooms[roomIdx].id : null;
+      locations.push({ id: genId(), order: year - fromYear, name: String(year), memories, roomId });
+    }
+    return {
+      id: genId(),
+      name: label,
+      description: 'Løberute langs stranden – historiske begivenheder fra 1800-tallet',
+      createdAt: now,
+      rooms,
+      locations,
+      srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT, nextReviewDate: now, lastReviewDate: null, history: [] }
+    };
+  }
+
+  // ── GENTAGELSES-ALGORITME (SM-2) ───────────────────────────────────
+  function computeNextReview(srs, quality) {
+    let { interval, repetition, efactor } = srs;
+    const q = Math.max(1, Math.min(5, quality));
+
+    if (q < 3) {
+      repetition = 0;
+      interval = 1;
+    } else {
+      if (repetition === 0) interval = 1;
+      else if (repetition === 1) interval = 6;
+      else interval = Math.round(interval * efactor);
+      repetition += 1;
+    }
+
+    efactor = efactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+    efactor = Math.max(SM2_EF_MIN, parseFloat(efactor.toFixed(2)));
+
+    const now = Date.now();
+    const nextReviewDate = now + interval * 86400000;
+
+    return {
+      interval,
+      repetition,
+      efactor,
+      nextReviewDate,
+      lastReviewDate: now,
+      history: [...(srs.history || []), { date: now, quality: q, intervalAfter: interval }]
+    };
+  }
+
+  function isDue(palace) {
+    if (!palace.srs || !palace.srs.nextReviewDate) return true;
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+    return palace.srs.nextReviewDate <= endOfToday.getTime();
+  }
+
+  function formatDate(ts) {
+    if (!ts) return 'Aldrig';
+    return new Date(ts).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function daysUntil(ts) {
+    if (!ts) return 0;
+    const diff = ts - Date.now();
+    const days = Math.ceil(diff / 86400000);
+    if (days <= 0) return 'I dag';
+    if (days === 1) return 'I morgen';
+    return `Om ${days} dage`;
+  }
+
+  // ── PALADS CRUD ────────────────────────────────────────────────────
+  function createPalace(name, description, type) {
+    const palace = {
+      id: genId(),
+      name: name.trim(),
+      description: description.trim(),
+      type: type || 'standard',
+      createdAt: Date.now(),
+      locations: [],
+      rooms: [],
+      notes: [],
+      srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT, nextReviewDate: Date.now(), lastReviewDate: null, history: [] }
+    };
+    data.palaces.push(palace);
+    saveData();
+    return palace;
+  }
+
+  function updatePalace(id, fields) {
+    const p = getPalace(id);
+    if (!p) return;
+    Object.assign(p, fields, { updatedAt: Date.now() });
+    saveData();
+  }
+
+  function deletePalace(id) {
+    data.palaces = data.palaces.filter(p => p.id !== id);
+    saveData();
+  }
+
+  function getPalace(id) {
+    return data.palaces.find(p => p.id === id);
+  }
+
+  // ── RUMKORT CRUD ───────────────────────────────────────────────────
+  function setRoomMap(palaceId, roomId, dataUrl) {
+    const room = getRoom(palaceId, roomId);
+    if (room) { room.mapImage = dataUrl; saveData(); }
+  }
+
+  function removeRoomMap(palaceId, roomId) {
+    const room = getRoom(palaceId, roomId);
+    if (!room) return;
+    delete room.mapImage;
+    // clear all pins in this room
+    const p = getPalace(palaceId);
+    p.locations.filter(l => l.roomId === roomId).forEach(l => delete l.pin);
+    saveData();
+  }
+
+  function setLocationPin(palaceId, locId, x, y) {
+    const loc = getLoc(palaceId, locId);
+    if (loc) { loc.pin = { x, y }; saveData(); }
+  }
+
+  function removeLocationPin(palaceId, locId) {
+    const loc = getLoc(palaceId, locId);
+    if (loc) { delete loc.pin; saveData(); }
+  }
+
+  // ── FRIE ERINDRINGER CRUD ──────────────────────────────────────────
+  function getRoom(palaceId, roomId) {
+    const p = getPalace(palaceId);
+    return p && p.rooms ? p.rooms.find(r => r.id === roomId) : null;
+  }
+
+  function addNote(palaceId, roomId, text, mnemonic) {
+    const room = getRoom(palaceId, roomId);
+    if (!room) return;
+    if (!room.notes) room.notes = [];
+    const now = Date.now();
+    room.notes.push({ id: genId(), text: text.trim(), createdAt: now });
+    if (mnemonic && mnemonic.trim()) {
+      room.notes.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: now });
+    }
+    saveData();
+  }
+
+  function updateNote(palaceId, roomId, noteId, text) {
+    const room = getRoom(palaceId, roomId);
+    if (!room || !room.notes) return;
+    const note = room.notes.find(n => n.id === noteId);
+    if (note) { note.text = text.trim(); saveData(); }
+  }
+
+  function deleteNote(palaceId, roomId, noteId) {
+    const room = getRoom(palaceId, roomId);
+    if (!room || !room.notes) return;
+    room.notes = room.notes.filter(n => n.id !== noteId);
+    saveData();
+  }
+
+  // ── RUM CRUD ───────────────────────────────────────────────────────
+  function addRoom(palaceId, name) {
+    const p = getPalace(palaceId);
+    if (!p) return null;
+    if (!p.rooms) p.rooms = [];
+    const room = { id: genId(), name: name.trim() };
+    p.rooms.push(room);
+    saveData();
+    return room;
+  }
+
+  function renameRoom(palaceId, roomId, name) {
+    const p = getPalace(palaceId);
+    if (!p || !p.rooms) return;
+    const r = p.rooms.find(r => r.id === roomId);
+    if (r) { r.name = name.trim(); saveData(); }
+  }
+
+  function deleteRoom(palaceId, roomId) {
+    const p = getPalace(palaceId);
+    if (!p || !p.rooms) return;
+    p.rooms = p.rooms.filter(r => r.id !== roomId);
+    // unassign locations that belonged to this room
+    p.locations.forEach(l => { if (l.roomId === roomId) delete l.roomId; });
+    saveData();
+  }
+
+  function assignLocRoom(palaceId, locId, roomId) {
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    if (roomId) loc.roomId = roomId;
+    else delete loc.roomId;
+    saveData();
+  }
+
+  function getRoomName(p, roomId) {
+    if (!p.rooms) return '';
+    const r = p.rooms.find(r => r.id === roomId);
+    return r ? r.name : '';
+  }
+
+  function getReviewLocs(p) {
+    if (app.reviewRoomId) {
+      return p.locations.filter(l => l.roomId === app.reviewRoomId);
+    }
+    const start = app.reviewLocStart;
+    const end = app.reviewLocEnd !== null ? app.reviewLocEnd : p.locations.length;
+    return p.locations.slice(start, end);
+  }
+
+  // ── STED CRUD ──────────────────────────────────────────────────────
+  function addLocation(palaceId, name, roomId) {
+    const p = getPalace(palaceId);
+    if (!p) return null;
+    const loc = { id: genId(), order: p.locations.length, name: name.trim(), memories: [] };
+    if (roomId) loc.roomId = roomId;
+    p.locations.push(loc);
+    saveData();
+    return loc;
+  }
+
+  function addTriviaCard(palaceId, roomId, question, answer, mnemonic) {
+    const p = getPalace(palaceId);
+    if (!p) return;
+    const loc = { id: genId(), order: p.locations.length, name: question.trim(), memories: [] };
+    if (roomId) loc.roomId = roomId;
+    const now = Date.now();
+    if (answer && answer.trim()) loc.memories.push({ id: genId(), text: answer.trim(), createdAt: now });
+    if (mnemonic && mnemonic.trim()) loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: now });
+    p.locations.push(loc);
+    saveData();
+  }
+
+  function updateTriviaCard(palaceId, locId, question, answer, mnemonic) {
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    loc.name = question.trim();
+    const answerEntry = loc.memories.find(m => !m.text.startsWith('🧠'));
+    const mnemonicEntry = loc.memories.find(m => m.text.startsWith('🧠'));
+    if (answerEntry) answerEntry.text = answer.trim();
+    else if (answer && answer.trim()) loc.memories.unshift({ id: genId(), text: answer.trim(), createdAt: Date.now() });
+    if (mnemonicEntry) mnemonicEntry.text = '🧠 ' + mnemonic.trim();
+    else if (mnemonic && mnemonic.trim()) loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: Date.now() });
+    saveData();
+  }
+
+  function updateLocation(palaceId, locId, name) {
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    loc.name = name.trim();
+    saveData();
+  }
+
+  function deleteLocation(palaceId, locId) {
+    const p = getPalace(palaceId);
+    if (!p) return;
+    p.locations = p.locations.filter(l => l.id !== locId);
+    p.locations.forEach((l, i) => l.order = i);
+    saveData();
+  }
+
+  function moveLocation(palaceId, locId, dir) {
+    const p = getPalace(palaceId);
+    if (!p) return;
+    const idx = p.locations.findIndex(l => l.id === locId);
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= p.locations.length) return;
+    [p.locations[idx], p.locations[newIdx]] = [p.locations[newIdx], p.locations[idx]];
+    p.locations.forEach((l, i) => l.order = i);
+    saveData();
+  }
+
+  function getLoc(palaceId, locId) {
+    const p = getPalace(palaceId);
+    return p ? p.locations.find(l => l.id === locId) : null;
+  }
+
+  // ── ERINDRING CRUD ─────────────────────────────────────────────────
+  function addMemory(palaceId, locId, text, mnemonic) {
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    const now = Date.now();
+    loc.memories.push({ id: genId(), text: text.trim(), createdAt: now });
+    if (mnemonic && mnemonic.trim()) {
+      loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: now });
+    }
+    saveData();
+  }
+
+  function updateMemory(palaceId, locId, memId, text) {
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    const mem = loc.memories.find(m => m.id === memId);
+    if (mem) { mem.text = text.trim(); saveData(); }
+  }
+
+  function deleteMemory(palaceId, locId, memId) {
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    loc.memories = loc.memories.filter(m => m.id !== memId);
+    saveData();
+  }
+
+  // ── VISNINGER ──────────────────────────────────────────────────────
+  function renderView(view) {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    app.view = view;
+    updateDueBadge();
+
+    switch (view) {
+      case 'dashboard': renderDashboard(); break;
+      case 'palace-editor': renderPalaceEditor(); break;
+      case 'palace-detail': renderPalaceDetail(); break;
+      case 'review-session': renderReviewSession(); break;
+      case 'review-rating': renderReviewRating(); break;
+    }
+  }
+
+  function showView(id) {
+    document.getElementById(id).classList.add('active');
+  }
+
+  function updateDueBadge() {
+    // no-op — badges are now rendered per palace card
+    if (false) {
+    }
+  }
+
+  // OVERSIGT
+  function renderDashboard() {
+    const el = document.getElementById('view-dashboard');
+    const due = data.palaces.filter(isDue);
+    const rest = data.palaces.filter(p => !isDue(p));
+    const sorted = [...due, ...rest];
+
+    let html = `
+      <div class="section-header">
+        <h1>Dine Paladser</h1>
+        <div style="display:flex;gap:8px;align-items:center">
+          <a href="${reminderMailtoLink()}" class="btn-ghost btn-sm" style="text-decoration:none" title="Åbner din mail-klient med en reminder om 7 dage">&#128231; Reminder</a>
+          <button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>
+        </div>
+      </div>`;
+
+    if (sorted.length === 0) {
+      html += `
+        <div class="empty-state">
+          <div class="empty-icon">&#127963;</div>
+          <p>Ingen hukommelsespaladser endnu.<br>Opret dit første for at komme i gang.</p>
+          <button class="btn-primary" data-action="new-palace">Opret Palads</button>
+        </div>`;
+    } else {
+      html += `<div class="palaces-grid">`;
+      for (const p of sorted) {
+        const locCount = p.locations.length;
+        const memCount = p.locations.reduce((s, l) => s + l.memories.length, 0);
+        const daysSince = p.srs && p.srs.lastReviewDate
+          ? Math.floor((Date.now() - p.srs.lastReviewDate) / 86400000)
+          : null;
+        const showBadge = daysSince === null || daysSince >= (data.settings.reviewIntervalDays || 7);
+        const badgeText = daysSince === null ? 'Aldrig øvet' : `${daysSince} dag${daysSince !== 1 ? 'e' : ''} siden`;
+        const reviewed = p.srs && p.srs.lastReviewDate;
+        html += `
+          <div class="palace-card" data-palace-id="${p.id}">
+            ${showBadge ? `<span class="palace-card-badge">${badgeText}</span>` : ''}
+            <div class="palace-card-name">${esc(p.name)}${p.type === 'trivia' ? ' <span style="font-size:11px;background:var(--surface-raised);border:1px solid var(--border);border-radius:4px;padding:1px 6px;vertical-align:middle;color:var(--muted)">Trivia</span>' : ''}</div>
+            <div class="palace-card-desc">${esc(p.description) || '<em style="color:var(--muted)">Ingen beskrivelse</em>'}</div>
+            <div class="palace-card-meta">
+              <span>&#128205; ${locCount} ${locCount !== 1 ? 'steder' : 'sted'}</span>
+              <span>&#128214; ${memCount} ${memCount !== 1 ? 'erindringer' : 'erindring'}</span>
+              <span>&#128197; ${reviewed ? 'Sidst: ' + formatDate(p.srs.lastReviewDate) : 'Aldrig gennemgået'}</span>
+            </div>
+            <div class="palace-card-actions">
+              <button class="btn-teal btn-sm" data-action="start-review" data-palace-id="${p.id}">&#9654; Gennemgå</button>
+              <button class="btn-ghost btn-sm" data-action="view-palace" data-palace-id="${p.id}">&#128065; Se</button>
+              <button class="btn-ghost btn-sm" data-action="edit-palace" data-palace-id="${p.id}">&#9998; Rediger</button>
+              <button class="btn-danger btn-sm" data-action="delete-palace" data-palace-id="${p.id}">&#128465;</button>
+            </div>
+          </div>`;
+      }
+      html += `</div>`;
+    }
+
+    el.innerHTML = html;
+    showView('view-dashboard');
+  }
+
+  // PALADS-REDIGERING
+  function renderPalaceEditor() {
+    const el = document.getElementById('view-palace-editor');
+    const palace = app.editingPalaceId ? getPalace(app.editingPalaceId) : null;
+    const isEdit = !!palace;
+
+    el.innerHTML = `
+      <button class="back-btn" data-action="back-from-editor">&#8592; Tilbage</button>
+      <div class="editor-header">
+        <h1>${isEdit ? 'Rediger Palads' : 'Nyt Palads'}</h1>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Paladsnavnet</label>
+          <input type="text" id="editor-name" placeholder="fx Mit barndomshjem" value="${esc(palace ? palace.name : '')}">
+        </div>
+        <div class="form-group">
+          <label>Beskrivelse</label>
+          <textarea id="editor-desc" rows="3" placeholder="Beskriv ruten eller stedet...">${esc(palace ? palace.description : '')}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <div style="display:flex;gap:16px;margin-top:6px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+              <input type="radio" name="palace-type" id="type-standard" value="standard" ${(!palace || palace.type !== 'trivia') ? 'checked' : ''}>
+              <span>Hukommelsespalads</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+              <input type="radio" name="palace-type" id="type-trivia" value="trivia" ${palace && palace.type === 'trivia' ? 'checked' : ''}>
+              <span>&#10067; Trivia</span>
+            </label>
+          </div>
+        </div>
+        <div class="flex gap-8 mt-16">
+          <button class="btn-primary" data-action="save-palace">${isEdit ? 'Gem ændringer' : 'Opret Palads'}</button>
+          <button class="btn-ghost" data-action="back-from-editor">Annuller</button>
+        </div>
+      </div>`;
+
+    showView('view-palace-editor');
+    document.getElementById('editor-name').focus();
+  }
+
+  // PALADS-DETALJER
+  function renderPalaceDetail() {
+    const el = document.getElementById('view-palace-detail');
+    const p = getPalace(app.editingPalaceId);
+    if (!p) { renderView('dashboard'); return; }
+
+    const due = isDue(p);
+    const nextStr = p.srs && p.srs.lastReviewDate
+      ? daysUntil(p.srs.nextReviewDate)
+      : 'Nu';
+
+    let html = `
+      <button class="back-btn" data-action="go-dashboard">&#8592; Alle Paladser</button>
+      <div class="palace-detail-header">
+        <div class="flex" style="justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <h1>${esc(p.name)}</h1>
+            <p class="muted">${esc(p.description)}</p>
+          </div>
+          <button class="btn-teal" data-action="start-review" data-palace-id="${p.id}">&#9654; Gennemgå</button>
+        </div>
+        <div class="palace-detail-srs">
+          <span>&#128336; Næste gennemgang: <span class="${due ? 'srs-due' : ''}">${nextStr}</span></span>
+          ${p.srs && p.srs.lastReviewDate ? `<span>&#10003; Sidst gennemgået: ${formatDate(p.srs.lastReviewDate)}</span>` : ''}
+          <span>&#127381; Interval: ${p.srs ? p.srs.interval : 1} dag${(p.srs && p.srs.interval !== 1) ? 'e' : ''}</span>
+        </div>
+      </div>
+
+      <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:10px;margin-top:18px;">
+        <h2 style="font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Rum (${(p.rooms||[]).length})</h2>
+        <button class="btn-ghost btn-sm" data-action="show-add-room" data-palace-id="${p.id}">+ Nyt Rum</button>
+      </div>
+      <div id="add-room-area"></div>`;
+
+    const rooms = p.rooms || [];
+    rooms.forEach(room => {
+      const roomLocs = p.locations.filter(l => l.roomId === room.id);
+      const isEditingRoom = app.editingRoomId === room.id;
+      const isCollapsed = app.collapsedRooms.has(room.id);
+      html += `<div class="room-section">
+        <div class="room-header" style="${isCollapsed ? 'border-bottom:none;' : ''}">`;
+      if (isEditingRoom) {
+        html += `<input type="text" id="edit-room-name-${room.id}" value="${esc(room.name)}" style="flex:1;background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text);">
+          <button class="btn-primary btn-sm" data-action="save-room-edit" data-palace-id="${p.id}" data-room-id="${room.id}">Gem</button>
+          <button class="btn-ghost btn-sm" data-action="cancel-room-edit">Annuller</button>`;
+      } else {
+        html += `<button class="btn-icon" data-action="toggle-room-collapse" data-room-id="${room.id}" title="${isCollapsed ? 'Udvid' : 'Minimer'}" style="font-size:10px;padding:2px 4px;">${isCollapsed ? '&#9654;' : '&#9660;'}</button>
+          <span class="room-name">${esc(room.name)}</span>
+          <div style="display:flex;gap:6px;align-items:center;margin-left:auto;">
+            <button class="btn-ghost btn-sm" data-action="start-review" data-palace-id="${p.id}" data-room-id="${room.id}">&#9654; Øv rum</button>
+            <button class="btn-icon" data-action="edit-room" data-palace-id="${p.id}" data-room-id="${room.id}" title="Omdøb">&#9998;</button>
+            <button class="btn-icon" data-action="delete-room" data-palace-id="${p.id}" data-room-id="${room.id}" title="Slet rum" style="color:var(--danger)">&#128465;</button>
+          </div>`;
+      }
+      html += `</div>`;
+      if (isCollapsed) { html += `</div>`; return; }
+
+      // ── RUMKORT ──
+      if (room.mapImage) {
+        const isPinning = app.pinningRoomId === room.id;
+        const nextUnpinned = roomLocs.find(l => !l.pin);
+        html += `<div class="room-map-wrap">
+          <div class="room-map-container${isPinning ? ' pinning' : ''}"
+               onclick="handleMapClick(event,'${p.id}','${room.id}')"
+               id="map-${room.id}">
+            <img src="${room.mapImage}" class="room-map-img" draggable="false">`;
+        roomLocs.forEach((loc, i) => {
+          if (!loc.pin) return;
+          html += `<div class="map-pin" style="left:${loc.pin.x}%;top:${loc.pin.y}%;" title="${esc(loc.name)}">
+            <div class="map-pin-num"><span>${i + 1}</span></div>
+            ${isPinning ? `<button class="map-pin-del" onclick="event.stopPropagation();deletePinFromLoc('${p.id}','${loc.id}')" title="Fjern pin">✕</button>` : ''}
+          </div>`;
+        });
+        html += `</div>
+          <div class="room-map-toolbar">
+            ${isPinning
+              ? `<span class="map-hint">${nextUnpinned ? `Klik for at placere: <strong>${esc(nextUnpinned.name)}</strong>` : '✓ Alle pins placeret'}</span>
+                 <button class="btn-primary btn-sm" onclick="exitPinMode()">Færdig</button>`
+              : `<button class="btn-ghost btn-sm" onclick="enterPinMode('${room.id}')">&#128204; Placer Pins</button>
+                 <button class="btn-ghost btn-sm" onclick="removeMapConfirm('${p.id}','${room.id}')" style="color:var(--muted);">Fjern Kort</button>`
+            }
+          </div>
+        </div>`;
+      } else {
+        html += `<div style="padding:6px 14px 2px;">
+          <label class="btn-ghost btn-sm" style="cursor:pointer;">
+            &#128247; Upload Kort
+            <input type="file" accept="image/*" style="display:none" onchange="handleMapUpload(event,'${p.id}','${room.id}')">
+          </label>
+        </div>`;
+      }
+
+      html += `<div class="room-locations">`;
+      if (p.type === 'trivia') {
+        roomLocs.forEach(loc => { html += renderTriviaCardHTML(p.id, loc); });
+        html += `<div style="padding:6px 0 2px;">
+          <button class="btn-ghost btn-sm" data-action="show-add-trivia" data-palace-id="${p.id}" data-room-id="${room.id}">+ Tilføj Spørgsmål</button>
+        </div>`;
+        html += `<div id="add-trivia-area-${room.id}"></div>`;
+      } else {
+        roomLocs.forEach(loc => {
+          const idx = p.locations.indexOf(loc);
+          html += renderLocationHTML(p.id, loc, idx, p.locations.length, rooms);
+        });
+        html += `<div style="padding:6px 0 2px;">
+          <button class="btn-ghost btn-sm" data-action="show-add-location" data-room-id="${room.id}">+ Tilføj Sted</button>
+        </div>`;
+      }
+
+      // Free notes inside room
+      const roomNotes = room.notes || [];
+      html += `<div class="room-notes-divider">Frie Erindringer</div>`;
+      html += `<div id="add-note-area-${room.id}"></div>`;
+      roomNotes.forEach(note => {
+        if (app.editingNoteId === note.id) {
+          html += `
+          <div class="memory-item">
+            <input type="text" id="edit-note-${note.id}" value="${esc(note.text)}" style="flex:1;"
+              onkeydown="handleNoteEditKeydown(event,'${p.id}','${room.id}','${note.id}')">
+            <button class="btn-primary btn-sm" data-action="save-note-edit" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}">Gem</button>
+            <button class="btn-ghost btn-sm" data-action="cancel-note-edit">Annuller</button>
+          </div>`;
+        } else {
+          html += `
+          <div class="memory-item">
+            <span class="memory-text">${esc(note.text)}</span>
+            <button class="btn-icon" data-action="edit-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Rediger">&#9998;</button>
+            <button class="btn-icon" data-action="delete-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Slet" style="color:var(--danger)">&#10005;</button>
+          </div>`;
+        }
+      });
+      if (roomNotes.length === 0) {
+        html += `<p style="color:var(--muted);font-size:13px;padding:4px 0;">Ingen frie erindringer endnu.</p>`;
+      }
+      html += `<div style="padding:4px 0 6px;">
+        <button class="btn-ghost btn-sm" data-action="show-add-note" data-palace-id="${p.id}" data-room-id="${room.id}">+ Tilføj Erindring</button>
+      </div>
+      </div></div>`;
+    });
+
+    if (p.type !== 'trivia') {
+      const unassigned = p.locations.filter(l => !l.roomId || !rooms.find(r => r.id === l.roomId));
+      html += `
+        <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:14px;margin-top:${rooms.length > 0 ? '18px' : '0'};">
+          <h2 style="font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Steder uden rum (${unassigned.length})</h2>
+          <button class="btn-ghost btn-sm" data-action="show-add-location">+ Tilføj Sted</button>
+        </div>
+        <div id="add-location-area"></div>
+        <div class="locations-list">`;
+      if (unassigned.length === 0) {
+        html += `<div class="empty-state" style="padding:20px 0;"><p style="color:var(--muted)">Ingen steder uden rum.</p></div>`;
+      } else {
+        unassigned.forEach(loc => {
+          const idx = p.locations.indexOf(loc);
+          html += renderLocationHTML(p.id, loc, idx, p.locations.length, rooms);
+        });
+      }
+      html += `</div>`;
+    }
+    el.innerHTML = html;
+    showView('view-palace-detail');
+  }
+
+  function renderTriviaCardHTML(palaceId, loc) {
+    const answer   = loc.memories.find(m => !m.text.startsWith('🧠'));
+    const mnemonic = loc.memories.find(m =>  m.text.startsWith('🧠'));
+    if (app.editingLocId === loc.id) {
+      return `
+      <div class="trivia-card" id="loc-${loc.id}">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <input type="text" id="tri-q-${loc.id}" value="${esc(loc.name)}" placeholder="Spørgsmål..." style="font-weight:600;">
+          <input type="text" id="tri-a-${loc.id}" value="${esc(answer ? answer.text : '')}" placeholder="Svar...">
+          <input type="text" id="tri-m-${loc.id}" value="${esc(mnemonic ? mnemonic.text.replace(/^🧠\s*/,'') : '')}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);">
+          <div style="display:flex;gap:6px;">
+            <button class="btn-primary btn-sm" data-action="save-trivia-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}">Gem</button>
+            <button class="btn-ghost btn-sm" data-action="cancel-loc-edit">Annuller</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="trivia-card" id="loc-${loc.id}">
+      <div class="trivia-q">
+        <span>${esc(loc.name)}</span>
+        <div style="display:flex;gap:4px;flex-shrink:0;">
+          <button class="btn-icon" data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rediger">&#9998;</button>
+          <button class="btn-icon" data-action="delete-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Slet" style="color:var(--danger)">&#128465;</button>
+        </div>
+      </div>
+      ${answer   ? `<div class="trivia-a">${esc(answer.text)}</div>` : ''}
+      ${mnemonic ? `<div class="trivia-m">${esc(mnemonic.text)}</div>` : ''}
+    </div>`;
+  }
+
+  function renderLocationHTML(palaceId, loc, idx, total, rooms) {
+    const isEditingLoc = app.editingLocId === loc.id;
+    rooms = rooms || [];
+    const roomOptions = `<option value="">— Intet rum —</option>` +
+      rooms.map(r => `<option value="${r.id}"${loc.roomId === r.id ? ' selected' : ''}>${esc(r.name)}</option>`).join('');
+    let html = `
+      <div class="location-item" id="loc-${loc.id}">
+        <div class="location-header">
+          <div class="location-number">${idx + 1}</div>`;
+
+    if (isEditingLoc) {
+      html += `
+          <div class="inline-edit-form" style="flex:1">
+            <input type="text" id="edit-loc-name-${loc.id}" value="${esc(loc.name)}">
+            <button class="btn-primary btn-sm" data-action="save-loc-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}">Gem</button>
+            <button class="btn-ghost btn-sm" data-action="cancel-loc-edit">Annuller</button>
+          </div>`;
+    } else {
+      html += `
+          <span class="location-name">${esc(loc.name)}</span>
+          <div class="location-actions">
+            ${rooms.length > 0 ? `<select class="room-select" data-action="assign-loc-room" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rum">${roomOptions}</select>` : ''}
+            ${idx > 0 ? `<button class="btn-icon" title="Flyt op" data-action="move-loc-up" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9650;</button>` : ''}
+            ${idx < total - 1 ? `<button class="btn-icon" title="Flyt ned" data-action="move-loc-down" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9660;</button>` : ''}
+            <button class="btn-icon" title="Rediger" data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9998;</button>
+            <button class="btn-icon" title="Slet" data-action="delete-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}" style="color:var(--danger)">&#128465;</button>
+          </div>`;
+    }
+
+    html += `</div><div class="location-memories">`;
+
+    loc.memories.forEach(mem => {
+      if (app.editingMemId === mem.id) {
+        html += `
+        <div class="memory-item">
+          <input type="text" id="edit-mem-${mem.id}" value="${esc(mem.text)}" style="flex:1;"
+            onkeydown="handleMemEditKeydown(event,'${palaceId}','${loc.id}','${mem.id}')">
+          <button class="btn-primary btn-sm" data-action="save-mem-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}">Gem</button>
+          <button class="btn-ghost btn-sm" data-action="cancel-mem-edit">Annuller</button>
+        </div>`;
+      } else {
+        html += `
+        <div class="memory-item">
+          <span class="memory-text">${esc(mem.text)}</span>
+          <button class="btn-icon" data-action="edit-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Rediger erindring">&#9998;</button>
+          <button class="btn-icon" data-action="delete-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Slet erindring" style="color:var(--danger)">&#10005;</button>
+        </div>`;
+      }
+    });
+
+    html += `
+        <div class="add-memory-form">
+          <div style="display:flex;gap:6px;flex:1;flex-direction:column;">
+            <input type="text" id="mem-input-${loc.id}" placeholder="Erindring..." onkeydown="handleMemKeydown(event,'${palaceId}','${loc.id}')">
+            <input type="text" id="mem-mnemonic-${loc.id}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);" onkeydown="handleMemKeydown(event,'${palaceId}','${loc.id}')">
+          </div>
+          <button class="btn-ghost btn-sm" data-action="add-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" style="align-self:flex-start;margin-top:2px;">Tilføj</button>
+        </div>
+      </div></div>`;
+
+    return html;
+  }
+
+  // GENNEMGANG
+  function renderReviewSession() {
+    const el = document.getElementById('view-review-session');
+    const p = getPalace(app.reviewPalaceId);
+    if (!p) { renderView('review-rating'); return; }
+
+    const locs = getReviewLocs(p);
+    if (locs.length === 0 || app.reviewLocIdx >= locs.length) {
+      renderView('review-rating');
+      return;
+    }
+
+    const loc = locs[app.reviewLocIdx];
+    const progress = ((app.reviewLocIdx + 1) / locs.length) * 100;
+    let rangeLabel = '';
+    if (app.reviewRoomId) {
+      rangeLabel = ` · ${esc(getRoomName(p, app.reviewRoomId))}`;
+    } else if (app.reviewLocEnd !== null) {
+      rangeLabel = ` · ${locs[0].name}–${locs[locs.length - 1].name}`;
+    }
+
+    let html = `
+      <button class="back-btn" data-action="back-from-review">&#8592; ${esc(p.name)}</button>
+      <div class="review-progress">
+        <div class="review-progress-bar" style="width:${progress}%"></div>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;">
+        Sted ${app.reviewLocIdx + 1} af ${locs.length} &nbsp;&bull;&nbsp; ${esc(p.name)}${rangeLabel}
+      </div>
+
+      <div class="review-card">
+        <div class="review-card-inner${app.reviewRevealed ? ' flipped' : ''}" id="review-card-inner">
+          <div class="review-card-face">
+            <div class="review-loc-number">${p.type === 'trivia' ? `Spørgsmål ${app.reviewLocIdx + 1}` : `Stop #${app.reviewLocIdx + 1}`}</div>
+            <div class="review-loc-name">${esc(loc.name)}</div>
+            <div class="review-tap-hint">${p.type === 'trivia' ? 'Hvad er svaret?' : 'Hvilke erindringer er placeret her?'}</div>
+          </div>
+          <div class="review-card-face review-card-back">
+            <div class="review-back-label">${p.type === 'trivia' ? 'Svar' : `Erindringer ved ${esc(loc.name)}`}</div>
+            <div class="review-memories-list">`;
+
+    if (loc.memories.length === 0) {
+      html += `<p style="color:var(--muted);font-style:italic">Ingen erindringer gemt her endnu.</p>`;
+    } else {
+      loc.memories.forEach(m => {
+        html += `<div class="review-memory-item"><div class="review-memory-dot"></div><div>${esc(m.text)}</div></div>`;
+      });
+    }
+
+    html += `
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-nav">`;
+
+    const hasNextLoc = locs.slice(app.reviewLocIdx + 1).some(l => l.memories.length > 0);
+    if (!app.reviewRevealed) {
+      html += `<button class="btn-teal" data-action="reveal-review">Afslør Erindringer</button>`;
+    } else {
+      if (hasNextLoc) {
+        html += `<button class="btn-primary" data-action="next-review-loc">Næste Sted &#8594;</button>`;
+      } else {
+        html += `<button class="btn-primary" data-action="finish-review">Afslut Gennemgang &#10003;</button>`;
+      }
+    }
+
+    html += `
+        <button class="btn-ghost" data-action="skip-review">Spring over &amp; bedøm senere</button>
+      </div>`;
+
+    el.innerHTML = html;
+    showView('view-review-session');
+  }
+
+  // BEDØMMELSE
+  function renderReviewRating() {
+    const el = document.getElementById('view-review-rating');
+    const p = getPalace(app.reviewPalaceId);
+
+    el.innerHTML = `
+      <div class="rating-section">
+        <h2>Hvordan gik det?</h2>
+        <p>Bedøm din samlede hukommelse for <strong>${p ? esc(p.name) : 'dette palads'}</strong></p>
+        <div class="rating-buttons">
+          <button class="rating-btn" data-action="rate-review" data-q="1">
+            <span class="rating-num">1</span>
+            <span class="rating-label">Ingen erindring</span>
+          </button>
+          <button class="rating-btn" data-action="rate-review" data-q="2">
+            <span class="rating-num">2</span>
+            <span class="rating-label">Bekendt men forkert</span>
+          </button>
+          <button class="rating-btn" data-action="rate-review" data-q="3">
+            <span class="rating-num">3</span>
+            <span class="rating-label">Svær at huske</span>
+          </button>
+          <button class="rating-btn" data-action="rate-review" data-q="4">
+            <span class="rating-num">4</span>
+            <span class="rating-label">Med tøven</span>
+          </button>
+          <button class="rating-btn" data-action="rate-review" data-q="5">
+            <span class="rating-num">5</span>
+            <span class="rating-label">Perfekt!</span>
+          </button>
+        </div>
+        <button class="btn-ghost btn-sm" data-action="skip-rating">Spring over (opdater ikke plan)</button>
+      </div>`;
+
+    showView('view-review-rating');
+  }
+
+  // GENNEMGANG FULDFØRT
+  function renderReviewComplete(quality, newSRS) {
+    const el = document.getElementById('view-review-rating');
+    const p = getPalace(app.reviewPalaceId);
+    const labels = ['', 'Ingen erindring', 'Bekendt men forkert', 'Svær at huske', 'Med tøven', 'Perfekt!'];
+
+    el.innerHTML = `
+      <div class="review-summary">
+        <div style="font-size:40px;margin-bottom:12px">${quality >= 4 ? '&#127775;' : quality === 3 ? '&#128077;' : '&#128257;'}</div>
+        <h2>Gennemgang Afsluttet</h2>
+        <p style="color:var(--muted);margin-top:6px">Du bedømte: <strong>${labels[quality]}</strong></p>
+        <div class="next-date">Næste gennemgang: ${formatDate(newSRS.nextReviewDate)}</div>
+        <p style="color:var(--muted);font-size:13px">Interval: ${newSRS.interval} dag${newSRS.interval !== 1 ? 'e' : ''} &nbsp;&bull;&nbsp; Sværhedsgrad: ${newSRS.efactor}</p>
+      </div>
+      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
+        <button class="btn-primary" data-action="go-dashboard">Tilbage til Paladser</button>
+        <a href="${reminderMailtoLink()}" style="font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 16px;display:inline-block" title="Åbner din mail-klient">
+          &#128231; Send mig en reminder om 7 dage
+        </a>
+      </div>`;
+  }
+
+  // ── HÆNDELSESHÅNDTERING ────────────────────────────────────────────
+  document.addEventListener('change', function (e) {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    if (el.dataset.action === 'assign-loc-room') {
+      assignLocRoom(el.dataset.palaceId, el.dataset.locId, el.value || null);
+      renderPalaceDetail();
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+    const palaceId = el.dataset.palaceId;
+    const locId = el.dataset.locId;
+    const memId = el.dataset.memId;
+
+    switch (action) {
+      case 'new-palace':
+        app.editingPalaceId = null;
+        renderView('palace-editor');
+        break;
+
+      case 'edit-palace':
+        app.editingPalaceId = palaceId;
+        renderView('palace-editor');
+        break;
+
+      case 'view-palace':
+        app.editingPalaceId = palaceId;
+        renderView('palace-detail');
+        break;
+
+      case 'delete-palace':
+        if (confirm('Slet dette palads og alle dets steder og erindringer?')) {
+          deletePalace(palaceId);
+          renderView('dashboard');
+        }
+        break;
+
+      case 'save-palace': {
+        const name = document.getElementById('editor-name').value.trim();
+        if (!name) { alert('Angiv venligst et navn til paladstet.'); return; }
+        const desc = document.getElementById('editor-desc').value;
+        const type = document.querySelector('input[name="palace-type"]:checked')?.value || 'standard';
+        if (app.editingPalaceId) {
+          updatePalace(app.editingPalaceId, { name, description: desc, type });
+          renderView('palace-detail');
+        } else {
+          const p = createPalace(name, desc, type);
+          app.editingPalaceId = p.id;
+          renderView('palace-detail');
+        }
+        break;
+      }
+
+      case 'back-from-editor':
+        if (app.editingPalaceId) renderView('palace-detail');
+        else renderView('dashboard');
+        break;
+
+      case 'go-dashboard':
+        renderView('dashboard');
+        break;
+
+      case 'show-add-location': {
+        const targetRoomId = el.dataset.roomId || '';
+        const targetArea = targetRoomId
+          ? document.querySelector(`[data-add-loc-room="${targetRoomId}"]`) || document.getElementById('add-location-area')
+          : document.getElementById('add-location-area');
+        // Use the room's inline area if available, otherwise the main area
+        const areaEl = document.getElementById('add-location-area');
+        areaEl.innerHTML = `
+          <div class="add-location-form">
+            <div class="form-row">
+              <input type="text" id="new-loc-name" placeholder="Stednavn (fx Hoveddør)" onkeydown="handleLocKeydown(event,'${app.editingPalaceId}','${targetRoomId}')">
+              <button class="btn-primary btn-sm" data-action="add-location" data-palace-id="${app.editingPalaceId}" data-room-id="${targetRoomId}">Tilføj</button>
+              <button class="btn-ghost btn-sm" data-action="cancel-add-location">Annuller</button>
+            </div>
+          </div>`;
+        // scroll to and focus
+        areaEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        document.getElementById('new-loc-name').focus();
+        break;
+      }
+
+      case 'cancel-add-location': {
+        const area = document.getElementById('add-location-area');
+        if (area) area.innerHTML = '';
+        break;
+      }
+
+      case 'add-location': {
+        const nameEl = document.getElementById('new-loc-name');
+        const name = nameEl ? nameEl.value.trim() : '';
+        if (!name) return;
+        const locRoomId = el.dataset.roomId || null;
+        addLocation(app.editingPalaceId, name, locRoomId || undefined);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'edit-loc':
+        app.editingLocId = locId;
+        renderPalaceDetail();
+        setTimeout(() => {
+          const inp = document.getElementById(`edit-loc-name-${locId}`);
+          if (inp) inp.focus();
+        }, 50);
+        break;
+
+      case 'cancel-loc-edit':
+        app.editingLocId = null;
+        renderPalaceDetail();
+        break;
+
+      case 'save-loc-edit': {
+        const inp = document.getElementById(`edit-loc-name-${locId}`);
+        const name = inp ? inp.value.trim() : '';
+        if (!name) return;
+        updateLocation(palaceId, locId, name);
+        app.editingLocId = null;
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'delete-loc':
+        if (confirm('Slet dette sted og alle dets erindringer?')) {
+          deleteLocation(palaceId, locId);
+          renderPalaceDetail();
+        }
+        break;
+
+      case 'move-loc-up':
+        moveLocation(palaceId, locId, -1);
+        renderPalaceDetail();
+        break;
+
+      case 'move-loc-down':
+        moveLocation(palaceId, locId, 1);
+        renderPalaceDetail();
+        break;
+
+      case 'show-add-trivia': {
+        const tRoomId = el.dataset.roomId;
+        const tArea = document.getElementById(`add-trivia-area-${tRoomId}`);
+        if (!tArea) break;
+        tArea.innerHTML = `
+          <div class="add-location-form" style="margin-bottom:8px;">
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">
+              <input type="text" id="new-tri-q-${tRoomId}" placeholder="Spørgsmål..." style="font-weight:600;">
+              <input type="text" id="new-tri-a-${tRoomId}" placeholder="Svar...">
+              <input type="text" id="new-tri-m-${tRoomId}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);">
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-primary btn-sm" data-action="add-trivia" data-palace-id="${palaceId}" data-room-id="${tRoomId}">Tilføj</button>
+              <button class="btn-ghost btn-sm" data-action="cancel-add-trivia" data-room-id="${tRoomId}">Annuller</button>
+            </div>
+          </div>`;
+        document.getElementById(`new-tri-q-${tRoomId}`).focus();
+        break;
+      }
+
+      case 'cancel-add-trivia': {
+        const tArea = document.getElementById(`add-trivia-area-${el.dataset.roomId}`);
+        if (tArea) tArea.innerHTML = '';
+        break;
+      }
+
+      case 'add-trivia': {
+        const tRoomId = el.dataset.roomId;
+        const q = document.getElementById(`new-tri-q-${tRoomId}`)?.value.trim();
+        if (!q) break;
+        const a = document.getElementById(`new-tri-a-${tRoomId}`)?.value.trim();
+        const m = document.getElementById(`new-tri-m-${tRoomId}`)?.value.trim();
+        addTriviaCard(palaceId, tRoomId, q, a, m);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'save-trivia-edit': {
+        const q = document.getElementById(`tri-q-${locId}`)?.value.trim();
+        const a = document.getElementById(`tri-a-${locId}`)?.value.trim();
+        const m = document.getElementById(`tri-m-${locId}`)?.value.trim();
+        if (q) updateTriviaCard(palaceId, locId, q, a || '', m || '');
+        app.editingLocId = null;
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'show-add-note': {
+        const noteRoomId = el.dataset.roomId;
+        const nArea = document.getElementById(`add-note-area-${noteRoomId}`);
+        if (!nArea) break;
+        nArea.innerHTML = `
+          <div class="add-location-form" style="margin-bottom:6px;">
+            <div style="display:flex;gap:6px;flex-direction:column;margin-bottom:8px;">
+              <input type="text" id="new-note-text-${noteRoomId}" placeholder="Erindring...">
+              <input type="text" id="new-note-mnemonic-${noteRoomId}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);">
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-primary btn-sm" data-action="add-note" data-palace-id="${palaceId}" data-room-id="${noteRoomId}">Tilføj</button>
+              <button class="btn-ghost btn-sm" data-action="cancel-add-note" data-room-id="${noteRoomId}">Annuller</button>
+            </div>
+          </div>`;
+        document.getElementById(`new-note-text-${noteRoomId}`).focus();
+        break;
+      }
+
+      case 'cancel-add-note': {
+        const nArea = document.getElementById(`add-note-area-${el.dataset.roomId}`);
+        if (nArea) nArea.innerHTML = '';
+        break;
+      }
+
+      case 'add-note': {
+        const noteRoomId = el.dataset.roomId;
+        const text = document.getElementById(`new-note-text-${noteRoomId}`)?.value.trim();
+        if (!text) break;
+        const mnemonic = document.getElementById(`new-note-mnemonic-${noteRoomId}`)?.value.trim();
+        addNote(palaceId, noteRoomId, text, mnemonic);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'edit-note': {
+        const noteId = el.dataset.noteId;
+        app.editingNoteId = noteId;
+        renderPalaceDetail();
+        setTimeout(() => {
+          const inp = document.getElementById(`edit-note-${noteId}`);
+          if (inp) { inp.focus(); inp.select(); }
+        }, 50);
+        break;
+      }
+
+      case 'cancel-note-edit':
+        app.editingNoteId = null;
+        renderPalaceDetail();
+        break;
+
+      case 'save-note-edit': {
+        const noteId = el.dataset.noteId;
+        const inp = document.getElementById(`edit-note-${noteId}`);
+        const text = inp?.value.trim();
+        if (text) updateNote(palaceId, el.dataset.roomId, noteId, text);
+        app.editingNoteId = null;
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'delete-note':
+        deleteNote(palaceId, el.dataset.roomId, el.dataset.noteId);
+        renderPalaceDetail();
+        break;
+
+      case 'show-add-room': {
+        const rArea = document.getElementById('add-room-area');
+        if (!rArea) break;
+        rArea.innerHTML = `
+          <div class="add-location-form" style="margin-bottom:14px;">
+            <div class="form-row">
+              <input type="text" id="new-room-name" placeholder="Rumnavn (fx Indledning)" autofocus>
+              <button class="btn-primary btn-sm" data-action="add-room" data-palace-id="${palaceId}">Opret</button>
+              <button class="btn-ghost btn-sm" data-action="cancel-add-room">Annuller</button>
+            </div>
+          </div>`;
+        document.getElementById('new-room-name').focus();
+        break;
+      }
+
+      case 'cancel-add-room': {
+        const rArea = document.getElementById('add-room-area');
+        if (rArea) rArea.innerHTML = '';
+        break;
+      }
+
+      case 'add-room': {
+        const inp = document.getElementById('new-room-name');
+        const name = inp ? inp.value.trim() : '';
+        if (!name) break;
+        addRoom(palaceId, name);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'toggle-room-collapse': {
+        const rId = el.dataset.roomId;
+        if (app.collapsedRooms.has(rId)) app.collapsedRooms.delete(rId);
+        else app.collapsedRooms.add(rId);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'edit-room':
+        app.editingRoomId = el.dataset.roomId;
+        renderPalaceDetail();
+        setTimeout(() => {
+          const inp = document.getElementById(`edit-room-name-${el.dataset.roomId}`);
+          if (inp) { inp.focus(); inp.select(); }
+        }, 50);
+        break;
+
+      case 'cancel-room-edit':
+        app.editingRoomId = null;
+        renderPalaceDetail();
+        break;
+
+      case 'save-room-edit': {
+        const rId = el.dataset.roomId;
+        const inp = document.getElementById(`edit-room-name-${rId}`);
+        const name = inp ? inp.value.trim() : '';
+        if (name) renameRoom(palaceId, rId, name);
+        app.editingRoomId = null;
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'delete-room':
+        if (confirm(`Slet rummet "${getRoomName(getPalace(palaceId), el.dataset.roomId)}"?\nSteder i rummet beholder deres minder men tildeles ikke noget rum.`)) {
+          deleteRoom(palaceId, el.dataset.roomId);
+          renderPalaceDetail();
+        }
+        break;
+
+      case 'add-memory': {
+        const inp = document.getElementById(`mem-input-${locId}`);
+        const text = inp ? inp.value.trim() : '';
+        if (!text) return;
+        const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
+        const mnemonic = mnemonicInp ? mnemonicInp.value.trim() : '';
+        addMemory(palaceId, locId, text, mnemonic);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'edit-memory':
+        app.editingMemId = memId;
+        renderPalaceDetail();
+        setTimeout(() => {
+          const inp = document.getElementById(`edit-mem-${memId}`);
+          if (inp) { inp.focus(); inp.select(); }
+        }, 50);
+        break;
+
+      case 'cancel-mem-edit':
+        app.editingMemId = null;
+        renderPalaceDetail();
+        break;
+
+      case 'save-mem-edit': {
+        const inp = document.getElementById(`edit-mem-${memId}`);
+        const text = inp ? inp.value.trim() : '';
+        if (text) updateMemory(palaceId, locId, memId, text);
+        app.editingMemId = null;
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'delete-memory':
+        deleteMemory(palaceId, locId, memId);
+        renderPalaceDetail();
+        break;
+
+      case 'assign-loc-room': {
+        const sel = el; // el is the <select>
+        assignLocRoom(palaceId, locId, sel.value || null);
+        renderPalaceDetail();
+        break;
+      }
+
+      case 'start-review': {
+        const roomId  = el.dataset.roomId || null;
+        const fromLoc = el.dataset.from !== undefined ? parseInt(el.dataset.from) : 0;
+        const toLoc   = el.dataset.to   !== undefined ? parseInt(el.dataset.to)   : null;
+        app.reviewPalaceId = palaceId;
+        app.reviewRoomId   = roomId;
+        app.reviewLocStart = fromLoc;
+        app.reviewLocEnd   = toLoc;
+        app.reviewRevealed = false;
+        const pal2 = getPalace(palaceId);
+        const locs2 = getReviewLocs(pal2);
+        let first = 0;
+        while (first < locs2.length && locs2[first].memories.length === 0) first++;
+        app.reviewLocIdx = first;
+        renderView('review-session');
+        break;
+      }
+
+      case 'back-from-review':
+        app.editingPalaceId = app.reviewPalaceId;
+        renderView('palace-detail');
+        break;
+
+      case 'reveal-review':
+        app.reviewRevealed = true;
+        renderReviewSession();
+        break;
+
+      case 'next-review-loc': {
+        const pal = getPalace(app.reviewPalaceId);
+        const locs3 = getReviewLocs(pal);
+        let next = app.reviewLocIdx + 1;
+        while (next < locs3.length && locs3[next].memories.length === 0) next++;
+        app.reviewLocIdx = next;
+        app.reviewRevealed = false;
+        renderReviewSession();
+        break;
+      }
+
+      case 'finish-review':
+        renderView('review-rating');
+        break;
+
+      case 'skip-review':
+        renderView('review-rating');
+        break;
+
+      case 'rate-review': {
+        const q = parseInt(el.dataset.q, 10);
+        const p = getPalace(app.reviewPalaceId);
+        if (p) {
+          p.srs = computeNextReview(p.srs, q);
+          saveData();
+          renderReviewComplete(q, p.srs);
+        }
+        break;
+      }
+
+      case 'skip-rating':
+        renderView('dashboard');
+        break;
+    }
+  });
+
+  // ── TASTATURGENVEJE ────────────────────────────────────────────────
+  window.handleMemKeydown = function (e, palaceId, locId) {
+    if (e.key === 'Enter') {
+      const textInp = document.getElementById(`mem-input-${locId}`);
+      const text = textInp ? textInp.value.trim() : '';
+      if (!text) return;
+      const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
+      const mnemonic = mnemonicInp ? mnemonicInp.value.trim() : '';
+      addMemory(palaceId, locId, text, mnemonic);
+      renderPalaceDetail();
+    }
+  };
+
+  // ── RUMKORT INTERAKTION ────────────────────────────────────────────
+  window.handleMapUpload = function(e, palaceId, roomId) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      setRoomMap(palaceId, roomId, ev.target.result);
+      renderPalaceDetail();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.handleMapClick = function(e, palaceId, roomId) {
+    if (app.pinningRoomId !== roomId) return;
+    const p = getPalace(palaceId);
+    const roomLocs = p.locations.filter(l => l.roomId === roomId);
+    const nextLoc = roomLocs.find(l => !l.pin);
+    if (!nextLoc) return;
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    const x = parseFloat((((e.clientX - rect.left) / rect.width) * 100).toFixed(2));
+    const y = parseFloat((((e.clientY - rect.top) / rect.height) * 100).toFixed(2));
+    setLocationPin(palaceId, nextLoc.id, x, y);
+    renderPalaceDetail();
+  };
+
+  window.deletePinFromLoc = function(palaceId, locId) {
+    removeLocationPin(palaceId, locId);
+    renderPalaceDetail();
+  };
+
+  window.enterPinMode = function(roomId) {
+    app.pinningRoomId = roomId;
+    renderPalaceDetail();
+  };
+
+  window.exitPinMode = function() {
+    app.pinningRoomId = null;
+    renderPalaceDetail();
+  };
+
+  window.removeMapConfirm = function(palaceId, roomId) {
+    const room = getRoom(palaceId, roomId);
+    if (room && confirm(`Fjern kortbilledet fra "${room.name}"?\nAlle pins slettes også.`)) {
+      removeRoomMap(palaceId, roomId);
+      if (app.pinningRoomId === roomId) app.pinningRoomId = null;
+      renderPalaceDetail();
+    }
+  };
+
+  window.handleNoteEditKeydown = function(e, palaceId, roomId, noteId) {
+    if (e.key === 'Enter') {
+      const text = e.target.value.trim();
+      if (text) updateNote(palaceId, roomId, noteId, text);
+      app.editingNoteId = null;
+      renderPalaceDetail();
+    } else if (e.key === 'Escape') {
+      app.editingNoteId = null;
+      renderPalaceDetail();
+    }
+  };
+
+  window.handleMemEditKeydown = function(e, palaceId, locId, memId) {
+    if (e.key === 'Enter') {
+      const text = e.target.value.trim();
+      if (text) updateMemory(palaceId, locId, memId, text);
+      app.editingMemId = null;
+      renderPalaceDetail();
+    } else if (e.key === 'Escape') {
+      app.editingMemId = null;
+      renderPalaceDetail();
+    }
+  };
+
+  window.handleLocKeydown = function (e, palaceId, roomId) {
+    if (e.key === 'Enter') {
+      const name = e.target.value.trim();
+      if (!name) return;
+      addLocation(palaceId, name, roomId || undefined);
+      renderPalaceDetail();
+    }
+    if (e.key === 'Escape') {
+      const area = document.getElementById('add-location-area');
+      if (area) area.innerHTML = '';
+    }
+  };
+
+  // ── HTML-ESCAPE ────────────────────────────────────────────────────
+  function esc(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── REMINDER VIA MAIL ──────────────────────────────────────────────
+  function reminderMailtoLink() {
+    const to = 'Simonbirkhartmann@gmail.com';
+    const sevenDays = new Date(Date.now() + 7 * 86400000);
+    const dateStr = sevenDays.toLocaleDateString('da-DK', { weekday: 'long', day: 'numeric', month: 'long' });
+    const subject = encodeURIComponent('🧠 Træn dit hukommelsespalads i dag!');
+    const body = encodeURIComponent(
+      `Hej!\n\nDette er din ugentlige reminder om at træne dit hukommelsespalads.\n\nDu sendte denne reminder til dig selv ${new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' })} – det er nu ${dateStr}, og der er gået 7 dage siden sidst.\n\nÅbn din hukommelsespalads-app og gennemgå dine paladser! 🏛️\n\nGod træning!`
+    );
+    return `mailto:${to}?subject=${subject}&body=${body}`;
+  }
+
+  // ── PEG-LISTE MODAL ────────────────────────────────────────────────
+  const PEG_LIST_DEFAULT = [
+    ['01','Sut'],['02','Sand'],['03','Søm'],['04','Zorro'],['05','Sol'],
+    ['06','Soja'],['07','Sok'],['08','Sofa'],['09','Sæbe'],['10','Dåse'],
+    ['11','Tatoo'],['12','Tønde'],['13','Dame'],['14','Dør'],['15','Tyl'],
+    ['16','DJ'],['17','Dukke'],['18','TV'],['19','Tuba'],['20','Næse'],
+    ['21','Nat'],['22','Nonne'],['23','Nemo'],['24','Nar'],['25','Nål'],
+    ['26','Ninja'],['27','Nakke'],['28','Næve'],['29','Næb'],['30','Mus'],
+    ['31','Måtte'],['32','Møn'],['33','Mumie'],['34','Mur'],['35','Mel'],
+    ['36','Måge'],['37','Mickey'],['38','Mave'],['39','Moppe'],['40','Rose'],
+    ['41','Radio'],['42','Regn'],['43','Ramme'],['44','Rør'],['45','Rulle'],
+    ['46','Røg'],['47','Rokke'],['48','Ræv'],['49','Reb'],['50','Lasso'],
+    ['51','Ludo'],['52','Line'],['53','Lime'],['54','Ler'],['55','Lilla'],
+    ['56','Løg'],['57','Loke'],['58','Lava'],['59','Løber'],['60','Juice'],
+    ['61','Jedi'],['62','Genie'],['63','Hjem'],['64','Cherry'],['65','Chili'],
+    ['66','Yo-Yo'],['67','Choko'],['68','Java'],['69','Jeep'],['70','Kasse'],
+    ['71','Kat'],['72','Kane'],['73','Kam'],['74','Kar'],['75','Koala'],
+    ['76','Kage'],['77','Kok'],['78','Kaffe'],['79','Kop'],['80','Vase'],
+    ['81','Fod'],['82','Vin'],['83','Fem'],['84','Får'],['85','Fly'],
+    ['86','Fuji'],['87','Viggo'],['88','Fifa'],['89','Fup'],['90','Bus'],
+    ['91','Bat'],['92','Piano'],['93','Bom'],['94','Pære'],['95','Bil'],
+    ['96','Page'],['97','Bog'],['98','Bøf'],['99','Pibe'],['00','Dosis'],
+  ];
+  if (!data.settings.pegList) {
+    data.settings.pegList = PEG_LIST_DEFAULT.map(([n, w]) => [n, w]);
+    saveData();
+  }
+
+  let pegEditMode = false;
+
+  function renderPegList() {
+    const list = document.getElementById('peg-sidebar-list');
+    const btn  = document.getElementById('peg-edit-btn');
+    if (pegEditMode) {
+      list.innerHTML = data.settings.pegList.map(([num, word]) =>
+        `<div class="peg-row">
+          <span class="peg-num">${num}</span>
+          <input class="peg-edit-input" data-peg-num="${num}" value="${esc(word)}"
+            onkeydown="if(event.key==='Enter')savePegList()">
+        </div>`
+      ).join('') +
+      `<div style="padding:8px 6px;display:flex;gap:6px;">
+        <button class="btn-primary btn-sm" onclick="savePegList()">Gem alle</button>
+        <button class="btn-ghost btn-sm" onclick="cancelPegEdit()">Annuller</button>
+      </div>`;
+      btn.textContent = 'Annuller';
+    } else {
+      list.innerHTML = data.settings.pegList.map(([num, word]) =>
+        `<div class="peg-row"><span class="peg-num">${num}</span><span class="peg-word">${word}</span></div>`
+      ).join('');
+      btn.textContent = 'Rediger';
+    }
+  }
+
+  window.togglePegSidebar = function() {
+    const sidebar = document.getElementById('peg-sidebar');
+    const btn     = document.getElementById('peg-toggle-btn');
+    const isOpen  = sidebar.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+    if (isOpen) renderPegList();
+  };
+
+  window.togglePegEdit = function() {
+    pegEditMode = !pegEditMode;
+    renderPegList();
+  };
+
+  window.cancelPegEdit = function() {
+    pegEditMode = false;
+    renderPegList();
+  };
+
+  window.savePegList = function() {
+    document.querySelectorAll('.peg-edit-input').forEach(inp => {
+      const num = inp.dataset.pegNum;
+      const entry = data.settings.pegList.find(([n]) => n === num);
+      if (entry && inp.value.trim()) entry[1] = inp.value.trim();
+    });
+    saveData();
+    pegEditMode = false;
+    renderPegList();
+  };
+
+  // ── SETTINGS MODAL ─────────────────────────────────────────────────
+  window.openSettingsModal = function() {
+    document.getElementById('settings-interval-input').value = data.settings.reviewIntervalDays || 7;
+    document.getElementById('settings-modal').style.display = 'flex';
+  };
+
+  window.closeSettingsModal = function() {
+    document.getElementById('settings-modal').style.display = 'none';
+  };
+
+  window.saveSettings = function() {
+    const val = parseInt(document.getElementById('settings-interval-input').value, 10);
+    if (val > 0) {
+      data.settings.reviewIntervalDays = val;
+      saveData();
+      closeSettingsModal();
+      renderView('dashboard');
+    }
+  };
+
+  document.getElementById('settings-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeSettingsModal();
+  });
+
+  // ── INIT ───────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    renderView('dashboard');
+  });
+
+})();
+</script>
+</body>
+</html>

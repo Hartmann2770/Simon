@@ -1,0 +1,9 @@
+# Miro-eksporter og andre store binærfiler
+*.rtb
+*.docx
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
