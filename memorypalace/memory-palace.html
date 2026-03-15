@@ -7,30 +7,35 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d0f14;
-      --surface: #161a24;
-      --surface-raised: #1e2436;
+      --bg: #0f1624;
+      --surface: #182236;
+      --surface-raised: #1e2c45;
       --accent: #7c6af7;
-      --accent-light: #9d8ff9;
-      --teal: #4ecdc4;
+      --accent-light: #a594fa;
+      --teal: #3ecfc6;
       --danger: #e05c6b;
       --gold: #f0b429;
-      --text: #e8eaf6;
-      --muted: #6b7394;
-      --border: #252c40;
-      --shadow: 0 4px 24px rgba(0,0,0,0.4);
-      --radius: 12px;
-      --radius-sm: 8px;
+      --text: #eef0fa;
+      --muted: #7a88b0;
+      --border: #2a3a58;
+      --shadow: 0 4px 28px rgba(0,0,0,0.35);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.45);
+      --radius: 14px;
+      --radius-sm: 9px;
     }
 
     html { height: 100%; }
     body {
       min-height: 100%;
       background: var(--bg);
+      background-image: radial-gradient(ellipse at 20% 0%, rgba(124,106,247,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(62,207,198,0.06) 0%, transparent 50%);
+      background-attachment: fixed;
       color: var(--text);
       font-family: 'Inter', sans-serif;
       font-size: 15px;
@@ -41,22 +46,27 @@
     #app-bar {
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 60px;
-      background: rgba(13,15,20,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      height: 62px;
+      background: rgba(15,22,36,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(42,58,88,0.8);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 24px;
       z-index: 100;
+      box-shadow: 0 1px 0 rgba(124,106,247,0.08);
     }
     .app-title {
       font-family: 'Cinzel', serif;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
-      color: var(--accent-light);
-      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, var(--accent-light), var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.04em;
       cursor: pointer;
     }
 
@@ -96,14 +106,14 @@
     button:hover { transform: translateY(-1px); }
     button:active { transform: translateY(0); }
 
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-light); }
-    .btn-teal { background: var(--teal); color: #0d0f14; }
-    .btn-teal:hover { background: #66d9d1; }
-    .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 7px 14px; }
-    .btn-danger:hover { background: rgba(224,92,107,0.1); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #6457e8); color: #fff; box-shadow: 0 2px 12px rgba(124,106,247,0.3); }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--accent-light), var(--accent)); box-shadow: 0 4px 16px rgba(124,106,247,0.4); }
+    .btn-teal { background: linear-gradient(135deg, var(--teal), #2bb8b0); color: #0a1520; font-weight: 600; box-shadow: 0 2px 10px rgba(62,207,198,0.25); }
+    .btn-teal:hover { background: linear-gradient(135deg, #5dddd5, var(--teal)); }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(224,92,107,0.5); padding: 7px 14px; }
+    .btn-danger:hover { background: rgba(224,92,107,0.1); border-color: var(--danger); }
     .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-    .btn-ghost:hover { background: var(--surface-raised); color: var(--text); }
+    .btn-ghost:hover { background: var(--surface-raised); color: var(--text); border-color: rgba(124,106,247,0.3); }
     .btn-sm { padding: 5px 12px; font-size: 12px; }
     .btn-icon { background: transparent; color: var(--muted); padding: 4px 8px; font-size: 16px; border-radius: 6px; }
     .btn-icon:hover { background: var(--surface-raised); color: var(--text); }
@@ -161,18 +171,19 @@
       gap: 16px;
     }
     .palace-card {
-      background: var(--surface);
+      background: linear-gradient(160deg, var(--surface) 0%, rgba(30,44,69,0.9) 100%);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 22px;
       box-shadow: var(--shadow);
       cursor: pointer;
-      transition: border-color 0.2s, transform 0.15s;
+      transition: border-color 0.25s, transform 0.2s, box-shadow 0.2s;
       position: relative;
     }
     .palace-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
+      border-color: rgba(124,106,247,0.6);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(124,106,247,0.15);
     }
     .palace-card-badge {
       position: absolute;
@@ -256,13 +267,15 @@
 
     .locations-list { margin-top: 20px; }
     .location-item {
-      background: var(--surface);
+      background: linear-gradient(160deg, var(--surface) 0%, var(--surface-raised) 100%);
       border: 1px solid var(--border);
       border-left: 3px solid var(--accent);
       border-radius: var(--radius-sm);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       overflow: hidden;
+      transition: border-color 0.2s;
     }
+    .location-item:hover { border-color: rgba(124,106,247,0.4); }
     .location-header {
       display: flex;
       align-items: center;
@@ -511,16 +524,16 @@
       height: 100%;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      background: var(--surface);
+      background: linear-gradient(160deg, var(--surface) 0%, rgba(24,34,54,0.97) 100%);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 30px;
+      padding: 40px 36px;
       text-align: center;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-lg);
       overflow-y: auto;
     }
     .review-card-back {
@@ -528,6 +541,7 @@
       align-items: flex-start;
       justify-content: flex-start;
       text-align: left;
+      padding: 32px 36px;
     }
 
     .review-loc-number {
@@ -553,29 +567,34 @@
     .review-memories-list {
       width: 100%;
     }
+    .review-memories-list.size-lg  { font-size: 20px; }
+    .review-memories-list.size-md  { font-size: 17px; }
+    .review-memories-list.size-sm  { font-size: 14px; }
+    .review-memories-list.size-xs  { font-size: 12px; }
     .review-memory-item {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 15px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(42,58,88,0.6);
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
+      line-height: 1.5;
     }
     .review-memory-item:last-child { border-bottom: none; }
     .review-memory-dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       background: var(--teal);
       border-radius: 50%;
       flex-shrink: 0;
-      margin-top: 8px;
+      margin-top: 0.45em;
     }
     .review-back-label {
       font-family: 'Cinzel', serif;
-      font-size: 13px;
+      font-size: 11px;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
     }
 
     .review-nav {
@@ -754,10 +773,13 @@
 
 <header id="app-bar">
   <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
-  <div style="display:flex;align-items:center;gap:10px">
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="btn-ghost btn-sm" onclick="exportToExcel()" title="Gem alle paladser til Excel" style="font-size:13px">&#128229; Gem Excel</button>
+    <button class="btn-ghost btn-sm" onclick="triggerExcelImport()" title="Indlæs paladser fra Excel" style="font-size:13px">&#128228; Indlæs Excel</button>
     <button class="btn-ghost btn-sm" id="peg-toggle-btn" onclick="togglePegSidebar()" style="font-size:13px">&#128220; Peg-liste</button>
     <button class="btn-ghost btn-sm" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;">&#9881;</button>
   </div>
+  <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleExcelFile(this)">
 </header>
 
 <!-- SETTINGS MODAL -->
@@ -1112,7 +1134,7 @@
   data.palaces = data.palaces.filter(p => !p._histTag || p._histTag === 'hist-all');
   const histIdx = data.palaces.findIndex(p => p._histTag === 'hist-all');
   if (histIdx === -1 || (data.palaces[histIdx]._v || 0) < HISTORY_VERSION) {
-    const built = buildHistoryPalace(1800, 1901, '1800-tallet');
+    const built = buildHistoryPalace(1800, 1901, '📜 1800-tallet');
     built._v = HISTORY_VERSION;
     built._histTag = 'hist-all';
     if (histIdx !== -1) {
@@ -1124,7 +1146,7 @@
     }
   }
   saveData();
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set() };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '' };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
   function loadData() {
@@ -1502,12 +1524,26 @@
     const rest = data.palaces.filter(p => !isDue(p));
     const sorted = [...due, ...rest];
 
+    const q = app.searchQuery.toLowerCase().trim();
+    const filtered = q ? sorted.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      (p.description || '').toLowerCase().includes(q) ||
+      p.locations.some(l => l.name.toLowerCase().includes(q) ||
+        l.memories.some(m => m.text.toLowerCase().includes(q)))
+    ) : sorted;
+
     let html = `
       <div class="section-header">
         <h1>Dine Paladser</h1>
         <div style="display:flex;gap:8px;align-items:center">
           <button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>
         </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <input type="text" id="search-input" placeholder="&#128269; Søg i paladser og erindringer..."
+          value="${esc(app.searchQuery)}" oninput="searchPalaces(this.value)"
+          style="width:100%;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:14px;padding:10px 14px;outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
       </div>`;
 
     if (sorted.length === 0) {
@@ -1517,9 +1553,11 @@
           <p>Ingen hukommelsespaladser endnu.<br>Opret dit første for at komme i gang.</p>
           <button class="btn-primary" data-action="new-palace">Opret Palads</button>
         </div>`;
+    } else if (filtered.length === 0) {
+      html += `<p style="color:var(--muted);text-align:center;padding:40px 0;">Ingen resultater for "${esc(q)}"</p>`;
     } else {
       html += `<div class="palaces-grid">`;
-      for (const p of sorted) {
+      for (const p of filtered) {
         const locCount = p.locations.length;
         const memCount = p.locations.reduce((s, l) => s + l.memories.length, 0);
         const daysSince = p.srs && p.srs.lastReviewDate
@@ -1539,11 +1577,26 @@
               <span>&#128197; ${reviewed ? 'Sidst: ' + formatDate(p.srs.lastReviewDate) : 'Aldrig gennemgået'}</span>
             </div>
             <div class="palace-card-actions">
-              <button class="btn-teal btn-sm" data-action="start-review" data-palace-id="${p.id}">&#9654; Gennemgå</button>
+              <button class="btn-teal btn-sm" data-action="choose-review" data-palace-id="${p.id}">&#9654; Gennemgå</button>
               <button class="btn-ghost btn-sm" data-action="view-palace" data-palace-id="${p.id}">&#128065; Se</button>
               <button class="btn-ghost btn-sm" data-action="edit-palace" data-palace-id="${p.id}">&#9998; Rediger</button>
               <button class="btn-danger btn-sm" data-action="delete-palace" data-palace-id="${p.id}">&#128465;</button>
             </div>
+            ${q ? (() => {
+              const hits = p.locations.filter(l =>
+                l.name.toLowerCase().includes(q) ||
+                l.memories.some(m => m.text.toLowerCase().includes(q))
+              ).slice(0, 4);
+              if (!hits.length) return '';
+              return `<div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;">
+                ${hits.map(l => `<div style="font-size:12px;color:var(--muted);padding:2px 0;">
+                  <span style="color:var(--accent-light)">&#128205; ${esc(l.name)}</span>
+                  ${l.memories.filter(m => m.text.toLowerCase().includes(q)).slice(0,2).map(m =>
+                    `<span style="display:block;padding-left:12px;color:var(--text);opacity:0.7;">${escLines(m.text)}</span>`
+                  ).join('')}
+                </div>`).join('')}
+              </div>`;
+            })() : ''}
           </div>`;
       }
       html += `</div>`;
@@ -1833,7 +1886,7 @@
       } else {
         html += `
         <div class="memory-item">
-          <span class="memory-text">${esc(mem.text)}</span>
+          <span class="memory-text">${escLines(mem.text)}</span>
           <button class="btn-icon" data-action="edit-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Rediger erindring">&#9998;</button>
           <button class="btn-icon" data-action="delete-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Slet erindring" style="color:var(--danger)">&#10005;</button>
         </div>`;
@@ -1844,7 +1897,7 @@
         <div class="add-memory-form">
           <div style="display:flex;gap:6px;flex:1;flex-direction:column;">
             <input type="text" id="mem-input-${loc.id}" placeholder="Erindring..." onkeydown="handleMemKeydown(event,'${palaceId}','${loc.id}')">
-            <input type="text" id="mem-mnemonic-${loc.id}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);" onkeydown="handleMemKeydown(event,'${palaceId}','${loc.id}')">
+            <input type="text" id="mem-mnemonic-${loc.id}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);" onkeydown="handleMnemonicKeydown(event,'${palaceId}','${loc.id}')" onblur="setTimeout(()=>autoSaveMnemonic('${palaceId}','${loc.id}'),150)">
           </div>
           <button class="btn-ghost btn-sm" data-action="add-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" style="align-self:flex-start;margin-top:2px;">Tilføj</button>
         </div>
@@ -1890,20 +1943,29 @@
             <div class="review-loc-name">${esc(loc.name)}</div>
             <div class="review-tap-hint">${p.type === 'trivia' ? 'Hvad er svaret?' : 'Hvilke erindringer er placeret her?'}</div>
           </div>
-          <div class="review-card-face review-card-back">
-            <div class="review-back-label">${p.type === 'trivia' ? 'Svar' : `Erindringer ved ${esc(loc.name)}`}</div>
-            <div class="review-memories-list">`;
-
-    if (loc.memories.length === 0) {
-      html += `<p style="color:var(--muted);font-style:italic">Ingen erindringer gemt her endnu.</p>`;
-    } else {
-      loc.memories.forEach(m => {
-        html += `<div class="review-memory-item"><div class="review-memory-dot"></div><div>${esc(m.text)}</div></div>`;
-      });
+          <div class="review-card-face review-card-back">`;
+    {
+      const regularMems  = loc.memories.filter(m => !m.text.startsWith('🧠'));
+      const mnemonicMems = loc.memories.filter(m =>  m.text.startsWith('🧠'));
+      const totalLines   = loc.memories.reduce((s, m) => s + m.text.split('\n').length, 0);
+      const sizeClass    = totalLines <= 3 ? 'size-lg' : totalLines <= 6 ? 'size-md' : totalLines <= 12 ? 'size-sm' : 'size-xs';
+      function renderItems(mems) {
+        return mems.map(m => {
+          const parts = m.text.split('\n').filter(l => l.trim());
+          if (parts.length > 1) return parts.map(l => `<div class="review-memory-item"><div class="review-memory-dot"></div><div>${esc(l.trim())}</div></div>`).join('');
+          return `<div class="review-memory-item"><div class="review-memory-dot"></div><div>${escLines(m.text)}</div></div>`;
+        }).join('');
+      }
+      const mainMems = regularMems.length ? regularMems : mnemonicMems;
+      html += `<div style="display:flex;flex-direction:column;height:100%;width:100%;">`;
+      html += `<div><div class="review-back-label">${p.type === 'trivia' ? 'Svar' : `Erindringer ved ${esc(loc.name)}`}</div>`;
+      html += `<div class="review-memories-list ${sizeClass}">${loc.memories.length === 0 ? '<p style="color:var(--muted);font-style:italic">Ingen erindringer gemt her endnu.</p>' : renderItems(mainMems)}</div></div>`;
+      if (mnemonicMems.length && regularMems.length) {
+        html += `<div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(42,58,88,0.5);"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;opacity:0.7;">Mnemonisk note</div><div class="review-memories-list size-sm">${renderItems(mnemonicMems)}</div></div>`;
+      }
+      html += `</div>`;
     }
-
     html += `
-            </div>
           </div>
         </div>
       </div>
@@ -1972,6 +2034,17 @@
     const p = getPalace(app.reviewPalaceId);
     const labels = ['', 'Ingen erindring', 'Bekendt men forkert', 'Svær at huske', 'Med tøven', 'Perfekt!'];
 
+    const history = p && p.srs && p.srs.history ? p.srs.history.slice(-12) : [];
+    const qColors = ['', '#e05c6b', '#e05c6b', '#f0b429', '#4ecdc4', '#7c6af7'];
+    const historyHtml = history.length > 1 ? `
+      <div style="margin:18px 0 4px;text-align:center;">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Seneste ${history.length} sessioner</p>
+        <div style="display:inline-flex;gap:5px;align-items:flex-end;height:44px;background:var(--surface-raised);padding:8px 12px;border-radius:var(--radius-sm);">
+          ${history.map(h => `<div title="${formatDate(h.date)}: ${labels[h.quality]}"
+            style="width:16px;background:${qColors[h.quality]};height:${Math.round((h.quality/5)*36)+4}px;border-radius:3px;opacity:0.85;"></div>`).join('')}
+        </div>
+      </div>` : '';
+
     el.innerHTML = `
       <div class="review-summary">
         <div style="font-size:40px;margin-bottom:12px">${quality >= 4 ? '&#127775;' : quality === 3 ? '&#128077;' : '&#128257;'}</div>
@@ -1979,6 +2052,7 @@
         <p style="color:var(--muted);margin-top:6px">Du bedømte: <strong>${labels[quality]}</strong></p>
         <div class="next-date">Næste gennemgang: ${formatDate(newSRS.nextReviewDate)}</div>
         <p style="color:var(--muted);font-size:13px">Interval: ${newSRS.interval} dag${newSRS.interval !== 1 ? 'e' : ''} &nbsp;&bull;&nbsp; Sværhedsgrad: ${newSRS.efactor}</p>
+        ${historyHtml}
       </div>
       <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
         <button class="btn-primary" data-action="go-dashboard">Tilbage til Paladser</button>
@@ -2357,6 +2431,50 @@
         break;
       }
 
+      case 'choose-review': {
+        const pal0 = getPalace(palaceId);
+        if (!pal0) break;
+        if (!pal0.rooms || pal0.rooms.length === 0) {
+          // Ingen rum – start direkte
+          app.reviewPalaceId = palaceId; app.reviewRoomId = null;
+          app.reviewLocStart = 0; app.reviewLocEnd = null;
+          app.reviewRevealed = false;
+          const ll = getReviewLocs(pal0); let fi = 0;
+          while (fi < ll.length && ll[fi].memories.length === 0) fi++;
+          app.reviewLocIdx = fi;
+          renderView('review-session');
+          break;
+        }
+        // Vis rum-vælger modal
+        const overlay = document.createElement('div');
+        overlay.id = 'room-picker-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;';
+        const inner = document.createElement('div');
+        inner.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:320px;width:90%;box-shadow:var(--shadow);';
+        inner.innerHTML = `<h3 style="margin-bottom:16px;">Vælg hvad du vil øve</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button class="btn-teal" id="rp-all">&#9654; Hele palæet</button>
+            ${pal0.rooms.map(r => `<button class="btn-ghost" data-room-id="${r.id}">&#9654; ${esc(r.name)}</button>`).join('')}
+          </div>
+          <button class="btn-ghost btn-sm" id="rp-cancel" style="margin-top:14px;width:100%;">Annuller</button>`;
+        overlay.appendChild(inner);
+        document.body.appendChild(overlay);
+        function startFromPicker(roomId) {
+          overlay.remove();
+          app.reviewPalaceId = palaceId; app.reviewRoomId = roomId || null;
+          app.reviewLocStart = 0; app.reviewLocEnd = null; app.reviewRevealed = false;
+          const ll2 = getReviewLocs(pal0); let fi2 = 0;
+          while (fi2 < ll2.length && ll2[fi2].memories.length === 0) fi2++;
+          app.reviewLocIdx = fi2;
+          renderView('review-session');
+        }
+        inner.querySelector('#rp-all').onclick = () => startFromPicker(null);
+        inner.querySelector('#rp-cancel').onclick = () => overlay.remove();
+        inner.querySelectorAll('[data-room-id]').forEach(btn => btn.onclick = () => startFromPicker(btn.dataset.roomId));
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        break;
+      }
+
       case 'start-review': {
         const roomId  = el.dataset.roomId || null;
         const fromLoc = el.dataset.from !== undefined ? parseInt(el.dataset.from) : 0;
@@ -2421,17 +2539,83 @@
     }
   });
 
+  // ── TASTATURNAVIGATION I REVIEW ────────────────────────────────────
+  document.addEventListener('keydown', function(e) {
+    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (app.view === 'review-session') {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (!app.reviewRevealed) {
+          app.reviewRevealed = true;
+          renderReviewSession();
+        } else {
+          const btn = document.querySelector('[data-action="next-review-loc"]') ||
+                      document.querySelector('[data-action="finish-review"]');
+          if (btn) btn.click();
+        }
+      }
+    } else if (app.view === 'review-rating') {
+      const q = parseInt(e.key);
+      if (q >= 1 && q <= 5) {
+        const btn = document.querySelector(`[data-action="rate-review"][data-q="${q}"]`);
+        if (btn) btn.click();
+      }
+    }
+  });
+
   // ── TASTATURGENVEJE ────────────────────────────────────────────────
   window.handleMemKeydown = function (e, palaceId, locId) {
-    if (e.key === 'Enter') {
+    if (e.key !== 'Enter') return;
+    const textInp     = document.getElementById(`mem-input-${locId}`);
+    const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
+    const text     = textInp     ? textInp.value.trim()     : '';
+    const mnemonic = mnemonicInp ? mnemonicInp.value.trim() : '';
+    if (!text && !mnemonic) return;
+    if (text) {
+      addMemory(palaceId, locId, text, mnemonic);
+    } else {
+      const loc = getLoc(palaceId, locId);
+      if (loc) { loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic, createdAt: Date.now() }); saveData(); }
+    }
+    renderPalaceDetail();
+  };
+
+  window.handleMnemonicKeydown = function(e, palaceId, locId) {
+    if (e.key === 'Enter') { handleMemKeydown(e, palaceId, locId); return; }
+    if (e.key !== 'Tab') return;
+    e.preventDefault();
+    const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
+    const mnemonic = mnemonicInp ? mnemonicInp.value.trim() : '';
+    if (mnemonic) {
       const textInp = document.getElementById(`mem-input-${locId}`);
       const text = textInp ? textInp.value.trim() : '';
-      if (!text) return;
-      const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
-      const mnemonic = mnemonicInp ? mnemonicInp.value.trim() : '';
-      addMemory(palaceId, locId, text, mnemonic);
-      renderPalaceDetail();
+      if (text) {
+        addMemory(palaceId, locId, text, mnemonic);
+      } else {
+        const loc = getLoc(palaceId, locId);
+        if (loc) { loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic, createdAt: Date.now() }); saveData(); }
+      }
+      if (mnemonicInp) mnemonicInp.value = ''; // Tøm så blur-autosave ikke dobbelt-gemmer
     }
+    const all = Array.from(document.querySelectorAll('[id^="mem-mnemonic-"]'));
+    const idx = all.findIndex(el => el.id === `mem-mnemonic-${locId}`);
+    const next = all[e.shiftKey ? idx - 1 : idx + 1];
+    if (next) next.focus();
+  };
+
+  window.autoSaveMnemonic = function(palaceId, locId) {
+    const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
+    if (!mnemonicInp) return;
+    const mnemonic = mnemonicInp.value.trim();
+    if (!mnemonic) return;
+    const textInp = document.getElementById(`mem-input-${locId}`);
+    const text = textInp ? textInp.value.trim() : '';
+    if (text) return; // Har brugeren udfyldt tekstfeltet, gemmes begge ved submit i stedet
+    const loc = getLoc(palaceId, locId);
+    if (!loc) return;
+    loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic, createdAt: Date.now() });
+    saveData();
+    renderPalaceDetail();
   };
 
   // ── RUMKORT INTERAKTION ────────────────────────────────────────────
@@ -2529,6 +2713,10 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function escLines(str) {
+    return esc(str).replace(/\n/g, '<br>');
   }
 
   // ── REMINDER VIA MAIL ──────────────────────────────────────────────
@@ -2649,6 +2837,143 @@
   document.getElementById('settings-modal').addEventListener('click', function(e) {
     if (e.target === this) closeSettingsModal();
   });
+
+  // ── EXCEL IMPORT/EXPORT ─────────────────────────────────────────────
+  function exportToExcel() {
+    if (data.palaces.length === 0) { alert('Ingen paladser at gemme.'); return; }
+    const wb = XLSX.utils.book_new();
+
+    // Meta-ark: beskrivelse og type per palads
+    const metaRows = [['palads', 'beskrivelse', 'type']];
+    for (const palace of data.palaces) {
+      metaRows.push([palace.name, palace.description || '', palace.type || 'standard']);
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metaRows), 'Meta');
+
+    for (const palace of data.palaces) {
+      const rows = [['lokation', 'rækkefølge', 'værelse', 'minde']];
+      const sortedLocs = [...palace.locations].sort((a, b) => a.order - b.order);
+      for (const loc of sortedLocs) {
+        const room = loc.roomId ? (palace.rooms || []).find(r => r.id === loc.roomId) : null;
+        if (loc.memories.length === 0) {
+          rows.push([loc.name, loc.order, room ? room.name : '', '']);
+        } else {
+          for (const mem of loc.memories) {
+            rows.push([loc.name, loc.order, room ? room.name : '', mem.text]);
+          }
+        }
+      }
+      // Excel arknavn max 31 tegn, ingen special-tegn
+      const sheetName = palace.name.replace(/[\\/:*?[\]]/g, '_').slice(0, 31);
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), sheetName);
+    }
+    XLSX.writeFile(wb, 'hukommelsespalads.xlsx');
+  }
+
+  function importFromExcel(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'array' });
+        const now = Date.now();
+        const existingByName = new Map(data.palaces.map(p => [p.name, p]));
+
+        // Læs Meta-ark for beskrivelse og type
+        const metaByName = {};
+        if (wb.SheetNames.includes('Meta')) {
+          for (const row of XLSX.utils.sheet_to_json(wb.Sheets['Meta'], { defval: '' })) {
+            const navn = (row['palads'] || '').trim();
+            if (navn) metaByName[navn] = { description: (row['beskrivelse'] || '').trim(), type: (row['type'] || '').trim() };
+          }
+        }
+
+        for (const sheetName of wb.SheetNames.filter(n => n !== 'Meta')) {
+          const paladsNavn = sheetName.trim();
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '' });
+          const existing = existingByName.get(paladsNavn);
+
+          // Grupér lokationer
+          const locMap = new Map();
+          for (const row of rows) {
+            const lokNavn = (row['lokation'] || '').trim();
+            const ordre   = parseInt(row['rækkefølge']) || 0;
+            const værelse = (row['værelse'] || '').trim();
+            const minde   = (row['minde'] || '').toString().trim();
+            if (!lokNavn) continue;
+            if (!locMap.has(lokNavn)) locMap.set(lokNavn, { order: ordre, room: værelse, memories: [] });
+            if (minde) locMap.get(lokNavn).memories.push(minde);
+          }
+
+          // Byg værelsesliste
+          const roomNames = new Set([...locMap.values()].map(l => l.room).filter(Boolean));
+          let rooms = existing ? [...existing.rooms] : [];
+          for (const rName of roomNames) {
+            if (!rooms.find(r => r.name === rName)) rooms.push({ id: genId(), name: rName, notes: [] });
+          }
+          const roomByName = new Map(rooms.map(r => [r.name, r]));
+
+          // Byg lokationsliste
+          const locations = [];
+          for (const [lokNavn, locData] of locMap) {
+            const existingLoc = existing ? existing.locations.find(l => l.name === lokNavn) : null;
+            const room = locData.room ? roomByName.get(locData.room) : null;
+            const memories = locData.memories.map(text => ({ id: genId(), text, createdAt: now }));
+            locations.push({
+              id: existingLoc ? existingLoc.id : genId(),
+              order: locData.order,
+              name: lokNavn,
+              memories,
+              roomId: room ? room.id : (existingLoc ? existingLoc.roomId : null),
+            });
+          }
+          locations.sort((a, b) => a.order - b.order);
+
+          const meta = metaByName[paladsNavn] || {};
+          const importedPalace = {
+            id: existing ? existing.id : genId(),
+            name: paladsNavn,
+            description: meta.description || (existing ? existing.description : ''),
+            type: meta.type || (existing ? existing.type : 'standard'),
+            createdAt: existing ? existing.createdAt : now,
+            rooms,
+            locations,
+            notes: existing ? existing.notes : [],
+            srs: existing ? existing.srs : {
+              interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT,
+              nextReviewDate: now, lastReviewDate: null, history: []
+            },
+          };
+          // Bevar interne system-felter så initialiseringen ikke duplikerer paladset
+          if (existing && existing._histTag) { importedPalace._histTag = existing._histTag; importedPalace._v = existing._v; }
+
+          const idx = data.palaces.findIndex(p => p.name === paladsNavn);
+          if (idx !== -1) data.palaces[idx] = importedPalace;
+          else data.palaces.push(importedPalace);
+        }
+
+        saveData();
+        renderView('dashboard');
+        alert('✓ Importeret ' + wb.SheetNames.length + ' palads(er).');
+      } catch (err) {
+        console.error(err);
+        alert('Fejl ved indlæsning: ' + err.message);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  window.searchPalaces = function(val) {
+    app.searchQuery = val;
+    renderDashboard();
+    const inp = document.getElementById('search-input');
+    if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+  };
+
+  window.exportToExcel = exportToExcel;
+  window.triggerExcelImport = function() { document.getElementById('excel-file-input').click(); };
+  window.handleExcelFile = function(input) {
+    if (input.files && input.files[0]) { importFromExcel(input.files[0]); input.value = ''; }
+  };
 
   // ── INIT ───────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
