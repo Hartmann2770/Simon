@@ -1,0 +1,4 @@
+node_modules/
+package.json
+package-lock.json
+seed_palaces_temp.js
