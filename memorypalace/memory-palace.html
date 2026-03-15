@@ -1259,16 +1259,27 @@
   }
   saveData();
 
+  // Fjern dubletter: behold kun det første palads per navn
+  const seenNames = new Set();
+  data.palaces = data.palaces.filter(p => {
+    if (seenNames.has(p.name)) return false;
+    seenNames.add(p.name);
+    return true;
+  });
+  saveData();
+
   // Seed built-in palaces on first load
   for (const seed of BUILTIN_PALACES_SEED) {
-    if (!data.palaces.find(p => p._builtinTag === seed._builtinTag)) {
-      data.palaces.push({
-        id: genId(), ...seed, createdAt: Date.now(),
-        srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT,
-               nextReviewDate: Date.now(), lastReviewDate: null, history: [] }
-      });
-      saveData();
-    }
+    const byTag  = data.palaces.find(p => p._builtinTag === seed._builtinTag);
+    const byName = data.palaces.find(p => p.name === seed.name);
+    if (byTag) continue; // allerede tagget, spring over
+    if (byName) { byName._builtinTag = seed._builtinTag; saveData(); continue; } // tag eksisterende
+    data.palaces.push({
+      id: genId(), ...seed, createdAt: Date.now(),
+      srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT,
+             nextReviewDate: Date.now(), lastReviewDate: null, history: [] }
+    });
+    saveData();
   }
 
   let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
