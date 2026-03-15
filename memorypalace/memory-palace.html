@@ -2875,24 +2875,13 @@
   };
 
   window.handleAuthBtn = function() {
-    if (app.authenticated) {
-      app.authenticated = false;
-      updateAuthButton();
-    } else {
-      showLoginModal(null);
-    }
+    if (!app.authenticated) showLoginModal(null);
   };
 
   function updateAuthButton() {
     const btn = document.getElementById('auth-btn');
     if (!btn) return;
-    if (app.authenticated) {
-      btn.innerHTML = '&#128275; Log ud';
-      btn.style.color = 'var(--teal)';
-    } else {
-      btn.innerHTML = '&#128274; Log ind';
-      btn.style.color = '';
-    }
+    btn.style.display = app.authenticated ? 'none' : '';
   }
 
   document.getElementById('login-modal').addEventListener('click', function(e) {
