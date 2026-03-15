@@ -736,20 +736,7 @@
       .rating-btn { width: 62px; height: 62px; font-size: 16px; border-radius: var(--radius-sm); }
       .rating-btn .rating-label { font-size: 9px; }
 
-      /* Peg-liste: bottom sheet på mobil */
-      #peg-sidebar {
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 62vh;
-        transform: translateY(100%);
-        border-left: none;
-        border-top: 1px solid var(--border);
-        border-radius: 16px 16px 0 0;
-      }
-      #peg-sidebar.open { transform: translateY(0); }
+      /* Peg-liste: håndteres i separat media query efter desktop-reglerne */
 
       /* Location-header: undgå overflow */
       .location-header { padding: 12px 10px; gap: 8px; }
@@ -848,6 +835,23 @@
       background: var(--surface-raised);
       color: var(--accent-light);
       border-color: var(--accent);
+    }
+
+    /* PEG SIDEBAR: mobil bottom-sheet — skal stå EFTER desktop-reglerne */
+    @media (max-width: 480px) {
+      #peg-sidebar {
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 62vh !important;
+        transform: translateY(100%) !important;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+      }
+      #peg-sidebar.open { transform: translateY(0) !important; }
     }
   </style>
 </head>
@@ -1254,6 +1258,19 @@
     }
   }
   saveData();
+
+  // Seed built-in palaces on first load
+  for (const seed of BUILTIN_PALACES_SEED) {
+    if (!data.palaces.find(p => p._builtinTag === seed._builtinTag)) {
+      data.palaces.push({
+        id: genId(), ...seed, createdAt: Date.now(),
+        srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT,
+               nextReviewDate: Date.now(), lastReviewDate: null, history: [] }
+      });
+      saveData();
+    }
+  }
+
   let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
