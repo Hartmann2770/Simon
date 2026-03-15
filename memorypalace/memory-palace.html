@@ -775,7 +775,7 @@
   <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
   <div style="display:flex;align-items:center;gap:8px">
     <button class="btn-ghost btn-sm" id="peg-toggle-btn" onclick="togglePegSidebar()" style="font-size:13px">&#128220; Peg-liste</button>
-    <button class="btn-ghost btn-sm" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;">&#9881;</button>
+    <button class="btn-ghost btn-sm" id="settings-btn" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;display:none;">&#9881;</button>
     <button class="btn-ghost btn-sm" id="auth-btn" onclick="handleAuthBtn()" style="font-size:13px">&#128274; Log ind</button>
   </div>
   <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleExcelFile(this)">
@@ -2884,9 +2884,10 @@
   };
 
   function updateAuthButton() {
-    const btn = document.getElementById('auth-btn');
-    if (!btn) return;
-    btn.style.display = app.authenticated ? 'none' : '';
+    const authBtn = document.getElementById('auth-btn');
+    const settingsBtn = document.getElementById('settings-btn');
+    if (authBtn) authBtn.style.display = app.authenticated ? 'none' : '';
+    if (settingsBtn) settingsBtn.style.display = app.authenticated ? '' : 'none';
   }
 
   document.getElementById('login-modal').addEventListener('click', function(e) {
