@@ -2,7 +2,9 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Hukommelsespalads</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -689,6 +691,63 @@
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* MOBILE / TOUCH */
+    button, [data-action] {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* iOS: forhindrer auto-zoom på inputs (kræver font-size >= 16px) */
+    @media (max-width: 480px) {
+      input, textarea, select { font-size: 16px !important; }
+    }
+
+    @media (max-width: 480px) {
+      /* App bar */
+      #app-bar { padding: 0 10px; gap: 6px; }
+      .app-title { font-size: 15px; letter-spacing: 0; }
+
+      /* Indhold */
+      #app-root { padding: 70px 10px 40px; }
+
+      /* Typografi */
+      h1 { font-size: 22px; }
+      h2 { font-size: 18px; }
+
+      /* Dashboard-grid: altid én kolonne */
+      .palaces-grid { grid-template-columns: 1fr; }
+      .palace-card { padding: 16px; }
+      .palace-card-actions { flex-wrap: wrap; gap: 6px; }
+
+      /* Touch targets: større ikonknapper */
+      .btn-icon { padding: 8px 10px; font-size: 16px; }
+      .btn-sm { padding: 7px 12px; font-size: 13px; }
+
+      /* Review-kort */
+      .review-card { height: calc(100vh - 220px); min-height: 260px; }
+      .review-card-face { padding: 24px 18px; }
+      .review-card-back { padding: 18px 18px; }
+      .review-loc-name { font-size: 24px; margin-bottom: 12px; }
+
+      /* Rating-knapper: kompakt */
+      .rating-buttons { gap: 6px; }
+      .rating-btn { width: 62px; height: 62px; font-size: 16px; border-radius: var(--radius-sm); }
+      .rating-btn .rating-label { font-size: 9px; }
+
+      /* Peg-liste: fuld bredde på mobil */
+      #peg-sidebar { width: 100%; }
+
+      /* Location-header: undgå overflow */
+      .location-header { padding: 12px 10px; gap: 8px; }
+      .location-actions { gap: 2px; }
+
+      /* Rum-knapper: lidt mere luft */
+      .room-header { padding: 10px 10px; }
+    }
+
+    /* Tilføj safe-area padding til bund (iPhone notch/home bar) */
+    #app-root { padding-bottom: max(40px, env(safe-area-inset-bottom)); }
 
     /* PEG SIDEBAR */
     #peg-sidebar {
