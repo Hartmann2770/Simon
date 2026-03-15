@@ -778,6 +778,7 @@
     <button class="btn-ghost btn-sm" onclick="triggerExcelImport()" title="Indlæs paladser fra Excel" style="font-size:13px">&#128228; Indlæs Excel</button>
     <button class="btn-ghost btn-sm" id="peg-toggle-btn" onclick="togglePegSidebar()" style="font-size:13px">&#128220; Peg-liste</button>
     <button class="btn-ghost btn-sm" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;">&#9881;</button>
+    <button class="btn-ghost btn-sm" id="auth-btn" onclick="handleAuthBtn()" style="font-size:13px">&#128274; Log ind</button>
   </div>
   <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleExcelFile(this)">
 </header>
@@ -797,6 +798,22 @@
       <button class="btn-primary btn-sm" onclick="saveSettings()">Gem</button>
     </div>
     <p style="font-size:12px;color:var(--muted);margin-top:8px;">Notifikation vises på paladskortet efter dette antal dage.</p>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="login-modal" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;max-width:320px;width:90%;box-shadow:var(--shadow-lg);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-size:17px;">&#128274; Log ind</h2>
+      <button onclick="closeLoginModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Indtast koden for at redigere paladset.</p>
+    <div class="form-group">
+      <input type="password" id="login-code-input" placeholder="Kode" style="letter-spacing:0.2em;" onkeydown="if(event.key==='Enter')submitLogin()">
+    </div>
+    <div id="login-error" style="display:none;color:var(--danger);font-size:13px;margin-bottom:12px;">Forkert kode. Prøv igen.</div>
+    <button class="btn-primary" style="width:100%" onclick="submitLogin()">Log ind</button>
   </div>
 </div>
 
@@ -1146,7 +1163,7 @@
     }
   }
   saveData();
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '' };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
   function loadData() {
@@ -2064,6 +2081,7 @@
     const el = e.target.closest('[data-action]');
     if (!el) return;
     if (el.dataset.action === 'assign-loc-room') {
+      if (!app.authenticated) { showLoginModal(null); return; }
       assignLocRoom(el.dataset.palaceId, el.dataset.locId, el.value || null);
       renderPalaceDetail();
     }
@@ -2076,6 +2094,19 @@
     const palaceId = el.dataset.palaceId;
     const locId = el.dataset.locId;
     const memId = el.dataset.memId;
+
+    const EDIT_ACTIONS = new Set([
+      'new-palace','edit-palace','delete-palace','save-palace',
+      'show-add-location','add-location','save-loc-edit','delete-loc','edit-loc','move-loc-up','move-loc-down',
+      'show-add-room','save-room-edit','edit-room','delete-room',
+      'add-memory','edit-memory','save-mem-edit','delete-memory',
+      'show-add-note','save-note-edit','edit-note','delete-note',
+      'show-add-trivia','save-trivia-edit'
+    ]);
+    if (EDIT_ACTIONS.has(action) && !app.authenticated) {
+      showLoginModal(() => el.click());
+      return;
+    }
 
     switch (action) {
       case 'new-palace':
@@ -2814,6 +2845,60 @@
     renderPegList();
   };
 
+  // ── LOGIN MODAL ────────────────────────────────────────────────────
+  let _loginCallback = null;
+
+  window.showLoginModal = function(callback) {
+    _loginCallback = callback || null;
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('login-code-input').value = '';
+    document.getElementById('login-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('login-code-input').focus(), 50);
+  };
+
+  window.closeLoginModal = function() {
+    document.getElementById('login-modal').style.display = 'none';
+    _loginCallback = null;
+  };
+
+  window.submitLogin = function() {
+    const code = document.getElementById('login-code-input').value;
+    if (code === '19143057') {
+      app.authenticated = true;
+      updateAuthButton();
+      closeLoginModal();
+      if (_loginCallback) { const cb = _loginCallback; _loginCallback = null; cb(); }
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('login-code-input').select();
+    }
+  };
+
+  window.handleAuthBtn = function() {
+    if (app.authenticated) {
+      app.authenticated = false;
+      updateAuthButton();
+    } else {
+      showLoginModal(null);
+    }
+  };
+
+  function updateAuthButton() {
+    const btn = document.getElementById('auth-btn');
+    if (!btn) return;
+    if (app.authenticated) {
+      btn.innerHTML = '&#128275; Log ud';
+      btn.style.color = 'var(--teal)';
+    } else {
+      btn.innerHTML = '&#128274; Log ind';
+      btn.style.color = '';
+    }
+  }
+
+  document.getElementById('login-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeLoginModal();
+  });
+
   // ── SETTINGS MODAL ─────────────────────────────────────────────────
   window.openSettingsModal = function() {
     document.getElementById('settings-interval-input').value = data.settings.reviewIntervalDays || 7;
@@ -2825,6 +2910,7 @@
   };
 
   window.saveSettings = function() {
+    if (!app.authenticated) { closeSettingsModal(); showLoginModal(window.saveSettings); return; }
     const val = parseInt(document.getElementById('settings-interval-input').value, 10);
     if (val > 0) {
       data.settings.reviewIntervalDays = val;
@@ -2969,8 +3055,14 @@
     if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
   };
 
-  window.exportToExcel = exportToExcel;
-  window.triggerExcelImport = function() { document.getElementById('excel-file-input').click(); };
+  window.exportToExcel = function() {
+    if (!app.authenticated) { showLoginModal(window.exportToExcel); return; }
+    exportToExcel();
+  };
+  window.triggerExcelImport = function() {
+    if (!app.authenticated) { showLoginModal(window.triggerExcelImport); return; }
+    document.getElementById('excel-file-input').click();
+  };
   window.handleExcelFile = function(input) {
     if (input.files && input.files[0]) { importFromExcel(input.files[0]); input.value = ''; }
   };
