@@ -774,8 +774,6 @@
 <header id="app-bar">
   <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
   <div style="display:flex;align-items:center;gap:8px">
-    <button class="btn-ghost btn-sm" onclick="exportToExcel()" title="Gem alle paladser til Excel" style="font-size:13px">&#128229; Gem Excel</button>
-    <button class="btn-ghost btn-sm" onclick="triggerExcelImport()" title="Indlæs paladser fra Excel" style="font-size:13px">&#128228; Indlæs Excel</button>
     <button class="btn-ghost btn-sm" id="peg-toggle-btn" onclick="togglePegSidebar()" style="font-size:13px">&#128220; Peg-liste</button>
     <button class="btn-ghost btn-sm" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;">&#9881;</button>
     <button class="btn-ghost btn-sm" id="auth-btn" onclick="handleAuthBtn()" style="font-size:13px">&#128274; Log ind</button>
@@ -798,6 +796,13 @@
       <button class="btn-primary btn-sm" onclick="saveSettings()">Gem</button>
     </div>
     <p style="font-size:12px;color:var(--muted);margin-top:8px;">Notifikation vises på paladskortet efter dette antal dage.</p>
+    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:16px;">
+      <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:10px;">Excel</label>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-ghost btn-sm" onclick="exportToExcel()" style="flex:1">&#128229; Gem Excel</button>
+        <button class="btn-ghost btn-sm" onclick="triggerExcelImport()" style="flex:1">&#128228; Indlæs Excel</button>
+      </div>
+    </div>
   </div>
 </div>
 
