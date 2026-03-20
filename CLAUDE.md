@@ -43,3 +43,13 @@ All entities use UUIDs (`genId()`). Palaces are the top-level unit for spaced re
 - Adding a new action: add a `data-action="my-action"` attribute in the HTML string returned by a render function, then add a `case 'my-action':` branch in the event delegation switch.
 - Room map pins: stored as `{x, y}` percentages on the `Location.pin` field; rendered as absolutely positioned elements over the uploaded room image.
 - The pre-loaded History Palace (1800–1901, 102 locations) is initialized on first load from inline data in the file.
+
+## SRS Data Preservation (CRITICAL)
+
+The user's review statistics (`srs` field on each Palace) must **never be reset** when we update the file. Rules:
+
+- **Never bump `HISTORY_VERSION`** unless absolutely necessary (e.g. structural data error). The existing code already preserves SRS on History Palace rebuild.
+- **Never change `_builtinTag` values** on existing seed palaces — this breaks the tag-match lookup and can cause SRS loss.
+- **Never rename seed palaces** without verifying the `_builtinTag` match still works.
+- A `_srsById`/`_srsByName` snapshot + `_restoreSrs()` helper (at top of init block) provides a safety net — but do not rely on it as the primary safeguard.
+- When adding brand-new built-in palaces: use a unique `_builtinTag` and the fresh SRS default is fine (no prior data to preserve).

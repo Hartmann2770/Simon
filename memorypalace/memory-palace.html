@@ -1241,6 +1241,20 @@
 
   // ── TILSTAND ───────────────────────────────────────────────────────
   let data = loadData();
+
+  // Gem SRS-snapshot inden seed/init-kode kører, så statistik aldrig mistes
+  // ved opdateringer af seed-data, version-bumps eller navneændringer.
+  const _srsById   = {};
+  const _srsByName = {};
+  data.palaces.forEach(p => {
+    if (p.srs) { _srsById[p.id] = p.srs; _srsByName[p.name] = p.srs; }
+  });
+  function _restoreSrs(palace) {
+    if (!palace.srs || palace.srs.repetition === 0) {
+      palace.srs = _srsById[palace.id] || _srsByName[palace.name] || palace.srs;
+    }
+  }
+
   const HISTORY_VERSION = 5; // bump to force rebuild
   // Remove old quarter palaces if present (from previous version)
   data.palaces = data.palaces.filter(p => !p._histTag || p._histTag === 'hist-all');
@@ -1254,6 +1268,7 @@
       built.id  = data.palaces[histIdx].id;
       data.palaces.splice(histIdx, 1, built);
     } else {
+      _restoreSrs(built);
       data.palaces.unshift(built);
     }
   }
@@ -1274,11 +1289,13 @@
     const byName = data.palaces.find(p => p.name === seed.name);
     if (byTag) continue; // allerede tagget, spring over
     if (byName) { byName._builtinTag = seed._builtinTag; saveData(); continue; } // tag eksisterende
-    data.palaces.push({
+    const newP = {
       id: genId(), ...seed, createdAt: Date.now(),
       srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT,
              nextReviewDate: Date.now(), lastReviewDate: null, history: [] }
-    });
+    };
+    _restoreSrs(newP);
+    data.palaces.push(newP);
     saveData();
   }
 
