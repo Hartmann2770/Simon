@@ -1279,21 +1279,28 @@
     }
   }
 
-  const HISTORY_VERSION = 5; // bump to force rebuild
-  // Remove old quarter palaces if present (from previous version)
-  data.palaces = data.palaces.filter(p => !p._histTag || p._histTag === 'hist-all');
-  const histIdx = data.palaces.findIndex(p => p._histTag === 'hist-all');
-  if (histIdx === -1 || (data.palaces[histIdx]._v || 0) < HISTORY_VERSION) {
-    const built = buildHistoryPalace(1800, 1901, '📜 1800-tallet');
+  const HISTORY_VERSION = 6; // bump to force rebuild
+  const HISTORY_QUARTERS = [
+    { tag: 'hist-1800-1825', name: '1800–1825', from: 1800, to: 1825 },
+    { tag: 'hist-1826-1850', name: '1826–1850', from: 1826, to: 1850 },
+    { tag: 'hist-1851-1875', name: '1851–1875', from: 1851, to: 1875 },
+    { tag: 'hist-1876-1901', name: '1876–1901', from: 1876, to: 1901 },
+  ];
+  // Remove legacy single hist-all palace; keep only tagged quarter palaces
+  data.palaces = data.palaces.filter(p => !p._histTag || HISTORY_QUARTERS.some(q => q.tag === p._histTag));
+  for (const q of HISTORY_QUARTERS) {
+    const idx = data.palaces.findIndex(p => p._histTag === q.tag);
+    if (idx !== -1 && (data.palaces[idx]._v || 0) >= HISTORY_VERSION) continue;
+    const built = buildHistoryPalace(q.from, q.to, q.name);
     built._v = HISTORY_VERSION;
-    built._histTag = 'hist-all';
-    if (histIdx !== -1) {
-      built.srs = data.palaces[histIdx].srs;
-      built.id  = data.palaces[histIdx].id;
-      data.palaces.splice(histIdx, 1, built);
+    built._histTag = q.tag;
+    if (idx !== -1) {
+      built.srs = data.palaces[idx].srs;
+      built.id  = data.palaces[idx].id;
+      data.palaces.splice(idx, 1, built);
     } else {
       _restoreSrs(built);
-      data.palaces.unshift(built);
+      data.palaces.push(built);
     }
   }
   saveData();
@@ -1325,7 +1332,8 @@
 
   // Seed standard-samlinger og tilknyt built-in paladser automatisk
   const BUILTIN_COLLECTIONS_SEED = [
-    { _collTag: 'col-history',   name: '📜 Historie',        description: '1800-tallets europæiske og verdenshistorie', palaces: [{ histTag: 'hist-all' }] },
+    { _collTag: 'col-history',   name: '📜 Historie',        description: '1800-tallets europæiske og verdenshistorie',
+      palaces: [{ histTag: 'hist-1800-1825' }, { histTag: 'hist-1826-1850' }, { histTag: 'hist-1851-1875' }, { histTag: 'hist-1876-1901' }] },
     { _collTag: 'col-cocktails', name: '🍸 Cocktails',       description: 'Opskrifter og ingredienser til klassiske cocktails', palaces: [{ builtinTag: 'cocktails' }] },
     { _collTag: 'col-trivia',    name: '🧩 Generel Viden',   description: 'Trivia og almen viden', palaces: [{ builtinTag: 'trivia' }] },
     { _collTag: 'col-science',   name: '⚗️ Naturvidenskab',  description: 'Det periodiske system og naturvidenskabelige fakta', palaces: [{ builtinTag: 'periodic' }] },
@@ -1345,7 +1353,7 @@
     saveData();
   }
 
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
   function loadData() {
@@ -1377,34 +1385,26 @@
     const now = Date.now();
     const byYear = new Map();
     for (const [yr, type, text] of HISTORY_PALACE_DATA) {
+      if (yr < fromYear || yr > toYear) continue;
       if (!byYear.has(yr)) byYear.set(yr, []);
       byYear.get(yr).push({ type, text });
     }
-    const quarterDefs = [
-      { name: '1800–1825', from: 1800, to: 1825 },
-      { name: '1826–1850', from: 1826, to: 1850 },
-      { name: '1851–1875', from: 1851, to: 1875 },
-      { name: '1876–1901', from: 1876, to: 1901 },
-    ];
-    const rooms = quarterDefs.map(q => ({ id: genId(), name: q.name, notes: [] }));
     const locations = [];
     for (let year = fromYear; year <= toYear; year++) {
       const entries = byYear.get(year) || [];
-      const memories = [];
-      for (const e of entries) {
-        const t = e.type === 'M' ? '\uD83E\uDDE0 ' + e.text : e.text;
-        memories.push({ id: genId(), text: t, createdAt: now });
-      }
-      const roomIdx = quarterDefs.findIndex(q => year >= q.from && year <= q.to);
-      const roomId = roomIdx !== -1 ? rooms[roomIdx].id : null;
-      locations.push({ id: genId(), order: year - fromYear, name: String(year), memories, roomId });
+      const memories = entries.map(e => ({
+        id: genId(),
+        text: e.type === 'M' ? '\uD83E\uDDE0 ' + e.text : e.text,
+        createdAt: now
+      }));
+      locations.push({ id: genId(), order: year - fromYear, name: String(year), memories });
     }
     return {
       id: genId(),
       name: label,
-      description: 'Løberute langs stranden – historiske begivenheder fra 1800-tallet',
+      description: 'Historiske begivenheder ' + fromYear + '–' + toYear,
       createdAt: now,
-      rooms,
+      rooms: [],
       locations,
       srs: { interval: 1, repetition: 0, efactor: SM2_EF_DEFAULT, nextReviewDate: now, lastReviewDate: null, history: [] }
     };
@@ -1881,6 +1881,7 @@
           ${f.description ? `<p class="muted" style="margin-top:4px;">${esc(f.description)}</p>` : ''}
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
+          ${fps.length > 1 ? `<button class="btn-teal" data-action="review-all-in-collection" data-collection-id="${f.id}">Gennemgå alle &#8594;</button>` : ''}
           ${app.authenticated ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
         </div>
       </div>`;
@@ -2259,7 +2260,7 @@
         <div class="review-progress-bar" style="width:${progress}%"></div>
       </div>
       <div style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;">
-        Sted ${app.reviewLocIdx + 1} af ${locs.length} &nbsp;&bull;&nbsp; ${esc(p.name)}${rangeLabel}
+        Sted ${app.reviewLocIdx + 1} af ${locs.length} &nbsp;&bull;&nbsp; ${esc(p.name)}${rangeLabel}${app.reviewQueue.length > 1 ? ` &nbsp;&bull;&nbsp; Palads ${app.reviewQueueIdx + 1}/${app.reviewQueue.length}` : ''}
       </div>
 
       <div class="review-card">
@@ -2304,6 +2305,8 @@
     } else {
       if (hasNextLoc) {
         html += `<button class="btn-primary" data-action="next-review-loc">Næste Sted &#8594;</button>`;
+      } else if (app.reviewQueue.length > 0 && app.reviewQueueIdx + 1 < app.reviewQueue.length) {
+        html += `<button class="btn-primary" data-action="finish-review">Næste Palads &#8594;</button>`;
       } else {
         html += `<button class="btn-primary" data-action="finish-review">Afslut Gennemgang &#10003;</button>`;
       }
@@ -2475,6 +2478,24 @@
         app.editingCollectionId = el.dataset.collectionId;
         renderView('collection-detail');
         break;
+
+      case 'review-all-in-collection': {
+        const rcColId = el.dataset.collectionId;
+        const rcPalaces = data.palaces.filter(p => p.collectionId === rcColId);
+        if (rcPalaces.length === 0) break;
+        const rcQueue = rcPalaces.map(p => p.id);
+        app.reviewQueue = rcQueue;
+        app.reviewQueueIdx = 0;
+        app.reviewPalaceId = rcQueue[0];
+        app.reviewLocStart = 0; app.reviewLocEnd = null; app.reviewRoomId = null; app.reviewRevealed = false;
+        const rcPal = getPalace(rcQueue[0]);
+        const rcLocs = getReviewLocs(rcPal);
+        let rcFirst = 0;
+        while (rcFirst < rcLocs.length && rcLocs[rcFirst].memories.length === 0) rcFirst++;
+        app.reviewLocIdx = rcFirst;
+        renderView('review-session');
+        break;
+      }
 
       case 'back-from-collection':
         renderView('dashboard');
@@ -2873,6 +2894,7 @@
 
       case 'back-from-review':
         app.editingPalaceId = app.reviewPalaceId;
+        app.reviewQueue = []; app.reviewQueueIdx = 0;
         renderView('palace-detail');
         break;
 
@@ -2894,11 +2916,26 @@
 
       case 'finish-review':
         completeReview();
-        if (app.editingCollectionId) renderView('collection-detail');
-        else renderView('dashboard');
+        if (app.reviewQueue.length > 0 && app.reviewQueueIdx + 1 < app.reviewQueue.length) {
+          app.reviewQueueIdx++;
+          const qNextId = app.reviewQueue[app.reviewQueueIdx];
+          app.reviewPalaceId = qNextId;
+          app.reviewLocStart = 0; app.reviewLocEnd = null; app.reviewRoomId = null; app.reviewRevealed = false;
+          const qPal = getPalace(qNextId);
+          const qLocs = getReviewLocs(qPal);
+          let qFirst = 0;
+          while (qFirst < qLocs.length && qLocs[qFirst].memories.length === 0) qFirst++;
+          app.reviewLocIdx = qFirst;
+          renderView('review-session');
+        } else {
+          app.reviewQueue = []; app.reviewQueueIdx = 0;
+          if (app.editingCollectionId) renderView('collection-detail');
+          else renderView('dashboard');
+        }
         break;
 
       case 'skip-review':
+        app.reviewQueue = []; app.reviewQueueIdx = 0;
         if (app.editingCollectionId) renderView('collection-detail');
         else renderView('dashboard');
         break;
