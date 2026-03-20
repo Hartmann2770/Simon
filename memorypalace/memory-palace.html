@@ -1371,6 +1371,28 @@
     saveData();
   }
 
+  // Seed standard-samlinger og tilknyt built-in paladser automatisk
+  const BUILTIN_COLLECTIONS_SEED = [
+    { _collTag: 'col-history',   name: '📜 Historie',        description: '1800-tallets europæiske og verdenshistorie', palaces: [{ histTag: 'hist-all' }] },
+    { _collTag: 'col-cocktails', name: '🍸 Cocktails',       description: 'Opskrifter og ingredienser til klassiske cocktails', palaces: [{ builtinTag: 'cocktails' }] },
+    { _collTag: 'col-trivia',    name: '🧩 Generel Viden',   description: 'Trivia og almen viden', palaces: [{ builtinTag: 'trivia' }] },
+    { _collTag: 'col-science',   name: '⚗️ Naturvidenskab',  description: 'Det periodiske system og naturvidenskabelige fakta', palaces: [{ builtinTag: 'periodic' }] },
+  ];
+  for (const cs of BUILTIN_COLLECTIONS_SEED) {
+    let col = data.collections.find(c => c._collTag === cs._collTag);
+    if (!col) {
+      col = { id: genId(), name: cs.name, description: cs.description, _collTag: cs._collTag, createdAt: Date.now() };
+      data.collections.push(col);
+    }
+    for (const pt of cs.palaces) {
+      const palace = pt.histTag
+        ? data.palaces.find(p => p._histTag === pt.histTag)
+        : data.palaces.find(p => p._builtinTag === pt.builtinTag);
+      if (palace && !palace.collectionId) { palace.collectionId = col.id; }
+    }
+    saveData();
+  }
+
   let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
