@@ -773,14 +773,7 @@
     #app-root { padding-bottom: max(40px, env(safe-area-inset-bottom)); }
 
     /* Peg-overlay: mørkt lag bag bottom sheet, klik for at lukke */
-    #peg-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 149;
-      background: rgba(0,0,0,0.45);
-    }
-    #peg-overlay.visible { display: block; }
+
 
     /* PEG SIDEBAR */
     #peg-sidebar {
@@ -942,7 +935,7 @@
   </div>
   <div id="peg-sidebar-list"></div>
 </div>
-<div id="peg-overlay" onclick="togglePegSidebar()"></div>
+
 
 <main id="app-root">
   <section id="view-dashboard" class="view"></section>
@@ -3197,10 +3190,8 @@
   window.togglePegSidebar = function() {
     const sidebar  = document.getElementById('peg-sidebar');
     const btn      = document.getElementById('peg-toggle-btn');
-    const overlay  = document.getElementById('peg-overlay');
     const isOpen   = sidebar.classList.toggle('open');
     btn.classList.toggle('active', isOpen);
-    overlay.classList.toggle('visible', isOpen);
     if (isOpen) renderPegList();
   };
 
@@ -3424,6 +3415,8 @@
     };
     reader.readAsArrayBuffer(file);
   }
+
+  window.renderView = renderView;
 
   window.searchPalaces = function(val) {
     app.searchQuery = val;
