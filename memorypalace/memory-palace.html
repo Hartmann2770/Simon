@@ -1770,12 +1770,6 @@
         html += `<div class="collections-section-title">Samlinger</div><div class="palaces-grid" style="margin-bottom:28px;">`;
         for (const f of data.collections) {
           const fps = allPalaces.filter(p => p.collectionId === f.id);
-          const dueCount = fps.filter(isDue).length;
-          const dotsHtml = fps.map(p =>
-            `<div class="collection-palace-dot" title="${esc(p.name)}" style="background:${srsColor(p.srs)}"></div>`
-          ).join('');
-          const nextDue = fps.filter(p => p.srs && p.srs.nextReviewDate).sort((a,b) => a.srs.nextReviewDate - b.srs.nextReviewDate)[0];
-          const nextDueStr = nextDue ? (isDue(nextDue) ? '<span style="color:var(--gold)">&#9888; Klar til gennemgang</span>' : `Næste øvelse ${daysUntil(nextDue.srs.nextReviewDate).toLowerCase()}`) : 'Ingen paladser endnu';
           // Collection accent color = worst SRS color in collection
           const worstRatio = fps.reduce((worst, p) => {
             if (!p.srs || !p.srs.lastReviewDate) return Math.max(worst, 1.5);
@@ -1786,15 +1780,18 @@
           const worstClamped = Math.max(0, Math.min(1.5, worstRatio));
           const accentHue = Math.round(120 - (worstClamped / 1.5) * 120);
           const accentColor = fps.length > 0 ? `hsl(${accentHue}, 70%, 38%)` : 'hsl(0,0%,35%)';
+          const palaceChips = fps.length > 0
+            ? fps.map(p => `
+                <div style="display:inline-flex;align-items:center;gap:5px;background:var(--surface-raised);border-radius:20px;padding:3px 10px 3px 7px;font-size:12px;color:var(--text);">
+                  <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${srsColor(p.srs)};box-shadow:0 0 4px ${srsColor(p.srs)};"></div>
+                  ${esc(p.name)}
+                </div>`).join('')
+            : `<span style="color:var(--muted);font-size:12px;font-style:italic;">Ingen paladser endnu</span>`;
           html += `
-            <div class="collection-card" data-action="open-collection" data-collection-id="${f.id}" style="border-left: 3px solid ${accentColor};">
+            <div class="collection-card" data-action="open-collection" data-collection-id="${f.id}" style="border-left: 5px solid ${accentColor};">
               <div class="collection-card-body">
                 <div class="collection-card-name">${esc(f.name)}</div>
-                ${f.description ? `<div class="collection-card-desc">${esc(f.description)}</div>` : ''}
-                ${fps.length > 0 ? `<div class="collection-palace-dots">${dotsHtml}</div>` : ''}
-                <div class="collection-card-meta">
-                  ${fps.length} palads${fps.length !== 1 ? 'er' : ''}${dueCount > 0 ? ` &bull; <span style="color:var(--gold)">${dueCount} klar</span>` : ''} &bull; ${nextDueStr}
-                </div>
+                <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">${palaceChips}</div>
               </div>
               ${app.authenticated ? `
               <div class="collection-card-auth-actions" onclick="event.stopPropagation()">
