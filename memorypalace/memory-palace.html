@@ -2693,7 +2693,7 @@
   document.addEventListener('keydown', function(e) {
     if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
     if (app.view === 'review-session') {
-      if (e.key === ' ' || e.key === 'Enter') {
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') {
         e.preventDefault();
         if (!app.reviewRevealed) {
           app.reviewRevealed = true;
@@ -2702,6 +2702,17 @@
           const btn = document.querySelector('[data-action="next-review-loc"]') ||
                       document.querySelector('[data-action="finish-review"]');
           if (btn) btn.click();
+        }
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const p2 = getPalace(app.reviewPalaceId);
+        const locs2 = p2 ? getReviewLocs(p2) : [];
+        let prev = app.reviewLocIdx - 1;
+        while (prev >= 0 && locs2[prev].memories.length === 0) prev--;
+        if (prev >= 0) {
+          app.reviewLocIdx = prev;
+          app.reviewRevealed = false;
+          renderReviewSession();
         }
       }
     } else if (app.view === 'review-rating') {
