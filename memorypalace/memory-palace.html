@@ -230,12 +230,12 @@
       border-top: 1px solid var(--border);
     }
 
-    /* FOLDER CARDS */
-    .folder-card {
+    /* COLLECTION CARDS */
+    .collection-card {
       background: linear-gradient(160deg, var(--surface) 0%, rgba(20,32,55,0.95) 100%);
-      border: 1px solid rgba(124,106,247,0.25);
+      border: 1px solid rgba(124,106,247,0.2);
       border-radius: var(--radius);
-      padding: 18px 20px;
+      padding: 20px 22px;
       cursor: pointer;
       transition: border-color 0.25s, transform 0.2s, box-shadow 0.2s;
       display: flex;
@@ -243,49 +243,54 @@
       gap: 14px;
       position: relative;
     }
-    .folder-card:hover {
+    .collection-card:hover {
       border-color: rgba(124,106,247,0.55);
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
-    .folder-card-icon { font-size: 28px; flex-shrink: 0; padding-top: 2px; }
-    .folder-card-body { flex: 1; min-width: 0; }
-    .folder-card-name {
+    .collection-card-icon { font-size: 26px; flex-shrink: 0; padding-top: 3px; }
+    .collection-card-body { flex: 1; min-width: 0; }
+    .collection-card-name {
       font-family: 'Cinzel', serif;
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
-    .folder-card-desc {
+    .collection-card-desc {
       color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 10px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
-    .folder-palace-dots {
+    .collection-palace-dots {
       display: flex;
       gap: 5px;
       flex-wrap: wrap;
       align-items: center;
       margin-bottom: 8px;
     }
-    .folder-palace-dot {
-      width: 11px;
-      height: 11px;
+    .collection-palace-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       flex-shrink: 0;
       box-shadow: 0 0 4px rgba(0,0,0,0.4);
     }
-    .folder-card-meta {
+    .collection-card-meta {
       font-size: 12px;
       color: var(--muted);
     }
-    .folder-card-actions {
+    .collection-card-auth-actions {
       display: flex;
       gap: 6px;
       flex-shrink: 0;
       align-items: flex-start;
+      padding-top: 2px;
     }
-    .folders-section-title {
+    .collections-section-title {
       font-size: 12px;
       color: var(--muted);
       text-transform: uppercase;
@@ -784,7 +789,7 @@
       .palaces-grid { grid-template-columns: 1fr; }
       .palace-card { padding: 16px; }
       .palace-card-actions { flex-wrap: wrap; gap: 6px; }
-      .folder-card { padding: 14px; }
+      .collection-card { padding: 14px; }
 
       /* Touch targets: større ikonknapper */
       .btn-icon { padding: 8px 10px; font-size: 16px; }
@@ -992,8 +997,8 @@
   <section id="view-palace-detail" class="view"></section>
   <section id="view-review-session" class="view"></section>
   <section id="view-review-rating" class="view"></section>
-  <section id="view-folder-detail" class="view"></section>
-  <section id="view-folder-editor" class="view"></section>
+  <section id="view-collection-detail" class="view"></section>
+  <section id="view-collection-editor" class="view"></section>
 </main>
 
 <script>
@@ -1366,7 +1371,7 @@
     saveData();
   }
 
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingFolderId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
   function loadData() {
@@ -1374,9 +1379,14 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       const d = raw ? JSON.parse(raw) : { palaces: [] };
       if (!d.settings) d.settings = { reviewIntervalDays: 7 };
-      if (!d.folders) d.folders = [];
+      if (!d.collections) {
+        // Migrate from old 'folders' field if it exists
+        d.collections = d.folders || [];
+        // Migrate folderId → collectionId on palaces
+        if (d.palaces) d.palaces.forEach(p => { if (p.folderId && !p.collectionId) { p.collectionId = p.folderId; delete p.folderId; } });
+      }
       return d;
-    } catch { return { palaces: [], folders: [], settings: { reviewIntervalDays: 7 } }; }
+    } catch { return { palaces: [], collections: [], settings: { reviewIntervalDays: 7 } }; }
   }
 
   function saveData() {
@@ -1518,23 +1528,23 @@
     saveData();
   }
 
-  // ── MAPPER ─────────────────────────────────────────────────────────
-  function getFolder(id) { return data.folders.find(f => f.id === id); }
-  function createFolder(name, desc) {
+  // ── SAMLINGER ──────────────────────────────────────────────────────
+  function getCollection(id) { return data.collections.find(f => f.id === id); }
+  function createCollection(name, desc) {
     const f = { id: genId(), name: name.trim(), description: (desc || '').trim(), createdAt: Date.now() };
-    data.folders.push(f);
+    data.collections.push(f);
     saveData();
     return f;
   }
-  function updateFolder(id, fields) {
-    const f = getFolder(id);
+  function updateCollection(id, fields) {
+    const f = getCollection(id);
     if (!f) return;
     Object.assign(f, fields, { updatedAt: Date.now() });
     saveData();
   }
-  function deleteFolder(id) {
-    data.folders = data.folders.filter(f => f.id !== id);
-    data.palaces.forEach(p => { if (p.folderId === id) delete p.folderId; });
+  function deleteCollection(id) {
+    data.collections = data.collections.filter(f => f.id !== id);
+    data.palaces.forEach(p => { if (p.collectionId === id) delete p.collectionId; });
     saveData();
   }
 
@@ -1753,8 +1763,8 @@
       case 'dashboard': renderDashboard(); break;
       case 'palace-editor': renderPalaceEditor(); break;
       case 'palace-detail': renderPalaceDetail(); break;
-      case 'folder-detail': renderFolderDetail(); break;
-      case 'folder-editor': renderFolderEditor(); break;
+      case 'collection-detail': renderCollectionDetail(); break;
+      case 'collection-editor': renderCollectionEditor(); break;
       case 'review-session': renderReviewSession(); break;
       case 'review-rating': renderReviewRating(); break;
     }
@@ -1789,8 +1799,8 @@
       <div class="section-header">
         <h1>Dine Paladser</h1>
         <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn-ghost" data-action="new-folder">&#128193; Ny Mappe</button>
-          <button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>
+          ${app.authenticated ? `<button class="btn-ghost" data-action="new-collection">&#128218; Ny Samling</button>` : ''}
+          ${app.authenticated ? `<button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>` : ''}
         </div>
       </div>
       <div style="margin-bottom:20px;">
@@ -1800,12 +1810,12 @@
           onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
       </div>`;
 
-    if (allPalaces.length === 0 && data.folders.length === 0) {
+    if (allPalaces.length === 0 && data.collections.length === 0) {
       html += `
         <div class="empty-state">
           <div class="empty-icon">&#127963;</div>
           <p>Ingen hukommelsespaladser endnu.<br>Opret dit første for at komme i gang.</p>
-          <button class="btn-primary" data-action="new-palace">Opret Palads</button>
+          ${app.authenticated ? `<button class="btn-primary" data-action="new-palace">Opret Palads</button>` : ''}
         </div>`;
     } else if (q && filtered.length === 0) {
       html += `<p style="color:var(--muted);text-align:center;padding:40px 0;">Ingen resultater for "${esc(q)}"</p>`;
@@ -1813,18 +1823,18 @@
       // Search mode: flat list
       html += `<div class="palaces-grid">` + filtered.map(p => palaceCardHtml(p, q)).join('') + `</div>`;
     } else {
-      // Normal mode: folders + ungrouped
-      if (data.folders.length > 0) {
-        html += `<div class="folders-section-title">Mapper</div><div class="palaces-grid" style="margin-bottom:28px;">`;
-        for (const f of data.folders) {
-          const fps = allPalaces.filter(p => p.folderId === f.id);
+      // Normal mode: collections + ungrouped
+      if (data.collections.length > 0) {
+        html += `<div class="collections-section-title">Samlinger</div><div class="palaces-grid" style="margin-bottom:28px;">`;
+        for (const f of data.collections) {
+          const fps = allPalaces.filter(p => p.collectionId === f.id);
           const dueCount = fps.filter(isDue).length;
           const dotsHtml = fps.map(p =>
-            `<div class="folder-palace-dot" title="${esc(p.name)}" style="background:${srsColor(p.srs)}"></div>`
+            `<div class="collection-palace-dot" title="${esc(p.name)}" style="background:${srsColor(p.srs)}"></div>`
           ).join('');
           const nextDue = fps.filter(p => p.srs && p.srs.nextReviewDate).sort((a,b) => a.srs.nextReviewDate - b.srs.nextReviewDate)[0];
-          const nextDueStr = nextDue ? (isDue(nextDue) ? '<span style="color:var(--gold)">&#9888; Klar til gennemgang</span>' : `Næste: ${formatDate(nextDue.srs.nextReviewDate)}`) : 'Ingen paladser endnu';
-          // Folder accent color = worst SRS color in folder
+          const nextDueStr = nextDue ? (isDue(nextDue) ? '<span style="color:var(--gold)">&#9888; Klar til gennemgang</span>' : `Næste øvelse ${daysUntil(nextDue.srs.nextReviewDate).toLowerCase()}`) : 'Ingen paladser endnu';
+          // Collection accent color = worst SRS color in collection
           const worstRatio = fps.reduce((worst, p) => {
             if (!p.srs || !p.srs.lastReviewDate) return Math.max(worst, 1.5);
             const total = p.srs.nextReviewDate - p.srs.lastReviewDate;
@@ -1835,28 +1845,29 @@
           const accentHue = Math.round(120 - (worstClamped / 1.5) * 120);
           const accentColor = fps.length > 0 ? `hsl(${accentHue}, 70%, 38%)` : 'hsl(0,0%,35%)';
           html += `
-            <div class="folder-card" data-action="open-folder" data-folder-id="${f.id}" style="border-left: 3px solid ${accentColor};">
-              <div class="folder-card-icon">&#128193;</div>
-              <div class="folder-card-body">
-                <div class="folder-card-name">${esc(f.name)}</div>
-                ${f.description ? `<div class="folder-card-desc">${esc(f.description)}</div>` : ''}
-                ${fps.length > 0 ? `<div class="folder-palace-dots">${dotsHtml}</div>` : ''}
-                <div class="folder-card-meta">
+            <div class="collection-card" data-action="open-collection" data-collection-id="${f.id}" style="border-left: 3px solid ${accentColor};">
+              <div class="collection-card-icon">&#128218;</div>
+              <div class="collection-card-body">
+                <div class="collection-card-name">${esc(f.name)}</div>
+                ${f.description ? `<div class="collection-card-desc">${esc(f.description)}</div>` : ''}
+                ${fps.length > 0 ? `<div class="collection-palace-dots">${dotsHtml}</div>` : ''}
+                <div class="collection-card-meta">
                   ${fps.length} palads${fps.length !== 1 ? 'er' : ''}${dueCount > 0 ? ` &bull; <span style="color:var(--gold)">${dueCount} klar</span>` : ''} &bull; ${nextDueStr}
                 </div>
               </div>
-              <div class="folder-card-actions" onclick="event.stopPropagation()">
-                <button class="btn-ghost btn-sm" data-action="edit-folder" data-folder-id="${f.id}">&#9998;</button>
-                <button class="btn-danger btn-sm" data-action="delete-folder" data-folder-id="${f.id}">&#128465;</button>
-              </div>
+              ${app.authenticated ? `
+              <div class="collection-card-auth-actions" onclick="event.stopPropagation()">
+                <button class="btn-ghost btn-sm" data-action="edit-collection" data-collection-id="${f.id}">&#9998;</button>
+                <button class="btn-danger btn-sm" data-action="delete-collection" data-collection-id="${f.id}">&#128465;</button>
+              </div>` : ''}
             </div>`;
         }
         html += `</div>`;
       }
 
-      const ungrouped = allPalaces.filter(p => !p.folderId);
+      const ungrouped = allPalaces.filter(p => !p.collectionId);
       if (ungrouped.length > 0) {
-        if (data.folders.length > 0) html += `<div class="folders-section-title">Løse Paladser</div>`;
+        if (data.collections.length > 0) html += `<div class="collections-section-title">Løse Paladser</div>`;
         const due = ungrouped.filter(isDue);
         const rest = ungrouped.filter(p => !isDue(p));
         html += `<div class="palaces-grid">` + [...due, ...rest].map(p => palaceCardHtml(p, '')).join('') + `</div>`;
@@ -1893,8 +1904,10 @@
         <div class="palace-card-actions">
           <button class="btn-teal btn-sm" data-action="choose-review" data-palace-id="${p.id}">&#9654; Gennemgå</button>
           <button class="btn-ghost btn-sm" data-action="view-palace" data-palace-id="${p.id}">&#128065; Se</button>
-          <button class="btn-ghost btn-sm" data-action="edit-palace" data-palace-id="${p.id}">&#9998; Rediger</button>
-          <button class="btn-danger btn-sm" data-action="delete-palace" data-palace-id="${p.id}">&#128465;</button>
+          ${app.authenticated ? `
+            <button class="btn-ghost btn-sm" data-action="edit-palace" data-palace-id="${p.id}">&#9998; Rediger</button>
+            <button class="btn-danger btn-sm" data-action="delete-palace" data-palace-id="${p.id}">&#128465;</button>
+          ` : ''}
         </div>
         ${q ? (() => {
           const hits = p.locations.filter(l =>
@@ -1914,63 +1927,63 @@
       </div>`;
   }
 
-  function renderFolderDetail() {
-    const el = document.getElementById('view-folder-detail');
-    const f = getFolder(app.editingFolderId);
+  function renderCollectionDetail() {
+    const el = document.getElementById('view-collection-detail');
+    const f = getCollection(app.editingCollectionId);
     if (!f) { renderView('dashboard'); return; }
-    const fps = data.palaces.filter(p => p.folderId === f.id);
+    const fps = data.palaces.filter(p => p.collectionId === f.id);
     const due = fps.filter(isDue);
     const rest = fps.filter(p => !isDue(p));
     const sorted = [...due, ...rest];
     let html = `
-      <button class="back-btn" data-action="back-from-folder">&#8592; Alle Paladser</button>
+      <button class="back-btn" data-action="back-from-collection">&#8592; Alle Paladser</button>
       <div class="section-header">
         <div>
-          <h1 style="display:flex;align-items:center;gap:10px;">&#128193; ${esc(f.name)}</h1>
+          <h1 style="display:flex;align-items:center;gap:10px;">&#128218; ${esc(f.name)}</h1>
           ${f.description ? `<p class="muted" style="margin-top:4px;">${esc(f.description)}</p>` : ''}
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn-primary" data-action="new-palace-in-folder" data-folder-id="${f.id}">+ Nyt Palads</button>
+          ${app.authenticated ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
         </div>
       </div>`;
     if (sorted.length === 0) {
       html += `<div class="empty-state">
         <div class="empty-icon">&#127963;</div>
-        <p>Ingen paladser i denne mappe endnu.</p>
-        <button class="btn-primary" data-action="new-palace-in-folder" data-folder-id="${f.id}">Opret Palads</button>
+        <p>Ingen paladser i denne samling endnu.</p>
+        ${app.authenticated ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">Opret Palads</button>` : ''}
       </div>`;
     } else {
       html += `<div class="palaces-grid">` + sorted.map(p => palaceCardHtml(p, '')).join('') + `</div>`;
     }
     el.innerHTML = html;
-    showView('view-folder-detail');
+    showView('view-collection-detail');
   }
 
-  function renderFolderEditor() {
-    const el = document.getElementById('view-folder-editor');
-    const f = app.editingFolderId ? getFolder(app.editingFolderId) : null;
+  function renderCollectionEditor() {
+    const el = document.getElementById('view-collection-editor');
+    const f = app.editingCollectionId ? getCollection(app.editingCollectionId) : null;
     const isEdit = !!f;
     el.innerHTML = `
-      <button class="back-btn" data-action="back-from-folder-editor">&#8592; Tilbage</button>
+      <button class="back-btn" data-action="back-from-collection-editor">&#8592; Tilbage</button>
       <div class="editor-header">
-        <h1>${isEdit ? 'Rediger Mappe' : 'Ny Mappe'}</h1>
+        <h1>${isEdit ? 'Rediger Samling' : 'Ny Samling'}</h1>
       </div>
       <div class="card">
         <div class="form-group">
-          <label>Mappens navn</label>
-          <input type="text" id="folder-editor-name" placeholder="fx Cocktails" value="${esc(f ? f.name : '')}">
+          <label>Samlingens navn</label>
+          <input type="text" id="collection-editor-name" placeholder="fx Cocktails" value="${esc(f ? f.name : '')}">
         </div>
         <div class="form-group">
           <label>Beskrivelse</label>
-          <textarea id="folder-editor-desc" rows="2" placeholder="Beskriv indholdet...">${esc(f ? f.description : '')}</textarea>
+          <textarea id="collection-editor-desc" rows="2" placeholder="Beskriv indholdet...">${esc(f ? f.description : '')}</textarea>
         </div>
         <div class="flex gap-8 mt-16">
-          <button class="btn-primary" data-action="save-folder">${isEdit ? 'Gem ændringer' : 'Opret Mappe'}</button>
-          <button class="btn-ghost" data-action="back-from-folder-editor">Annuller</button>
+          <button class="btn-primary" data-action="save-collection">${isEdit ? 'Gem ændringer' : 'Opret Samling'}</button>
+          <button class="btn-ghost" data-action="back-from-collection-editor">Annuller</button>
         </div>
       </div>`;
-    showView('view-folder-editor');
-    document.getElementById('folder-editor-name').focus();
+    showView('view-collection-editor');
+    document.getElementById('collection-editor-name').focus();
   }
 
   // PALADS-REDIGERING
@@ -2006,12 +2019,12 @@
             </label>
           </div>
         </div>
-        ${data.folders.length > 0 ? `
+        ${data.collections.length > 0 ? `
         <div class="form-group">
-          <label>Mappe</label>
-          <select id="editor-folder" style="width:100%;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:14px;padding:10px 14px;outline:none;">
-            <option value="">— Ingen mappe —</option>
-            ${data.folders.map(f => `<option value="${f.id}" ${(palace && palace.folderId === f.id) || (app.editingFolderId && !isEdit && app.editingFolderId === f.id) ? 'selected' : ''}>${esc(f.name)}</option>`).join('')}
+          <label>Samling</label>
+          <select id="editor-collection" style="width:100%;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:14px;padding:10px 14px;outline:none;">
+            <option value="">— Ingen samling —</option>
+            ${data.collections.map(f => `<option value="${f.id}" ${(palace && palace.collectionId === f.id) || (app.editingCollectionId && !isEdit && app.editingCollectionId === f.id) ? 'selected' : ''}>${esc(f.name)}</option>`).join('')}
           </select>
         </div>` : ''}
         <div class="flex gap-8 mt-16">
@@ -2036,7 +2049,7 @@
       : 'Nu';
 
     let html = `
-      <button class="back-btn" data-action="${p.folderId ? 'back-to-folder' : 'go-dashboard'}">&#8592; ${p.folderId && getFolder(p.folderId) ? esc(getFolder(p.folderId).name) : 'Alle Paladser'}</button>
+      <button class="back-btn" data-action="${p.collectionId ? 'back-to-collection' : 'go-dashboard'}">&#8592; ${p.collectionId && getCollection(p.collectionId) ? esc(getCollection(p.collectionId).name) : 'Alle Paladser'}</button>
       <div class="palace-detail-header">
         <div class="flex" style="justify-content:space-between;align-items:flex-start;gap:12px;">
           <div>
@@ -2485,7 +2498,8 @@
       case 'delete-palace':
         if (confirm('Slet dette palads og alle dets steder og erindringer?')) {
           deletePalace(palaceId);
-          renderView('dashboard');
+          if (app.editingCollectionId) renderView('collection-detail');
+          else renderView('dashboard');
         }
         break;
 
@@ -2494,18 +2508,18 @@
         if (!name) { alert('Angiv venligst et navn til paladstet.'); return; }
         const desc = document.getElementById('editor-desc').value;
         const type = document.querySelector('input[name="palace-type"]:checked')?.value || 'standard';
-        const folderEl = document.getElementById('editor-folder');
-        const folderId = folderEl ? folderEl.value || undefined : undefined;
+        const collectionEl = document.getElementById('editor-collection');
+        const collectionId = collectionEl ? collectionEl.value || undefined : undefined;
         if (app.editingPalaceId) {
-          updatePalace(app.editingPalaceId, { name, description: desc, type, folderId: folderId || undefined });
-          if (app.editingFolderId) renderView('folder-detail');
+          updatePalace(app.editingPalaceId, { name, description: desc, type, collectionId: collectionId || undefined });
+          if (app.editingCollectionId) renderView('collection-detail');
           else renderView('palace-detail');
         } else {
           const p = createPalace(name, desc, type);
-          if (folderId) p.folderId = folderId;
+          if (collectionId) p.collectionId = collectionId;
           saveData();
           app.editingPalaceId = p.id;
-          if (folderId) { app.editingFolderId = folderId; renderView('folder-detail'); }
+          if (collectionId) { app.editingCollectionId = collectionId; renderView('collection-detail'); }
           else renderView('palace-detail');
         }
         break;
@@ -2513,78 +2527,78 @@
 
       case 'back-from-editor': {
         const backPalace = app.editingPalaceId ? getPalace(app.editingPalaceId) : null;
-        if (backPalace && backPalace.folderId) { app.editingFolderId = backPalace.folderId; renderView('folder-detail'); }
-        else if (app.editingFolderId) renderView('folder-detail');
+        if (backPalace && backPalace.collectionId) { app.editingCollectionId = backPalace.collectionId; renderView('collection-detail'); }
+        else if (app.editingCollectionId) renderView('collection-detail');
         else if (app.editingPalaceId) renderView('palace-detail');
         else renderView('dashboard');
         break;
       }
 
-      case 'new-folder':
-        app.editingFolderId = null;
-        renderView('folder-editor');
+      case 'new-collection':
+        app.editingCollectionId = null;
+        renderView('collection-editor');
         break;
 
-      case 'edit-folder':
-        app.editingFolderId = el.dataset.folderId;
-        renderView('folder-editor');
+      case 'edit-collection':
+        app.editingCollectionId = el.dataset.collectionId;
+        renderView('collection-editor');
         break;
 
-      case 'delete-folder': {
-        const fDel = getFolder(el.dataset.folderId);
+      case 'delete-collection': {
+        const fDel = getCollection(el.dataset.collectionId);
         if (!fDel) break;
-        const fpsCount = data.palaces.filter(p => p.folderId === fDel.id).length;
+        const fpsCount = data.palaces.filter(p => p.collectionId === fDel.id).length;
         const msg = fpsCount > 0
-          ? `Slet mappen "${fDel.name}"? De ${fpsCount} paladser i mappen flyttes tilbage til løse paladser.`
-          : `Slet mappen "${fDel.name}"?`;
-        if (confirm(msg)) { deleteFolder(fDel.id); renderView('dashboard'); }
+          ? `Slet samlingen "${fDel.name}"? De ${fpsCount} paladser i samlingen flyttes tilbage til løse paladser.`
+          : `Slet samlingen "${fDel.name}"?`;
+        if (confirm(msg)) { deleteCollection(fDel.id); renderView('dashboard'); }
         break;
       }
 
-      case 'save-folder': {
-        const fname = document.getElementById('folder-editor-name').value.trim();
-        if (!fname) { alert('Angiv venligst et navn til mappen.'); return; }
-        const fdesc = document.getElementById('folder-editor-desc').value;
-        if (app.editingFolderId && getFolder(app.editingFolderId)) {
-          updateFolder(app.editingFolderId, { name: fname, description: fdesc });
-          renderView('folder-detail');
+      case 'save-collection': {
+        const fname = document.getElementById('collection-editor-name').value.trim();
+        if (!fname) { alert('Angiv venligst et navn til samlingen.'); return; }
+        const fdesc = document.getElementById('collection-editor-desc').value;
+        if (app.editingCollectionId && getCollection(app.editingCollectionId)) {
+          updateCollection(app.editingCollectionId, { name: fname, description: fdesc });
+          renderView('collection-detail');
         } else {
-          const nf = createFolder(fname, fdesc);
-          app.editingFolderId = nf.id;
-          renderView('folder-detail');
+          const nf = createCollection(fname, fdesc);
+          app.editingCollectionId = nf.id;
+          renderView('collection-detail');
         }
         break;
       }
 
-      case 'open-folder':
-        app.editingFolderId = el.dataset.folderId;
-        renderView('folder-detail');
+      case 'open-collection':
+        app.editingCollectionId = el.dataset.collectionId;
+        renderView('collection-detail');
         break;
 
-      case 'back-from-folder':
+      case 'back-from-collection':
         renderView('dashboard');
         break;
 
-      case 'back-from-folder-editor':
-        if (app.editingFolderId && getFolder(app.editingFolderId)) renderView('folder-detail');
+      case 'back-from-collection-editor':
+        if (app.editingCollectionId && getCollection(app.editingCollectionId)) renderView('collection-detail');
         else renderView('dashboard');
         break;
 
-      case 'new-palace-in-folder':
-        app.editingFolderId = el.dataset.folderId;
+      case 'new-palace-in-collection':
+        app.editingCollectionId = el.dataset.collectionId;
         app.editingPalaceId = null;
         renderView('palace-editor');
         break;
 
-      case 'back-to-folder': {
+      case 'back-to-collection': {
         const bPalace = getPalace(app.editingPalaceId);
-        if (bPalace && bPalace.folderId) app.editingFolderId = bPalace.folderId;
-        renderView('folder-detail');
+        if (bPalace && bPalace.collectionId) app.editingCollectionId = bPalace.collectionId;
+        renderView('collection-detail');
         break;
       }
 
       case 'go-dashboard':
-        app.editingFolderId = null;
+        app.editingCollectionId = null;
         renderView('dashboard');
         break;
 
