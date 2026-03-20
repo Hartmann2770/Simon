@@ -14,19 +14,19 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #faf8f5;
+      --bg: #f9fafb;
       --surface: #ffffff;
-      --surface-raised: #f5ede0;
-      --accent: #3730a3;
-      --accent-light: #4f46e5;
-      --teal: #166534;
-      --danger: #991b1b;
-      --gold: #b45309;
-      --text: #1c1917;
-      --muted: #78716c;
-      --border: #e5d9cc;
-      --shadow: 0 2px 12px rgba(28,25,23,0.07);
-      --shadow-lg: 0 6px 28px rgba(28,25,23,0.12);
+      --surface-raised: #f0f4ff;
+      --accent: #0369a1;        /* Palads sky blue */
+      --accent-light: #0ea5e9;  /* lighter sky blue */
+      --teal: #16a34a;           /* Gernes green */
+      --danger: #dc2626;
+      --gold: #ea580c;           /* Gernes orange */
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 2px 12px rgba(15,23,42,0.07);
+      --shadow-lg: 0 6px 28px rgba(15,23,42,0.12);
       --radius: 14px;
       --radius-sm: 9px;
     }
@@ -35,8 +35,8 @@
     body {
       min-height: 100%;
       background: var(--bg);
-      background-image: radial-gradient(ellipse at 20% 0%, rgba(55,48,163,0.05) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 100%, rgba(180,83,9,0.04) 0%, transparent 50%);
+      background-image: radial-gradient(ellipse at 15% 0%, rgba(3,105,161,0.07) 0%, transparent 55%),
+                        radial-gradient(ellipse at 85% 100%, rgba(234,88,12,0.05) 0%, transparent 55%);
       background-attachment: fixed;
       color: var(--text);
       font-family: 'Inter', sans-serif;
@@ -50,7 +50,7 @@
       top: 0; left: 0; right: 0;
       height: calc(62px + env(safe-area-inset-top));
       padding-top: env(safe-area-inset-top);
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
@@ -59,13 +59,13 @@
       justify-content: space-between;
       padding: 0 24px;
       z-index: 100;
-      box-shadow: 0 1px 8px rgba(28,25,23,0.06);
+      box-shadow: 0 1px 8px rgba(15,23,42,0.06);
     }
     .app-title {
       font-family: 'Cinzel', serif;
       font-size: 19px;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--gold));
+      background: linear-gradient(135deg, #0369a1 0%, #db2777 35%, #ea580c 65%, #16a34a 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -109,9 +109,9 @@
     button:hover { transform: translateY(-1px); }
     button:active { transform: translateY(0); }
 
-    .btn-primary { background: linear-gradient(135deg, var(--accent), #312e81); color: #fff; box-shadow: 0 2px 12px rgba(55,48,163,0.28); }
-    .btn-primary:hover { background: linear-gradient(135deg, var(--accent-light), var(--accent)); box-shadow: 0 4px 16px rgba(55,48,163,0.38); }
-    .btn-teal { background: linear-gradient(135deg, var(--teal), #14532d); color: #fff; font-weight: 600; box-shadow: 0 2px 10px rgba(22,101,52,0.25); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #075985); color: #fff; box-shadow: 0 2px 12px rgba(3,105,161,0.28); }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--accent-light), var(--accent)); box-shadow: 0 4px 16px rgba(3,105,161,0.38); }
+    .btn-teal { background: linear-gradient(135deg, var(--teal), #14532d); color: #fff; font-weight: 600; box-shadow: 0 2px 10px rgba(22,163,74,0.25); }
     .btn-teal:hover { background: linear-gradient(135deg, #15803d, var(--teal)); }
     .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(224,92,107,0.5); padding: 7px 14px; }
     .btn-danger:hover { background: rgba(224,92,107,0.1); border-color: var(--danger); }
@@ -184,9 +184,9 @@
       position: relative;
     }
     .palace-card:hover {
-      border-color: rgba(55,48,163,0.5);
+      border-color: rgba(3,105,161,0.5);
       transform: translateY(-3px);
-      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(55,48,163,0.12);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(3,105,161,0.12);
     }
     .palace-card-badge {
       position: absolute;
@@ -233,22 +233,20 @@
     /* COLLECTION CARDS */
     .collection-card {
       background: var(--surface);
-      border: 1px solid rgba(55,48,163,0.18);
+      border: 1px solid rgba(3,105,161,0.18);
       border-radius: var(--radius);
       padding: 20px 22px;
       cursor: pointer;
       transition: border-color 0.25s, transform 0.2s, box-shadow 0.2s;
       display: flex;
       align-items: flex-start;
-      gap: 14px;
       position: relative;
     }
     .collection-card:hover {
-      border-color: rgba(55,48,163,0.5);
+      border-color: rgba(3,105,161,0.5);
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
-    .collection-card-icon { font-size: 26px; flex-shrink: 0; padding-top: 3px; }
     .collection-card-body { flex: 1; min-width: 0; }
     .collection-card-name {
       font-family: 'Cinzel', serif;
@@ -292,7 +290,7 @@
     }
     .collections-section-title {
       font-size: 11px;
-      color: var(--gold);
+      color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-weight: 600;
@@ -348,7 +346,7 @@
       overflow: hidden;
       transition: border-color 0.2s;
     }
-    .location-item:hover { border-color: rgba(55,48,163,0.4); }
+    .location-item:hover { border-color: rgba(3,105,161,0.4); }
     .location-header {
       display: flex;
       align-items: center;
@@ -615,6 +613,7 @@
       justify-content: flex-start;
       text-align: left;
       padding: 32px 36px;
+      background: var(--surface-raised);
     }
 
     .review-loc-number {
@@ -646,7 +645,7 @@
     .review-memories-list.size-xs  { font-size: 12px; }
     .review-memory-item {
       padding: 10px 0;
-      border-bottom: 1px solid rgba(229,217,204,0.8);
+      border-bottom: 1px solid rgba(226,232,240,0.8);
       display: flex;
       align-items: flex-start;
       gap: 12px;
@@ -1433,13 +1432,13 @@
   }
 
   function srsColor(srs) {
-    if (!srs || !srs.lastReviewDate) return '#d6c9bb';
+    if (!srs || !srs.lastReviewDate) return '#94a3b8';
     const total = srs.nextReviewDate - srs.lastReviewDate;
-    if (total <= 0) return '#991b1b';
+    if (total <= 0) return '#dc2626';
     const ratio = (Date.now() - srs.lastReviewDate) / total;
     const clamped = Math.max(0, Math.min(1.5, ratio));
     const hue = Math.round(120 - (clamped / 1.5) * 120);
-    return `hsl(${hue}, 55%, 35%)`;
+    return `hsl(${hue}, 65%, 38%)`;
   }
 
   // ── PALADS CRUD ────────────────────────────────────────────────────
@@ -1789,7 +1788,6 @@
           const accentColor = fps.length > 0 ? `hsl(${accentHue}, 70%, 38%)` : 'hsl(0,0%,35%)';
           html += `
             <div class="collection-card" data-action="open-collection" data-collection-id="${f.id}" style="border-left: 3px solid ${accentColor};">
-              <div class="collection-card-icon">&#128218;</div>
               <div class="collection-card-body">
                 <div class="collection-card-name">${esc(f.name)}</div>
                 ${f.description ? `<div class="collection-card-desc">${esc(f.description)}</div>` : ''}
