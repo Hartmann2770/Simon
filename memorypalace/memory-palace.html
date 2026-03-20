@@ -3320,9 +3320,16 @@
     _loginCallback = null;
   };
 
-  window.submitLogin = function() {
+  const _PW_HASH = '808927a4db0b89e1ca292ccfe2a9dcc77ebbc6a96be7c7115a0980f7c3e9e776';
+  async function _sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  window.submitLogin = async function() {
     const code = document.getElementById('login-code-input').value;
-    if (code === '19143057') {
+    const hash = await _sha256(code);
+    if (hash === _PW_HASH) {
       app.authenticated = true;
       updateAuthButton();
       closeLoginModal();
