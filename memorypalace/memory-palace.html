@@ -1345,7 +1345,7 @@
     saveData();
   }
 
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
   function loadData() {
@@ -1741,7 +1741,7 @@
       <div class="section-header">
         <h1>Dine Paladser</h1>
         <div style="display:flex;gap:8px;align-items:center">
-          ${app.authenticated ? `<button class="btn-ghost" data-action="new-collection">&#128218; Ny Samling</button>` : ''}
+          ${app.authenticated ? `<button class="btn-ghost" data-action="new-collection">+ Ny Samling</button>` : ''}
           ${app.authenticated ? `<button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>` : ''}
         </div>
       </div>
@@ -1880,7 +1880,7 @@
       <button class="back-btn" data-action="back-from-collection">&#8592; Alle Paladser</button>
       <div class="section-header">
         <div>
-          <h1 style="display:flex;align-items:center;gap:10px;">&#128218; ${esc(f.name)}</h1>
+          <h1>${esc(f.name)}</h1>
           ${f.description ? `<p class="muted" style="margin-top:4px;">${esc(f.description)}</p>` : ''}
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
@@ -2313,7 +2313,23 @@
     }
 
     html += `
-        <button class="btn-ghost" data-action="skip-review">Spring over &amp; bedøm senere</button>
+        <button class="btn-ghost" data-action="skip-review">Spring over</button>
+      </div>
+
+      <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">
+        <button data-action="toggle-review-peg" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;">
+          <span style="font-size:11px;transition:transform 0.2s;display:inline-block;transform:rotate(${app.reviewPegOpen ? '90' : '0'}deg)">▶</span>
+          Peg-liste
+        </button>
+        ${app.reviewPegOpen ? `
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:4px 8px;">
+          ${(data.settings.pegList || []).map(([num, word]) =>
+            `<div style="font-size:13px;display:flex;gap:6px;align-items:baseline;">
+              <span style="font-weight:600;color:var(--accent);font-size:11px;min-width:20px;">${num}</span>
+              <span style="color:var(--text);">${esc(word)}</span>
+            </div>`
+          ).join('')}
+        </div>` : ''}
       </div>`;
 
     el.innerHTML = html;
@@ -2888,6 +2904,11 @@
       case 'skip-review':
         if (app.editingCollectionId) renderView('collection-detail');
         else renderView('dashboard');
+        break;
+
+      case 'toggle-review-peg':
+        app.reviewPegOpen = !app.reviewPegOpen;
+        renderReviewSession();
         break;
 
     }
