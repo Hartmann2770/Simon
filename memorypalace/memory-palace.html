@@ -1460,16 +1460,17 @@
 
   // ── GENTAGELSES-ALGORITME (SM-2) ───────────────────────────────────
   function computeNextReview(srs, quality) {
+    const minInterval = data.settings.reviewIntervalDays || 1;
     let { interval, repetition, efactor } = srs;
     const q = Math.max(1, Math.min(5, quality));
 
     if (q < 3) {
       repetition = 0;
-      interval = 1;
+      interval = minInterval;
     } else {
-      if (repetition === 0) interval = 1;
-      else if (repetition === 1) interval = 6;
-      else interval = Math.round(interval * efactor);
+      if (repetition === 0) interval = minInterval;
+      else if (repetition === 1) interval = Math.max(minInterval, 6);
+      else interval = Math.max(minInterval, Math.round(interval * efactor));
       repetition += 1;
     }
 
