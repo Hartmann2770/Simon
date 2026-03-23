@@ -1433,7 +1433,9 @@
 
   function srsColor(srs) {
     if (!srs || !srs.lastReviewDate) return '#94a3b8'; // grå: aldrig øvet
-    const daysLeft = (srs.nextReviewDate - Date.now()) / 86400000;
+    const interval = (data.settings && data.settings.reviewIntervalDays) || 30;
+    const dueAt = srs.lastReviewDate + interval * 86400000;
+    const daysLeft = (dueAt - Date.now()) / 86400000;
     if (daysLeft < 7)  return '#dc2626'; // rød: < 1 uge (inkl. forfaldne)
     if (daysLeft < 14) return '#eab308'; // gul: < 2 uger
     return '#22c55e';                    // grøn: > 2 uger
@@ -1441,7 +1443,8 @@
 
   function srsIsOverdue(srs) {
     if (!srs || !srs.lastReviewDate) return false;
-    return srs.nextReviewDate <= Date.now();
+    const interval = (data.settings && data.settings.reviewIntervalDays) || 30;
+    return srs.lastReviewDate + interval * 86400000 <= Date.now();
   }
 
   // ── PALADS CRUD ────────────────────────────────────────────────────
