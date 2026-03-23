@@ -1386,20 +1386,23 @@
     { _collTag: 'col-trivia',    name: '🧩 Generel Viden',   description: 'Trivia og almen viden', palaces: [{ builtinTag: 'trivia-1' }, { builtinTag: 'trivia-2' }] },
     { _collTag: 'col-science',   name: '⚗️ Naturvidenskab',  description: 'Det periodiske system og naturvidenskabelige fakta', palaces: [{ builtinTag: 'periodic' }] },
   ];
-  for (const cs of BUILTIN_COLLECTIONS_SEED) {
-    let col = data.collections.find(c => c._collTag === cs._collTag);
-    if (!col) {
-      col = { id: genId(), name: cs.name, description: cs.description, _collTag: cs._collTag, createdAt: Date.now() };
-      data.collections.push(col);
+  function seedCollections() {
+    for (const cs of BUILTIN_COLLECTIONS_SEED) {
+      let col = data.collections.find(c => c._collTag === cs._collTag);
+      if (!col) {
+        col = { id: genId(), name: cs.name, description: cs.description, _collTag: cs._collTag, createdAt: Date.now() };
+        data.collections.push(col);
+      }
+      for (const pt of cs.palaces) {
+        const palace = pt.histTag
+          ? data.palaces.find(p => p._histTag === pt.histTag)
+          : data.palaces.find(p => p._builtinTag === pt.builtinTag);
+        if (palace && !palace.collectionId) { palace.collectionId = col.id; }
+      }
+      saveData();
     }
-    for (const pt of cs.palaces) {
-      const palace = pt.histTag
-        ? data.palaces.find(p => p._histTag === pt.histTag)
-        : data.palaces.find(p => p._builtinTag === pt.builtinTag);
-      if (palace && !palace.collectionId) { palace.collectionId = col.id; }
-    }
-    saveData();
   }
+  seedCollections();
 
   let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false, sessionPw: null };
   _appReady = true;
@@ -1465,7 +1468,7 @@
       const localTs  = data._savedAt || 0;
       if (serverTs > localTs) {
         data = serverData;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        seedCollections();
         renderView('dashboard');
       }
     } catch (e) {
