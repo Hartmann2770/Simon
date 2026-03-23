@@ -733,9 +733,9 @@
 
     @media (max-width: 480px) {
       /* App bar: behold safe-area top-padding, tilføj sidepadding */
-      #app-bar { padding-left: 10px; padding-right: 10px; gap: 6px; }
+      #app-bar { padding-left: 10px; padding-right: 10px; gap: 6px; justify-content: flex-end; }
       .app-title { display: none; }
-      #palads-logo { pointer-events: auto !important; cursor: pointer; height: 36px; }
+      #palads-logo { pointer-events: none !important; cursor: default; width: 100%; height: 100%; object-fit: cover; object-position: center top; left: 0; top: 0; transform: none; opacity: 0.22; }
       .btn-label { display: none; }
 
       /* Indhold: top-padding matcher app-bar højde inkl. safe-area */
