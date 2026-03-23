@@ -3,7 +3,7 @@
 *.docx
 *.pdf
 *.png
-!memorypalace/simon.png
+!simonhartmann/simon.png
 *.jpg
 *.jpeg
 *.gif
