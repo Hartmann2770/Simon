@@ -1432,13 +1432,16 @@
   }
 
   function srsColor(srs) {
-    if (!srs || !srs.lastReviewDate) return '#94a3b8';
-    const total = srs.nextReviewDate - srs.lastReviewDate;
-    if (total <= 0) return '#dc2626';
-    const ratio = (Date.now() - srs.lastReviewDate) / total;
-    const clamped = Math.max(0, Math.min(1.5, ratio));
-    const hue = Math.round(120 - (clamped / 1.5) * 120);
-    return `hsl(${hue}, 65%, 38%)`;
+    if (!srs || !srs.lastReviewDate) return '#94a3b8'; // grå: aldrig øvet
+    const daysLeft = (srs.nextReviewDate - Date.now()) / 86400000;
+    if (daysLeft < 7)  return '#dc2626'; // rød: < 1 uge (inkl. forfaldne)
+    if (daysLeft < 14) return '#eab308'; // gul: < 2 uger
+    return '#22c55e';                    // grøn: > 2 uger
+  }
+
+  function srsIsOverdue(srs) {
+    if (!srs || !srs.lastReviewDate) return false;
+    return srs.nextReviewDate <= Date.now();
   }
 
   // ── PALADS CRUD ────────────────────────────────────────────────────
@@ -1774,7 +1777,7 @@
           const palaceChips = fps.length > 0
             ? fps.map(p => `
                 <div style="display:inline-flex;align-items:center;gap:5px;background:var(--surface-raised);border-radius:20px;padding:3px 10px 3px 7px;font-size:12px;color:var(--text);">
-                  <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${srsColor(p.srs)};box-shadow:0 0 4px ${srsColor(p.srs)};"></div>
+                  <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${srsColor(p.srs)};box-shadow:${srsIsOverdue(p.srs)?'0 0 5px 2px #dc2626,0 0 12px 3px rgba(220,38,38,0.4)':'0 0 4px '+srsColor(p.srs)};"></div>
                   ${esc(p.name)}
                 </div>`).join('')
             : `<span style="color:var(--muted);font-size:12px;font-style:italic;">Ingen paladser endnu</span>`;
@@ -1821,7 +1824,7 @@
       <div class="palace-card" data-palace-id="${p.id}">
         ${showBadge ? `<span class="palace-card-badge">${badgeText}</span>` : ''}
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:${dotColor};flex-shrink:0;box-shadow:0 0 5px ${dotColor};"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:${dotColor};flex-shrink:0;box-shadow:${srsIsOverdue(p.srs)?'0 0 6px 2px #dc2626,0 0 18px 4px rgba(220,38,38,0.45)':'0 0 5px '+dotColor};"></div>
           <div class="palace-card-name" style="margin-bottom:0;padding-right:${showBadge?'60px':'0'}">${esc(p.name)}${p.type === 'trivia' ? ' <span style="font-size:11px;background:var(--surface-raised);border:1px solid var(--border);border-radius:4px;padding:1px 6px;vertical-align:middle;color:var(--muted)">Trivia</span>' : ''}</div>
         </div>
         <div class="palace-card-desc">${esc(p.description) || '<em style="color:var(--muted)">Ingen beskrivelse</em>'}</div>
