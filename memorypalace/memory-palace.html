@@ -1921,18 +1921,19 @@
     return `
       <div class="palace-card" data-palace-id="${p.id}">
         ${showBadge ? `<span class="palace-card-badge">${badgeText}</span>` : ''}
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:${dotColor};flex-shrink:0;box-shadow:${srsIsOverdue(p.srs)?'0 0 6px 2px #dc2626,0 0 18px 4px rgba(220,38,38,0.45)':'0 0 5px '+dotColor};"></div>
-          <div class="palace-card-name" style="margin-bottom:0;padding-right:${showBadge?'60px':'0'}">${esc(p.name)}${p.type === 'trivia' ? ' <span style="font-size:11px;background:var(--surface-raised);border:1px solid var(--border);border-radius:4px;padding:1px 6px;vertical-align:middle;color:var(--muted)">Trivia</span>' : ''}</div>
-        </div>
-        <div class="palace-card-desc">${esc(p.description) || '<em style="color:var(--muted)">Ingen beskrivelse</em>'}</div>
-        <div class="palace-card-meta">
-          <span>&#128205; ${locCount} ${locCount !== 1 ? 'steder' : 'sted'}</span>
-          <span>&#128214; ${memCount} ${memCount !== 1 ? 'erindringer' : 'erindring'}</span>
-          <span>&#128197; ${reviewed ? 'Sidst: ' + formatDate(p.srs.lastReviewDate) : 'Aldrig gennemgået'}</span>
+        <div data-action="choose-review" data-palace-id="${p.id}" style="cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:12px;height:12px;border-radius:50%;background:${dotColor};flex-shrink:0;box-shadow:${srsIsOverdue(p.srs)?'0 0 6px 2px #dc2626,0 0 18px 4px rgba(220,38,38,0.45)':'0 0 5px '+dotColor};"></div>
+            <div class="palace-card-name" style="margin-bottom:0;padding-right:${showBadge?'60px':'0'}">${esc(p.name)}${p.type === 'trivia' ? ' <span style="font-size:11px;background:var(--surface-raised);border:1px solid var(--border);border-radius:4px;padding:1px 6px;vertical-align:middle;color:var(--muted)">Trivia</span>' : ''}</div>
+          </div>
+          <div class="palace-card-desc">${esc(p.description) || '<em style="color:var(--muted)">Ingen beskrivelse</em>'}</div>
+          <div class="palace-card-meta">
+            <span>&#128205; ${locCount} ${locCount !== 1 ? 'steder' : 'sted'}</span>
+            <span>&#128214; ${memCount} ${memCount !== 1 ? 'erindringer' : 'erindring'}</span>
+            <span>&#128197; ${reviewed ? 'Sidst: ' + formatDate(p.srs.lastReviewDate) : 'Aldrig gennemgået'}</span>
+          </div>
         </div>
         <div class="palace-card-actions">
-          <button class="btn-teal btn-sm" data-action="choose-review" data-palace-id="${p.id}">&#9654; Gennemgå</button>
           <button class="btn-ghost btn-sm" data-action="view-palace" data-palace-id="${p.id}">&#128065; Se</button>
           ${app.authenticated ? `
             <button class="btn-ghost btn-sm" data-action="edit-palace" data-palace-id="${p.id}">&#9998; Rediger</button>
