@@ -6,7 +6,7 @@
   <title>Simon Hartmann</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,10 +23,10 @@
 
     .container {
       width: 100%;
-      max-width: 560px;
+      max-width: 780px;
       display: flex;
       flex-direction: column;
-      gap: 36px;
+      gap: 40px;
     }
 
     .back-link {
@@ -38,9 +38,26 @@
     }
     .back-link:hover { color: #2c2c2c; }
 
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(72px, 14vw, 140px);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      line-height: 1;
+      color: #1C3255;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
     img {
-      width: 96px;
-      height: 96px;
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -64,6 +81,11 @@
       transition: color 0.15s;
     }
     .links a:hover { color: #2c2c2c; }
+
+    @media (max-width: 560px) {
+      .content { grid-template-columns: 1fr; }
+      img { width: 120px; height: 120px; }
+    }
   </style>
 </head>
 <body>
@@ -71,13 +93,16 @@
 
   <a class="back-link" href="/">← simonhartmann.dk</a>
 
-  <img src="simon.png" alt="Simon Hartmann">
+  <h1>About me</h1>
 
-  <div class="text">
+  <div class="content">
+    <img src="simon.png" alt="Simon Hartmann">
+    <div class="text">
     <p>I am a Learning Lead at Laerdal, working with strategy, design, and implementation of learning across products and the organization. My current primary focus is AI in learning, both how AI can be embedded meaningfully in learning experiences and how we as a company can use AI to work more effectively, coherently, and responsibly.</p>
     <p>I have a background as a teacher and learning specialist, with many years of experience designing digital learning solutions, particularly within healthcare education. This includes extensive work with scenario‑based learning, immersive technologies, and VR. That experience has given me a strong grounding in pedagogy and practice, and a clear sense of where technology genuinely adds value and where it does not.</p>
     <p>Today, my work increasingly operates at a strategic level. I focus on how learning, technology, and organization intersect, with particular attention to learning impact, measurement, and readiness to act. I am especially interested in ensuring that AI supports human judgment and capability, rather than replacing it.</p>
     <p>I work best at the intersection of learning design, product development, and technology, and I value close collaboration with multidisciplinary teams.</p>
+    </div>
   </div>
 
   <div class="links">
