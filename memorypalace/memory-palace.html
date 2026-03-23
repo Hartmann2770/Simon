@@ -879,6 +879,7 @@
   <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
   
   <div style="display:flex;align-items:center;gap:8px">
+    <span id="sync-indicator" style="font-size:13px;min-width:14px;text-align:center;"></span>
     <button class="btn-ghost btn-sm" id="peg-toggle-btn" onclick="togglePegSidebar()" style="font-size:13px">&#128220; <span class="btn-label">Peg-liste</span></button>
     <button class="btn-ghost btn-sm" id="settings-btn" onclick="openSettingsModal()" title="Indstillinger" style="font-size:15px;display:none;">&#9881;</button>
     <button class="btn-ghost btn-sm" id="auth-btn" onclick="handleAuthBtn()" style="font-size:13px">&#128274; <span class="btn-label">Log ind</span></button>
@@ -952,6 +953,9 @@
 <script>
 (function () {
   const STORAGE_KEY = 'memoryPalaceApp';
+  const API_URL = 'https://simonhartmann.dk/api.php';
+  let _syncTimer = null;
+  let _syncStatus = 'idle'; // idle | syncing | ok | error
   const SM2_EF_DEFAULT = 2.5;
   const SM2_EF_MIN = 1.3;
 
@@ -1354,7 +1358,7 @@
     saveData();
   }
 
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false, sessionPw: null };
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
   function loadData() {
@@ -1373,7 +1377,55 @@
   }
 
   function saveData() {
+    data._savedAt = data._savedAt || Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (app.authenticated && app.sessionPw) {
+      clearTimeout(_syncTimer);
+      _syncTimer = setTimeout(syncToServer, 2000);
+    }
+  }
+
+  function setSyncIndicator(status) {
+    _syncStatus = status;
+    const el = document.getElementById('sync-indicator');
+    if (!el) return;
+    const map = { idle: '', syncing: '⟳', ok: '✓', error: '✗' };
+    const col = { idle: '', syncing: 'var(--muted)', ok: '#22c55e', error: '#dc2626' };
+    el.textContent = map[status] || '';
+    el.style.color = col[status] || '';
+  }
+
+  async function syncToServer() {
+    if (!app.sessionPw) return;
+    setSyncIndicator('syncing');
+    try {
+      const resp = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pw: app.sessionPw, data })
+      });
+      setSyncIndicator(resp.ok ? 'ok' : 'error');
+    } catch (e) {
+      setSyncIndicator('error');
+    }
+  }
+
+  async function loadFromServer() {
+    try {
+      const resp = await fetch(API_URL);
+      if (!resp.ok) return;
+      const serverData = await resp.json();
+      if (!serverData || !serverData.palaces) return;
+      const serverTs = serverData._savedAt || 0;
+      const localTs  = data._savedAt || 0;
+      if (serverTs > localTs) {
+        data = serverData;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        renderView('dashboard');
+      }
+    } catch (e) {
+      // Ingen server tilgængelig – fortsæt med localStorage
+    }
   }
 
   function genId() {
@@ -3253,6 +3305,7 @@
     const hash = await _sha256(code);
     if (hash === _PW_HASH) {
       app.authenticated = true;
+      app.sessionPw = code;
       updateAuthButton();
       closeLoginModal();
       if (_loginCallback) { const cb = _loginCallback; _loginCallback = null; cb(); }
@@ -3451,6 +3504,7 @@
   // ── INIT ───────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     renderView('dashboard');
+    loadFromServer();
   });
 
 })();

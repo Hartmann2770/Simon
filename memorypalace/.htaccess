@@ -1,0 +1,4 @@
+<Files "palace_data.json">
+    Order allow,deny
+    Deny from all
+</Files>

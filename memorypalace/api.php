@@ -1,0 +1,34 @@
+<?php
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit; }
+
+$DATA_FILE = __DIR__ . '/palace_data.json';
+$PW_HASH   = '808927a4db0b89e1ca292ccfe2a9dcc77ebbc6a96be7c7115a0980f7c3e9e776';
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    echo file_exists($DATA_FILE) ? file_get_contents($DATA_FILE) : 'null';
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $payload = json_decode(file_get_contents('php://input'), true);
+    if (!$payload || !isset($payload['pw']) || hash('sha256', $payload['pw']) !== $PW_HASH) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+    if (file_put_contents($DATA_FILE, json_encode($payload['data'], JSON_UNESCAPED_UNICODE)) === false) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Skriv fejlede']);
+        exit;
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
+http_response_code(405);
+echo json_encode(['error' => 'Method not allowed']);
