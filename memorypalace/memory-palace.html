@@ -908,6 +908,9 @@
         border-radius: 16px 16px 0 0;
       }
       #peg-sidebar.open { transform: translateY(0) !important; }
+      body.peg-sidebar-open #view-review-session {
+        padding-bottom: 42vh;
+      }
     }
   </style>
 </head>
@@ -3301,6 +3304,7 @@
     const btn      = document.getElementById('peg-toggle-btn');
     const isOpen   = sidebar.classList.toggle('open');
     btn.classList.toggle('active', isOpen);
+    document.body.classList.toggle('peg-sidebar-open', isOpen);
     if (isOpen) renderPegList();
   };
 
