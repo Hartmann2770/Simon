@@ -393,7 +393,15 @@
       gap: 8px;
       align-items: flex-start;
     }
-    .add-memory-form input { width: 100%; }
+    .add-memory-form input, .add-memory-form textarea { width: 100%; }
+    .add-memory-form textarea, .memory-item textarea {
+      resize: none;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: 1.4;
+      overflow: hidden;
+      min-height: 34px;
+    }
 
     .add-location-form {
       background: var(--surface);
@@ -2146,15 +2154,16 @@
         if (app.editingNoteId === note.id) {
           html += `
           <div class="memory-item">
-            <input type="text" id="edit-note-${note.id}" value="${esc(note.text)}" style="flex:1;"
-              onkeydown="handleNoteEditKeydown(event,'${p.id}','${room.id}','${note.id}')">
+            <textarea id="edit-note-${note.id}" style="flex:1;" rows="1"
+              onkeydown="handleNoteEditKeydown(event,'${p.id}','${room.id}','${note.id}')"
+              oninput="autoResizeTextarea(this)">${esc(note.text)}</textarea>
             <button class="btn-primary btn-sm" data-action="save-note-edit" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}">Gem</button>
             <button class="btn-ghost btn-sm" data-action="cancel-note-edit">Annuller</button>
           </div>`;
         } else {
           html += `
           <div class="memory-item">
-            <span class="memory-text">${esc(note.text)}</span>
+            <span class="memory-text">${escLines(note.text)}</span>
             <button class="btn-icon" data-action="edit-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Rediger">&#9998;</button>
             <button class="btn-icon" data-action="delete-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Slet" style="color:var(--danger)">&#10005;</button>
           </div>`;
@@ -2258,8 +2267,9 @@
       if (app.editingMemId === mem.id) {
         html += `
         <div class="memory-item">
-          <input type="text" id="edit-mem-${mem.id}" value="${esc(mem.text)}" style="flex:1;"
-            onkeydown="handleMemEditKeydown(event,'${palaceId}','${loc.id}','${mem.id}')">
+          <textarea id="edit-mem-${mem.id}" style="flex:1;" rows="1"
+            onkeydown="handleMemEditKeydown(event,'${palaceId}','${loc.id}','${mem.id}')"
+            oninput="autoResizeTextarea(this)">${esc(mem.text)}</textarea>
           <button class="btn-primary btn-sm" data-action="save-mem-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}">Gem</button>
           <button class="btn-ghost btn-sm" data-action="cancel-mem-edit">Annuller</button>
         </div>`;
@@ -2276,8 +2286,14 @@
     html += `
         <div class="add-memory-form">
           <div style="display:flex;gap:6px;flex:1;flex-direction:column;">
-            <input type="text" id="mem-input-${loc.id}" placeholder="Erindring..." onkeydown="handleMemKeydown(event,'${palaceId}','${loc.id}')">
-            <input type="text" id="mem-mnemonic-${loc.id}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);" onkeydown="handleMnemonicKeydown(event,'${palaceId}','${loc.id}')" onblur="setTimeout(()=>autoSaveMnemonic('${palaceId}','${loc.id}'),150)">
+            <textarea id="mem-input-${loc.id}" placeholder="Erindring… (Shift+Enter for at tilføje)" rows="1"
+              onkeydown="handleMemKeydown(event,'${palaceId}','${loc.id}')"
+              oninput="autoResizeTextarea(this)"></textarea>
+            <textarea id="mem-mnemonic-${loc.id}" placeholder="🧠 Mnemonisk note (valgfrit)…" rows="1"
+              style="font-size:13px;color:var(--muted);"
+              onkeydown="handleMnemonicKeydown(event,'${palaceId}','${loc.id}')"
+              oninput="autoResizeTextarea(this)"
+              onblur="setTimeout(()=>autoSaveMnemonic('${palaceId}','${loc.id}'),150)"></textarea>
           </div>
           <button class="btn-ghost btn-sm" data-action="add-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" style="align-self:flex-start;margin-top:2px;">Tilføj</button>
         </div>
@@ -2709,8 +2725,10 @@
         nArea.innerHTML = `
           <div class="add-location-form" style="margin-bottom:6px;">
             <div style="display:flex;gap:6px;flex-direction:column;margin-bottom:8px;">
-              <input type="text" id="new-note-text-${noteRoomId}" placeholder="Erindring...">
-              <input type="text" id="new-note-mnemonic-${noteRoomId}" placeholder="🧠 Mnemonisk note (valgfrit)..." style="font-size:13px;color:var(--muted);">
+              <textarea id="new-note-text-${noteRoomId}" placeholder="Erindring… (Shift+Enter for at tilføje)" rows="1"
+                oninput="autoResizeTextarea(this)"></textarea>
+              <textarea id="new-note-mnemonic-${noteRoomId}" placeholder="🧠 Mnemonisk note (valgfrit)…" rows="1"
+                style="font-size:13px;color:var(--muted);" oninput="autoResizeTextarea(this)"></textarea>
             </div>
             <div style="display:flex;gap:6px;">
               <button class="btn-primary btn-sm" data-action="add-note" data-palace-id="${palaceId}" data-room-id="${noteRoomId}">Tilføj</button>
@@ -2743,7 +2761,7 @@
         renderPalaceDetail();
         setTimeout(() => {
           const inp = document.getElementById(`edit-note-${noteId}`);
-          if (inp) { inp.focus(); inp.select(); }
+          if (inp) { autoResizeTextarea(inp); inp.focus(); inp.select(); }
         }, 50);
         break;
       }
@@ -2853,7 +2871,7 @@
         renderPalaceDetail();
         setTimeout(() => {
           const inp = document.getElementById(`edit-mem-${memId}`);
-          if (inp) { inp.focus(); inp.select(); }
+          if (inp) { autoResizeTextarea(inp); inp.focus(); inp.select(); }
         }, 50);
         break;
 
@@ -3032,7 +3050,8 @@
 
   // ── TASTATURGENVEJE ────────────────────────────────────────────────
   window.handleMemKeydown = function (e, palaceId, locId) {
-    if (e.key !== 'Enter') return;
+    if (e.key !== 'Enter' || !e.shiftKey) return;
+    e.preventDefault();
     const textInp     = document.getElementById(`mem-input-${locId}`);
     const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
     const text     = textInp     ? textInp.value.trim()     : '';
@@ -3048,7 +3067,7 @@
   };
 
   window.handleMnemonicKeydown = function(e, palaceId, locId) {
-    if (e.key === 'Enter') { handleMemKeydown(e, palaceId, locId); return; }
+    if (e.key === 'Enter' && e.shiftKey) { handleMemKeydown(e, palaceId, locId); return; }
     if (e.key !== 'Tab') return;
     e.preventDefault();
     const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
@@ -3068,6 +3087,11 @@
     const idx = all.findIndex(el => el.id === `mem-mnemonic-${locId}`);
     const next = all[e.shiftKey ? idx - 1 : idx + 1];
     if (next) next.focus();
+  };
+
+  window.autoResizeTextarea = function(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = ta.scrollHeight + 'px';
   };
 
   window.autoSaveMnemonic = function(palaceId, locId) {
@@ -3136,7 +3160,8 @@
   };
 
   window.handleNoteEditKeydown = function(e, palaceId, roomId, noteId) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
       const text = e.target.value.trim();
       if (text) updateNote(palaceId, roomId, noteId, text);
       app.editingNoteId = null;
@@ -3148,7 +3173,8 @@
   };
 
   window.handleMemEditKeydown = function(e, palaceId, locId, memId) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
       const text = e.target.value.trim();
       if (text) updateMemory(palaceId, locId, memId, text);
       app.editingMemId = null;
