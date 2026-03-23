@@ -1379,7 +1379,7 @@
   }
 
   function saveData() {
-    data._savedAt = data._savedAt || Date.now();
+    data._savedAt = Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     if (_appReady && app.authenticated && app.sessionPw) {
       clearTimeout(_syncTimer);
@@ -1407,6 +1407,7 @@
         body: JSON.stringify({ pw: app.sessionPw, data })
       });
       setSyncIndicator(resp.ok ? 'ok' : 'error');
+      if (resp.ok) setTimeout(() => setSyncIndicator('idle'), 3000);
     } catch (e) {
       setSyncIndicator('error');
     }
@@ -1414,7 +1415,7 @@
 
   async function loadFromServer() {
     try {
-      const resp = await fetch(API_URL);
+      const resp = await fetch(API_URL + '?t=' + Date.now());
       if (!resp.ok) return;
       const serverData = await resp.json();
       if (!serverData || !serverData.palaces) return;

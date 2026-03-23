@@ -10,6 +10,7 @@ $DATA_FILE = __DIR__ . '/palace_data.json';
 $PW_HASH   = '808927a4db0b89e1ca292ccfe2a9dcc77ebbc6a96be7c7115a0980f7c3e9e776';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    header('Cache-Control: no-store, no-cache, must-revalidate');
     echo file_exists($DATA_FILE) ? file_get_contents($DATA_FILE) : 'null';
     exit;
 }
