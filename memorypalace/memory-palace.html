@@ -1379,7 +1379,7 @@
   }
 
   function saveData() {
-    data._savedAt = Date.now();
+    if (_appReady) data._savedAt = Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     if (_appReady && app.authenticated && app.sessionPw) {
       clearTimeout(_syncTimer);
