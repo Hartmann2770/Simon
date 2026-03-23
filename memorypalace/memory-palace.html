@@ -1874,7 +1874,7 @@
           const fps = allPalaces.filter(p => p.collectionId === f.id);
           const palaceChips = fps.length > 0
             ? fps.map(p => `
-                <div data-action="choose-review" data-palace-id="${p.id}" onclick="event.stopPropagation()" style="display:inline-flex;align-items:center;gap:5px;background:var(--surface-raised);border-radius:20px;padding:3px 10px 3px 7px;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.15s;" onmouseenter="this.style.background='var(--border)'" onmouseleave="this.style.background='var(--surface-raised)'">
+                <div data-action="choose-review" data-palace-id="${p.id}" style="display:inline-flex;align-items:center;gap:5px;background:var(--surface-raised);border-radius:20px;padding:3px 10px 3px 7px;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.15s;" onmouseenter="this.style.background='var(--border)'" onmouseleave="this.style.background='var(--surface-raised)'">
                   <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${srsColor(p.srs)};box-shadow:${srsIsOverdue(p.srs)?'0 0 5px 2px #dc2626,0 0 12px 3px rgba(220,38,38,0.4)':'0 0 4px '+srsColor(p.srs)};"></div>
                   ${esc(p.name)}
                 </div>`).join('')
