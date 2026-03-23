@@ -3409,6 +3409,7 @@
           };
           // Bevar interne system-felter så initialiseringen ikke duplikerer paladset
           if (existing && existing._histTag) { importedPalace._histTag = existing._histTag; importedPalace._v = existing._v; }
+          if (existing && existing.collectionId) importedPalace.collectionId = existing.collectionId;
 
           const idx = data.palaces.findIndex(p => p.name === paladsNavn);
           if (idx !== -1) data.palaces[idx] = importedPalace;
