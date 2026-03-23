@@ -44,12 +44,43 @@
       line-height: 1.6;
     }
 
+    /* ANIMATED GRADIENT BAR */
+    @keyframes gradientFlow {
+      from { background-position: 0% 0%; }
+      to   { background-position: 100% 0%; }
+    }
+    #gradient-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: calc(4px + env(safe-area-inset-top));
+      z-index: 101;
+      background: linear-gradient(90deg,
+        #feea2a  0%,
+        #f8b116  8.33%,
+        #f8e595 16.67%,
+        #858ce1 25%,
+        #7557da 33.33%,
+        #d178de 41.67%,
+        #feea2a 50%,
+        #f8b116 58.33%,
+        #f8e595 66.67%,
+        #858ce1 75%,
+        #7557da 83.33%,
+        #d178de 91.67%,
+        #feea2a 100%
+      );
+      background-size: 200% 100%;
+      animation: gradientFlow 20s linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #gradient-bar { animation: none; }
+    }
+
     /* APP BAR */
     #app-bar {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      height: calc(68px + env(safe-area-inset-top));
-      padding-top: env(safe-area-inset-top);
+      top: calc(4px + env(safe-area-inset-top)); left: 0; right: 0;
+      height: 48px;
       background: rgba(255,255,255,0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -65,10 +96,7 @@
       font-family: 'Cinzel', serif;
       font-size: 19px;
       font-weight: 700;
-      background: linear-gradient(135deg, #7557da 0%, #858ce1 35%, #d178de 65%, #f8b116 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #7557da;
       letter-spacing: 0.04em;
       cursor: pointer;
     }
@@ -77,7 +105,7 @@
     #app-root {
       max-width: 720px;
       margin: 0 auto;
-      padding: calc(86px + env(safe-area-inset-top)) 16px 40px;
+      padding: calc(64px + env(safe-area-inset-top)) 16px 40px;
     }
 
     .view { display: none; }
@@ -883,6 +911,7 @@
 <body>
 <input type="file" id="excel-file-input" accept=".xlsx" style="display:none" onchange="handleExcelFile(this)">
 
+<div id="gradient-bar"></div>
 <header id="app-bar">
   <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
   
