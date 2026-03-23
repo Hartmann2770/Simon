@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simon Hartmann — Learning Specialist</title>
+  <meta name="description" content="Simon Hartmann – Learning Specialist exploring VR and AI in education. Senior Learning Specialist at Laerdal Medical.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #1C3255;
+      --navy-2:  #162844;
+      --accent:  #2E86C1;
+      --text:    #2c2c2c;
+      --muted:   #6b7280;
+      --border:  #e2e8f0;
+      --bg:      #ffffff;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* ── HEADER ─────────────────────────────────────── */
+    .site-header {
+      background: var(--navy);
+      padding: 52px 64px 44px;
+    }
+
+    .header-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(52px, 9vw, 88px);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .header-subtitle {
+      font-family: 'Open Sans', sans-serif;
+      font-style: italic;
+      font-size: clamp(15px, 2vw, 19px);
+      color: rgba(255,255,255,0.65);
+      margin-top: 10px;
+    }
+
+    .header-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      margin: 22px 0;
+    }
+
+    .header-contact {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .header-contact a {
+      color: rgba(255,255,255,0.80);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: color 0.2s;
+    }
+    .header-contact a:hover { color: #fff; }
+
+    .contact-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────────── */
+    .sidebar {
+      background: var(--navy-2);
+      color: #fff;
+      padding: 44px 28px 60px;
+      min-height: 100%;
+    }
+
+    .sidebar-block { margin-bottom: 36px; }
+
+    .sidebar-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: #fff;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
+      margin-bottom: 14px;
+    }
+
+    .sidebar-sub {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.45);
+      margin: 14px 0 7px;
+    }
+
+    .dot-list {
+      list-style: none;
+    }
+    .dot-list li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.80);
+      padding: 3px 0 3px 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .dot-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ── MAIN ─────────────────────────────────────── */
+    .main {
+      padding: 44px 64px 60px;
+    }
+
+    .section { margin-bottom: 48px; }
+
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--navy);
+      border-bottom: 3px solid var(--navy);
+      padding-bottom: 8px;
+      margin-bottom: 26px;
+    }
+
+    /* Profile */
+    .profile-text { font-size: 14px; line-height: 1.8; color: #3a3a3a; }
+    .profile-text p + p { margin-top: 12px; }
+
+    /* Experience / Education rows */
+    .entry {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 0 20px;
+      margin-bottom: 28px;
+    }
+    .entry:last-child { margin-bottom: 0; }
+
+    .entry-years {
+      font-size: 12.5px;
+      color: var(--muted);
+      padding-top: 3px;
+      line-height: 1.5;
+    }
+
+    .entry-role {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .entry-org {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 7px;
+    }
+
+    .entry-desc {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #444;
+    }
+
+    /* Projects */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      display: block;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 20px 18px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.18s, box-shadow 0.18s;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .project-icon { font-size: 26px; margin-bottom: 10px; }
+
+    .project-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .project-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 18px;
+      font-size: 12px;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 860px) {
+      .site-header { padding: 36px 28px 32px; }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { padding: 36px 28px 40px; }
+      .main { padding: 36px 28px 48px; }
+    }
+
+    @media (max-width: 520px) {
+      .entry { grid-template-columns: 1fr; gap: 3px 0; }
+      .entry-years { color: var(--accent); font-weight: 600; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-name">Simon Hartmann</div>
+  <div class="header-subtitle">Learning Specialist exploring the frontiers of VR and AI</div>
+  <div class="header-divider"></div>
+  <div class="header-contact">
+    <a href="mailto:simonbirkhartmann@gmail.com">
+      <svg class="contact-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+      simonbirkhartmann@gmail.com
+    </a>
+    <a href="https://www.linkedin.com/in/simonhartmann" target="_blank" rel="noopener">
+      <svg class="contact-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M7 10v7M7 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg>
+      linkedin.com/in/simonhartmann
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">Skills</div>
+
+      <div class="sidebar-sub">Technical &amp; Professional</div>
+      <ul class="dot-list">
+        <li>Driven and professional</li>
+        <li>Solution-focused with analytical abilities</li>
+        <li>Skilled in project management</li>
+        <li>Adaptable to new technologies</li>
+        <li>Clear communication with stakeholders</li>
+      </ul>
+
+      <div class="sidebar-sub">Organizational &amp; Management</div>
+      <ul class="dot-list">
+        <li>Dependable with a strategic mindset</li>
+        <li>Creative problem-solver</li>
+        <li>Effective in multitasking and prioritizing</li>
+        <li>Proficient in time management</li>
+      </ul>
+
+      <div class="sidebar-sub">Interpersonal &amp; Communication</div>
+      <ul class="dot-list">
+        <li>Strong communicator, written and verbal</li>
+        <li>Appreciative, flexible, and trustworthy</li>
+        <li>Team-oriented</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">Languages</div>
+      <ul class="dot-list">
+        <li>Danish — Native</li>
+        <li>English — Fluent</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-block">
+      <div class="sidebar-title">Other</div>
+      <ul class="dot-list">
+        <li>Co-founder &amp; board member,<br>Amager Floorball Club</li>
+      </ul>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <section class="section">
+      <h2 class="section-title">Profile</h2>
+      <div class="profile-text">
+        <p>As a Learning Specialist, I excel at the dynamic intersection of digitalization and pedagogy. By combining cutting-edge learning theory, hands-on teaching experience, and a deep comprehension of digital learning technologies, I'm actively forging the future of education.</p>
+        <p>My expertise resides in Virtual Reality (VR) and Artificial Intelligence (AI) — two revolutionary technologies reshaping the educational landscape. I harness the untapped potential of these tools to significantly enhance learning outcomes and optimize resource utilization by transcending conventional boundaries of time and space.</p>
+        <p>As an innovative thinker, I bring intensity, strategic goal orientation, and a solution-driven mindset to my work, whether independently or in collaborative environments with developers and project stakeholders.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Experience</h2>
+
+      <div class="entry">
+        <div class="entry-years">2019 –<br>Current</div>
+        <div>
+          <div class="entry-role">Senior Learning Specialist</div>
+          <div class="entry-org">Laerdal Medical</div>
+          <div class="entry-desc">Committed to transforming medical education through state-of-the-art technology. Exploring Extended Reality (XR) and AI to craft immersive, interactive educational journeys. Key project: <em>vrClinicals for Nursing</em> — a multi-patient VR experience tailored for nursing students.</div>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-years">2016 – 2019</div>
+        <div>
+          <div class="entry-role">Special Consultant in IT and Learning</div>
+          <div class="entry-org">Copenhagen Business Academy</div>
+          <div class="entry-desc">Championed digital learning strategies, transitioning from conventional methods toward student-centered, active learning. Roles included change agent, process facilitator, educator, and project manager.</div>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-years">2007 – 2016</div>
+        <div>
+          <div class="entry-role">Teacher</div>
+          <div class="entry-org">Skolen på Amagerbro</div>
+          <div class="entry-desc">Instructed Mathematics, Physics/Chemistry, Physical Education, English, and IT in upper school. Additional roles: Union Representative and IT advisor. Led deployment of interactive boards and iPads across all school classes.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Education</h2>
+
+      <div class="entry">
+        <div class="entry-years">2014 – 2016</div>
+        <div>
+          <div class="entry-role">Master's Degree in IT, Learning, and Organizational Change (Cand.it)</div>
+          <div class="entry-org">Aalborg University CPH</div>
+          <div class="entry-desc">Focus on innovation and IT adaptation in learning and organizational contexts. Master thesis: <em>A Case Study in Organizational Implementation of Online Competence Development</em> — Grade: 12. Overall grade average: 11.7/12.</div>
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-years">2003 – 2007</div>
+        <div>
+          <div class="entry-role">Bachelor of Education (Professionsbachelor som lærer)</div>
+          <div class="entry-org">Blaagaard Seminarium</div>
+          <div class="entry-desc">Four-year teaching degree certifying instruction in Mathematics, Physics/Chemistry, English, and Physical Education in public schools.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Projects</h2>
+      <div class="projects-grid">
+
+        <a class="project-card" href="/memory-palace.html">
+          <div class="project-icon">🏛</div>
+          <div class="project-name">Memory Palace</div>
+          <div class="project-desc">A spaced repetition learning app built around the memory palace technique — for history, cocktail recipes, and more.</div>
+          <span class="project-link">Open app →</span>
+        </a>
+
+        <a class="project-card" href="https://madklubben.com" target="_blank" rel="noopener">
+          <div class="project-icon">🍽</div>
+          <div class="project-name">Madklubben</div>
+          <div class="project-desc">A dinner club web app for organizing and archiving meals, menus, and memories shared with friends.</div>
+          <span class="project-link">Visit site →</span>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Simon Hartmann · simonhartmann.dk
+</footer>
+
+</body>
+</html>
