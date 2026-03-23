@@ -44,16 +44,16 @@
       line-height: 1.6;
     }
 
-    /* ANIMATED GRADIENT BAR */
+    /* APP BAR */
     @keyframes gradientFlow {
       from { background-position: 0% 0%; }
       to   { background-position: 100% 0%; }
     }
-    #gradient-bar {
+    #app-bar {
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: calc(4px + env(safe-area-inset-top));
-      z-index: 101;
+      height: calc(48px + env(safe-area-inset-top));
+      padding-top: env(safe-area-inset-top);
       background: linear-gradient(90deg,
         #feea2a  0%,
         #f8b116  8.33%,
@@ -71,41 +71,42 @@
       );
       background-size: 200% 100%;
       animation: gradientFlow 20s linear infinite;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      #gradient-bar { animation: none; }
-    }
-
-    /* APP BAR */
-    #app-bar {
-      position: fixed;
-      top: calc(4px + env(safe-area-inset-top)); left: 0; right: 0;
-      height: 48px;
-      background: rgba(255,255,255,0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
+      padding-left: 24px;
+      padding-right: 24px;
       z-index: 100;
-      box-shadow: 0 1px 8px rgba(28,20,18,0.06);
+      box-shadow: 0 2px 12px rgba(117,87,218,0.18);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #app-bar { animation: none; }
     }
     .app-title {
       font-family: 'Cinzel', serif;
       font-size: 19px;
       font-weight: 700;
-      color: #7557da;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.22);
       letter-spacing: 0.04em;
       cursor: pointer;
+    }
+    #app-bar .btn-ghost {
+      color: rgba(255,255,255,0.92);
+      border-color: rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.15);
+    }
+    #app-bar .btn-ghost:hover {
+      background: rgba(255,255,255,0.28);
+      border-color: rgba(255,255,255,0.6);
+      color: #ffffff;
     }
 
     /* MAIN */
     #app-root {
       max-width: 720px;
       margin: 0 auto;
-      padding: calc(64px + env(safe-area-inset-top)) 16px 40px;
+      padding: calc(60px + env(safe-area-inset-top)) 16px 40px;
     }
 
     .view { display: none; }
@@ -911,7 +912,6 @@
 <body>
 <input type="file" id="excel-file-input" accept=".xlsx" style="display:none" onchange="handleExcelFile(this)">
 
-<div id="gradient-bar"></div>
 <header id="app-bar">
   <span class="app-title" onclick="renderView('dashboard')">&#127963; Hukommelsespalads</span>
   
