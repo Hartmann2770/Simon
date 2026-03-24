@@ -3337,9 +3337,12 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
+  const _DK_FLAG_IMG = (function() {
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 20"><rect width="28" height="20" fill="#C60C30"/><rect x="10" width="4" height="20" fill="#fff"/><rect y="8" width="28" height="4" fill="#fff"/></svg>';
+    return '<img src="data:image/svg+xml;base64,' + btoa(svg) + '" style="height:0.85em;vertical-align:middle;margin-right:3px;border-radius:1px;" alt="">';
+  })();
   function escFlag(str) {
-    const _f = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 20'%3E%3Crect width='28' height='20' fill='%23C60C30'/%3E%3Crect x='10' width='4' height='20' fill='%23fff'/%3E%3Crect y='8' width='28' height='4' fill='%23fff'/%3E%3C/svg%3E";
-    return esc(str).replace(/🇩🇰 ?/g, '<img src="' + _f + '" style="height:0.85em;vertical-align:middle;margin-right:3px;border-radius:1px;" alt=""> ');
+    return esc(str).replace(/🇩🇰 ?/g, _DK_FLAG_IMG + ' ');
   }
 
   function escLines(str) {
