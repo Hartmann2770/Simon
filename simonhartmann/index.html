@@ -19,21 +19,10 @@
       flex-direction: column;
     }
 
-    /* ── TOP BAR ── */
-    .topbar {
-      padding: 28px 48px 0;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #9ca3af;
-    }
-
     /* ── MAIN ── */
     main {
       flex: 1;
-      padding: 40px 48px 48px;
+      padding: 48px 10% 48px;
       columns: 3 280px;
       column-gap: 48px;
     }
@@ -75,8 +64,9 @@
 
     /* ── FOOTER ── */
     footer {
-      padding: 0 48px 32px;
+      padding: 0 10% 32px;
       font-size: 12.5px;
+      text-align: right;
     }
 
     footer a {
@@ -87,15 +77,12 @@
     footer a:hover { color: #1a1a1a; }
 
     @media (max-width: 640px) {
-      main    { padding: 28px 24px 36px; columns: 1; }
-      .topbar { padding: 24px 24px 0; }
-      footer  { padding: 0 24px 28px; }
+      main   { padding: 28px 6% 36px; columns: 1; }
+      footer { padding: 0 6% 28px; }
     }
   </style>
 </head>
 <body>
-
-<div class="topbar">Simon Hartmann</div>
 
 <main>
 
@@ -240,7 +227,7 @@
   </div>
 
   <div class="cat">
-    <div class="cat-label">Games</div>
+    <div class="cat-label">Geography Games</div>
     <a href="https://www.geoguessr.com/" target="_blank" rel="noopener">
       <img src="https://www.google.com/s2/favicons?domain=geoguessr.com&sz=32" alt="">GeoGuessr
     </a>
