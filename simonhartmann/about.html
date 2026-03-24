@@ -42,8 +42,12 @@
     .hero {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 28px;
+      gap: 32px;
       align-items: center;
+      background: #1C3255;
+      border-radius: 12px;
+      padding: 44px 44px 0;
+      overflow: visible;
     }
 
     img {
@@ -51,7 +55,9 @@
       height: 140px;
       border-radius: 50%;
       object-fit: cover;
-      flex-shrink: 0;
+      align-self: end;
+      margin-bottom: -24px;
+      border: 3px solid rgba(255,255,255,0.2);
     }
 
     h1 {
@@ -61,7 +67,8 @@
       text-transform: uppercase;
       letter-spacing: -2px;
       line-height: 1;
-      color: #1C3255;
+      color: #fff;
+      padding-bottom: 44px;
     }
 
     .text {
