@@ -4,201 +4,180 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simon Hartmann</title>
-  <meta name="description" content="Simon Hartmann — Learning Specialist exploring VR and AI in education.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --navy:   #1C3255;
-      --accent: #2E86C1;
-      --text:   #2c2c2c;
-      --muted:  #6b7280;
-      --border: #e2e8f0;
-    }
-
     body {
       font-family: 'Open Sans', sans-serif;
-      color: var(--text);
       background: #fff;
+      color: #1a1a1a;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* ── HEADER ── */
-    header {
-      padding: 72px 64px 56px;
-    }
-
-    .name {
+    /* ── TOP BAR ── */
+    .topbar {
+      padding: 28px 48px 0;
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(48px, 8vw, 80px);
-      font-weight: 800;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      letter-spacing: -1px;
-      line-height: 1;
-      color: var(--navy);
+      color: #9ca3af;
     }
 
-    .tagline {
-      font-style: italic;
-      font-size: clamp(14px, 1.8vw, 17px);
-      color: var(--muted);
-      margin-top: 10px;
-    }
-
-    .divider {
-      width: 48px;
-      height: 3px;
-      background: var(--accent);
-      margin: 28px 0;
-    }
-
-    /* ── LINKS ── */
-    nav {
-      padding: 0 64px;
+    /* ── MAIN ── */
+    main {
       flex: 1;
+      padding: 40px 48px 48px;
+      columns: 3 280px;
+      column-gap: 48px;
     }
 
-    .link-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
+    /* ── CATEGORY BLOCK ── */
+    .cat {
+      break-inside: avoid;
+      margin-bottom: 36px;
     }
 
-    .link-list li {
-      border-top: 1px solid var(--border);
-    }
-    .link-list li:last-child {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .link-list a {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 22px 4px;
-      text-decoration: none;
-      color: inherit;
-      transition: color 0.15s;
-    }
-    .link-list a:hover { color: var(--accent); }
-    .link-list a:hover .arrow { transform: translateX(4px); }
-
-    .link-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .link-icon {
-      font-size: 22px;
-      width: 32px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .link-label {
-      font-size: 18px;
+    .cat-label {
+      font-size: 10.5px;
       font-weight: 600;
-      color: var(--navy);
-    }
-    .link-list a:hover .link-label { color: var(--accent); }
-
-    .link-desc {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #9ca3af;
+      margin-bottom: 10px;
     }
 
-    .arrow {
-      color: var(--muted);
-      font-size: 18px;
-      transition: transform 0.15s;
+    /* ── LINK ROWS ── */
+    .cat a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      text-decoration: none;
+      color: #1a1a1a;
+      font-size: 14px;
+      transition: color 0.12s;
+    }
+    .cat a:hover { color: #2E86C1; }
+
+    .cat a img {
+      width: 16px;
+      height: 16px;
       flex-shrink: 0;
+      opacity: 0.85;
     }
 
     /* ── FOOTER ── */
     footer {
-      padding: 40px 64px 32px;
-      font-size: 13px;
-      color: var(--muted);
+      padding: 0 48px 32px;
+      font-size: 12.5px;
     }
 
     footer a {
-      color: var(--muted);
+      color: #9ca3af;
       text-decoration: none;
+      transition: color 0.12s;
     }
-    footer a:hover { color: var(--accent); }
+    footer a:hover { color: #1a1a1a; }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      header { padding: 48px 28px 40px; }
-      nav    { padding: 0 28px; }
-      footer { padding: 32px 28px 24px; }
-      .link-label { font-size: 16px; }
+    @media (max-width: 640px) {
+      main   { padding: 28px 24px 36px; columns: 1; }
+      .topbar { padding: 24px 24px 0; }
+      footer { padding: 0 24px 28px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="name">Simon Hartmann</div>
-  <div class="tagline">Learning Specialist — VR &amp; AI in education</div>
-  <div class="divider"></div>
-</header>
+<div class="topbar">Simon Hartmann</div>
 
-<nav>
-  <ul class="link-list">
+<main>
 
-    <li>
-      <a href="/memory-palace.html">
-        <div class="link-left">
-          <div class="link-icon">🏛</div>
-          <div>
-            <div class="link-label">Memory Palace</div>
-            <div class="link-desc">Spaced repetition app built on the memory palace technique</div>
-          </div>
-        </div>
-        <div class="arrow">→</div>
-      </a>
-    </li>
+  <div class="cat">
+    <div class="cat-label">AI</div>
+    <a href="https://claude.ai/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=claude.ai&sz=32" alt="">Claude
+    </a>
+    <a href="https://chatgpt.com/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=chatgpt.com&sz=32" alt="">ChatGPT
+    </a>
+    <a href="https://gemini.google.com/app" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=32" alt="">Gemini
+    </a>
+    <a href="https://grok.com/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=grok.com&sz=32" alt="">Grok
+    </a>
+    <a href="https://www.perplexity.ai/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=32" alt="">Perplexity
+    </a>
+    <a href="https://notebooklm.google.com/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=notebooklm.google.com&sz=32" alt="">NotebookLM
+    </a>
+    <a href="https://copilotstudio.microsoft.com/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=copilotstudio.microsoft.com&sz=32" alt="">Copilot Studio
+    </a>
+  </div>
 
-    <li>
-      <a href="https://madklubben.com" target="_blank" rel="noopener">
-        <div class="link-left">
-          <div class="link-icon">🍽</div>
-          <div>
-            <div class="link-label">Madklubben</div>
-            <div class="link-desc">Dinner club app for organizing meals and memories with friends</div>
-          </div>
-        </div>
-        <div class="arrow">→</div>
-      </a>
-    </li>
+  <div class="cat">
+    <div class="cat-label">Work</div>
+    <a href="https://outlook.office.com/mail/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=outlook.office.com&sz=32" alt="">Outlook Mail
+    </a>
+    <a href="https://outlook.office.com/calendar/view/workweek" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=outlook.office.com&sz=32" alt="">Outlook Calendar
+    </a>
+    <a href="https://m365.cloud.microsoft/chat/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=m365.cloud.microsoft&sz=32" alt="">Microsoft 365
+    </a>
+  </div>
 
-    <li>
-      <a href="about.html">
-        <div class="link-left">
-          <div class="link-icon">👤</div>
-          <div>
-            <div class="link-label">Om mig</div>
-            <div class="link-desc">Baggrund, erfaring og kontakt</div>
-          </div>
-        </div>
-        <div class="arrow">→</div>
-      </a>
-    </li>
+  <div class="cat">
+    <div class="cat-label">Google</div>
+    <a href="https://mail.google.com/mail/u/0/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=32" alt="">Gmail
+    </a>
+    <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=calendar.google.com&sz=32" alt="">Google Calendar
+    </a>
+  </div>
 
-  </ul>
-</nav>
+  <div class="cat">
+    <div class="cat-label">Tools</div>
+    <a href="https://miro.com/app/dashboard/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=miro.com&sz=32" alt="">Miro
+    </a>
+    <a href="https://github.com/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=github.com&sz=32" alt="">GitHub
+    </a>
+  </div>
+
+  <div class="cat">
+    <div class="cat-label">Projects</div>
+    <a href="/memory-palace.html">
+      <img src="https://www.google.com/s2/favicons?domain=simonhartmann.dk&sz=32" alt="">Memory Palace
+    </a>
+    <a href="https://madklubben.com/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=madklubben.com&sz=32" alt="">Madklubben
+    </a>
+  </div>
+
+  <div class="cat">
+    <div class="cat-label">Music</div>
+    <a href="https://musik.telmore.dk/" target="_blank" rel="noopener">
+      <img src="https://www.google.com/s2/favicons?domain=musik.telmore.dk&sz=32" alt="">Telmore Musik
+    </a>
+  </div>
+
+</main>
 
 <footer>
-  <a href="mailto:simonbirkhartmann@gmail.com">simonbirkhartmann@gmail.com</a>
+  <a href="about.html">About</a>
 </footer>
 
 </body>
