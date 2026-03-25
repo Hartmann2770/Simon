@@ -655,6 +655,48 @@
       padding: 32px 36px;
       background: var(--surface-raised);
     }
+    .review-card-face.has-sat-img {
+      padding: 0;
+      justify-content: flex-start;
+      align-items: flex-start;
+      overflow: hidden;
+    }
+    .review-sat-wrap {
+      width: 100%;
+      height: 55%;
+      overflow: hidden;
+      border-radius: var(--radius) var(--radius) 0 0;
+      position: relative;
+      flex-shrink: 0;
+      background: #ccc;
+    }
+    .review-sat-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .review-sat-loading {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: #888;
+    }
+    .review-sat-crosshair {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 18px; pointer-events: none;
+    }
+    .review-sat-crosshair::before, .review-sat-crosshair::after {
+      content: ''; position: absolute;
+      background: rgba(255,50,50,0.9); border-radius: 1px;
+    }
+    .review-sat-crosshair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
+    .review-sat-crosshair::after  { height: 2px; width: 100%; top: 50%; transform: translateY(-50%); }
+    .review-sat-badge {
+      position: absolute; bottom: 6px; right: 8px;
+      background: rgba(0,0,0,0.5); color: white;
+      font-size: 9px; padding: 2px 6px; border-radius: 8px; letter-spacing: 0.03em;
+    }
+    .review-sat-body {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 18px 24px; width: 100%;
+    }
 
     .review-loc-number {
       font-size: 12px;
@@ -2163,6 +2205,12 @@
             </label>
           </div>
         </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="editor-route-palace" ${palace && palace.routePalace ? 'checked' : ''}>
+            <span>&#128506; L&#248;bepalads <small style="color:var(--muted);font-weight:400;">(viser satellit-billede ved hvert sted under gennemgang)</small></span>
+          </label>
+        </div>
         ${data.collections.length > 0 ? `
         <div class="form-group">
           <label>Samling</label>
@@ -2387,15 +2435,24 @@
           <div class="location-number">${idx + 1}</div>`;
 
     if (isEditingLoc) {
+      const editPalace = getPalace(palaceId);
+      const coordLat = loc.coords ? loc.coords.lat : '';
+      const coordLng = loc.coords ? loc.coords.lng : '';
       html += `
           <div class="inline-edit-form" style="flex:1">
             <input type="text" id="edit-loc-name-${loc.id}" value="${esc(loc.name)}">
+            ${editPalace && editPalace.routePalace ? `
+            <div style="display:flex;gap:6px;margin-top:4px;">
+              <input type="number" step="any" id="edit-loc-lat-${loc.id}" value="${coordLat}" placeholder="Breddegrad (fx 55.6731)" style="flex:1;font-size:12px;">
+              <input type="number" step="any" id="edit-loc-lng-${loc.id}" value="${coordLng}" placeholder="L&#230;ngdegrad (fx 12.5683)" style="flex:1;font-size:12px;">
+            </div>` : ''}
             <button class="btn-primary btn-sm" data-action="save-loc-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}">Gem</button>
             <button class="btn-ghost btn-sm" data-action="cancel-loc-edit">Annuller</button>
           </div>`;
     } else {
       html += `
           <span class="location-name">${escFlag(loc.name)}</span>
+          ${loc.coords ? `<span title="Satellit-koordinater gemt (${loc.coords.lat}, ${loc.coords.lng})" style="font-size:13px;opacity:0.6;flex-shrink:0;">&#128506;</span>` : ''}
           <div class="location-actions">
             ${rooms.length > 0 ? `<select class="room-select" data-action="assign-loc-room" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rum">${roomOptions}</select>` : ''}
             ${idx > 0 ? `<button class="btn-icon" title="Flyt op" data-action="move-loc-up" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9650;</button>` : ''}
@@ -2478,10 +2535,26 @@
 
       <div class="review-card">
         <div class="review-card-inner${app.reviewRevealed ? ' flipped' : ''}" id="review-card-inner">
-          <div class="review-card-face">
+          <div class="review-card-face${p.routePalace && loc.coords ? ' has-sat-img' : ''}">
+            ${p.routePalace && loc.coords ? (() => {
+              const R = 0.0018;
+              const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
+              const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=600,340&imageSR=4326&format=png&transparent=false&f=image`;
+              return `<div class="review-sat-wrap">
+                <div class="review-sat-loading" id="rev-sat-loading">Henter satellit&#8203;billede&#8230;</div>
+                <img src="${imgUrl}" alt="" onload="this.style.opacity=1;document.getElementById('rev-sat-loading').style.display='none';" onerror="document.getElementById('rev-sat-loading').textContent='Ingen forbindelse';" style="opacity:0;transition:opacity 0.3s;">
+                <div class="review-sat-crosshair"></div>
+                <div class="review-sat-badge">© Esri</div>
+              </div>
+              <div class="review-sat-body">
+                <div class="review-loc-number">${`Stop #${app.reviewLocIdx + 1}`}</div>
+                <div class="review-loc-name">${escFlag(loc.name)}</div>
+                <div class="review-tap-hint">Hvilke erindringer er placeret her?</div>
+              </div>`;
+            })() : `
             <div class="review-loc-number">${p.type === 'trivia' ? `Spørgsmål ${app.reviewLocIdx + 1}` : `Stop #${app.reviewLocIdx + 1}`}</div>
             <div class="review-loc-name">${escFlag(loc.name)}</div>
-            <div class="review-tap-hint">${p.type === 'trivia' ? 'Hvad er svaret?' : 'Hvilke erindringer er placeret her?'}</div>
+            <div class="review-tap-hint">${p.type === 'trivia' ? 'Hvad er svaret?' : 'Hvilke erindringer er placeret her?'}</div>`}
           </div>
           <div class="review-card-face review-card-back">`;
     {
@@ -2613,13 +2686,15 @@
         const type = document.querySelector('input[name="palace-type"]:checked')?.value || 'standard';
         const collectionEl = document.getElementById('editor-collection');
         const collectionId = collectionEl ? collectionEl.value || undefined : undefined;
+        const routePalace = document.getElementById('editor-route-palace')?.checked || false;
         if (app.editingPalaceId) {
-          updatePalace(app.editingPalaceId, { name, description: desc, type, collectionId: collectionId || undefined });
+          updatePalace(app.editingPalaceId, { name, description: desc, type, collectionId: collectionId || undefined, routePalace });
           if (app.editingCollectionId) renderView('collection-detail');
           else renderView('palace-detail');
         } else {
           const p = createPalace(name, desc, type);
           if (collectionId) p.collectionId = collectionId;
+          if (routePalace) p.routePalace = true;
           saveData();
           app.editingPalaceId = p.id;
           if (collectionId) { app.editingCollectionId = collectionId; renderView('collection-detail'); }
@@ -2779,6 +2854,17 @@
         const name = inp ? inp.value.trim() : '';
         if (!name) return;
         updateLocation(palaceId, locId, name);
+        const latEl = document.getElementById(`edit-loc-lat-${locId}`);
+        const lngEl = document.getElementById(`edit-loc-lng-${locId}`);
+        if (latEl && lngEl) {
+          const lat = parseFloat(latEl.value);
+          const lng = parseFloat(lngEl.value);
+          const loc = getLoc(palaceId, locId);
+          if (loc) {
+            loc.coords = (!isNaN(lat) && !isNaN(lng)) ? { lat, lng } : null;
+            saveData();
+          }
+        }
         app.editingLocId = null;
         renderPalaceDetail();
         break;

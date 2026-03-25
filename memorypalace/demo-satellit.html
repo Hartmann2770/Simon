@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo: Satellit-sted</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fdf8f3;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 16px;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #7557da;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  /* Route selector */
+  .stops {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stop-btn {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 2px solid #ddd;
+    background: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #444;
+  }
+  .stop-btn.active {
+    border-color: #7557da;
+    background: #7557da;
+    color: white;
+    font-weight: 600;
+  }
+
+  /* Card */
+  .card-wrap {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 380px;
+    height: 520px;
+    margin-bottom: 20px;
+  }
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+  .card-inner.flipped {
+    transform: rotateY(180deg);
+  }
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(117,87,218,0.15);
+  }
+
+  /* FRONT */
+  .card-front {
+    background: white;
+    display: flex;
+    flex-direction: column;
+  }
+  .sat-image-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    background: #e0e0e0;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .sat-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sat-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #888;
+    background: #e8e8e8;
+  }
+  .sat-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.55);
+    color: white;
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.04em;
+  }
+  .map-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+  }
+  .map-crosshair::before,
+  .map-crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,80,80,0.9);
+    border-radius: 2px;
+  }
+  .map-crosshair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
+  .map-crosshair::after  { height: 2px; width: 100%; top: 50%; transform: translateY(-50%); }
+
+  .card-front-body {
+    padding: 20px 22px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .stop-number {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #7557da;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .stop-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .stop-coords {
+    font-size: 11px;
+    color: #aaa;
+    font-family: monospace;
+  }
+  .tap-hint {
+    font-size: 13px;
+    color: #aaa;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  /* BACK */
+  .card-back {
+    background: linear-gradient(145deg, #7557da, #9b7de8);
+    color: white;
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 24px;
+  }
+  .back-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+    margin-bottom: 16px;
+  }
+  .memory-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .memory-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .memory-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .memory-text {
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .mnemonic {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+  .mnemonic-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    margin-bottom: 6px;
+  }
+  .mnemonic-text {
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  /* Button */
+  .reveal-btn {
+    width: 100%;
+    max-width: 380px;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: #7557da;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .reveal-btn:hover { background: #6445c8; }
+  .reveal-btn.ghost {
+    background: transparent;
+    border: 2px solid #ddd;
+    color: #888;
+    margin-top: 10px;
+  }
+
+  .note {
+    margin-top: 28px;
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+    max-width: 340px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1>🛰️ Satellit-sted Demo</h1>
+<p class="subtitle">Eksempel: Løberute langs Søerne i København</p>
+
+<!-- Stop-knapper -->
+<div class="stops" id="stops"></div>
+
+<!-- Kort -->
+<div class="card-wrap">
+  <div class="card-inner" id="card">
+    <div class="card-face card-front">
+      <div class="sat-image-wrap">
+        <div class="sat-loading" id="loading">Henter satellit­billede…</div>
+        <img id="sat-img" src="" alt="" style="display:none" onload="imgLoaded()" onerror="imgError()">
+        <div class="map-crosshair"></div>
+        <div class="sat-badge">© Esri</div>
+      </div>
+      <div class="card-front-body">
+        <div>
+          <div class="stop-number" id="stop-number"></div>
+          <div class="stop-name" id="stop-name"></div>
+          <div class="stop-coords" id="stop-coords"></div>
+        </div>
+        <div class="tap-hint">Tryk "Afslør" for at se dine erindringer</div>
+      </div>
+    </div>
+
+    <div class="card-face card-back">
+      <div class="back-label" id="back-label"></div>
+      <div class="memory-list" id="memory-list"></div>
+      <div class="mnemonic" id="mnemonic-block" style="display:none">
+        <div class="mnemonic-label">Mnemonisk note</div>
+        <div class="mnemonic-text" id="mnemonic-text"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="reveal-btn" id="reveal-btn" onclick="reveal()">Afslør Erindringer</button>
+<button class="reveal-btn ghost" id="next-btn" onclick="next()" style="display:none">Næste sted →</button>
+
+<p class="note">
+  Satellit­billeder fra <strong>ESRI World Imagery</strong> — gratis, ingen API-nøgle.<br>
+  Koordinaterne finder du ved at højreklikke på Google Maps.
+</p>
+
+<script>
+// Eksempel-rute: Søerne i København
+const stops = [
+  {
+    name: "Nørreport Station",
+    coords: { lat: 55.6831, lng: 12.5712 },
+    order: 1,
+    memories: ["Mødes med Kasper kl. 7", "Grøn flaske vand"],
+    mnemonic: "🧠 Tænk: tunnelmunden sluger en grøn flaske"
+  },
+  {
+    name: "Peblinge Sø – Nordenden",
+    coords: { lat: 55.6862, lng: 12.5638 },
+    order: 2,
+    memories: ["Speedup til 4:45/km", "Forbi den røde bro"],
+    mnemonic: "🧠 Rød bro = turbo-knap aktiveres"
+  },
+  {
+    name: "Sankt Jørgens Sø – Midt",
+    coords: { lat: 55.6794, lng: 12.5564 },
+    order: 3,
+    memories: ["Lav fart til restitution", "Tæl svaner: rekord er 11"],
+    mnemonic: "🧠 Svanerne hviler = du hviler"
+  },
+  {
+    name: "Vesterbro Passage",
+    coords: { lat: 55.6737, lng: 12.5553 },
+    order: 4,
+    memories: ["Vend om her (8 km)", "Strech af lægge"],
+    mnemonic: "🧠 Passage = halvvejs = vend om"
+  }
+];
+
+let current = 0;
+let revealed = false;
+
+function satUrl(lat, lng) {
+  const R = 0.0025; // ~280m radius
+  const bbox = `${lng-R},${lat-R},${lng+R},${lat+R}`;
+  return `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=500,280&imageSR=4326&format=png&transparent=false&f=image`;
+}
+
+function imgLoaded() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('sat-img').style.display = 'block';
+}
+function imgError() {
+  document.getElementById('loading').textContent = '⚠️ Kunne ikke hente satellit­billede';
+}
+
+function renderStops() {
+  const el = document.getElementById('stops');
+  el.innerHTML = stops.map((s, i) =>
+    `<button class="stop-btn${i === current ? ' active' : ''}" onclick="goTo(${i})">Stop ${s.order}</button>`
+  ).join('');
+}
+
+function renderCard() {
+  const s = stops[current];
+  revealed = false;
+  document.getElementById('card').classList.remove('flipped');
+  document.getElementById('reveal-btn').style.display = '';
+  document.getElementById('next-btn').style.display = 'none';
+
+  // Front
+  document.getElementById('stop-number').textContent = `Stop #${s.order} af ${stops.length}`;
+  document.getElementById('stop-name').textContent = s.name;
+  document.getElementById('stop-coords').textContent = `${s.coords.lat}, ${s.coords.lng}`;
+
+  // Sat image
+  const img = document.getElementById('sat-img');
+  img.style.display = 'none';
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('loading').textContent = 'Henter satellit­billede…';
+  img.src = satUrl(s.coords.lat, s.coords.lng);
+
+  // Back
+  document.getElementById('back-label').textContent = `Erindringer ved ${s.name}`;
+  document.getElementById('memory-list').innerHTML = s.memories
+    .map(m => `<div class="memory-item"><div class="memory-dot"></div><div class="memory-text">${m}</div></div>`)
+    .join('');
+  if (s.mnemonic) {
+    document.getElementById('mnemonic-block').style.display = '';
+    document.getElementById('mnemonic-text').textContent = s.mnemonic;
+  } else {
+    document.getElementById('mnemonic-block').style.display = 'none';
+  }
+
+  renderStops();
+}
+
+function reveal() {
+  document.getElementById('card').classList.add('flipped');
+  document.getElementById('reveal-btn').style.display = 'none';
+  document.getElementById('next-btn').style.display = current < stops.length - 1 ? '' : 'none';
+}
+
+function next() {
+  if (current < stops.length - 1) {
+    current++;
+    renderCard();
+  }
+}
+
+function goTo(i) {
+  current = i;
+  renderCard();
+}
+
+renderCard();
+</script>
+</body>
+</html>
