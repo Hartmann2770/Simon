@@ -678,15 +678,11 @@
     }
     .review-sat-crosshair {
       position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 18px; height: 18px; pointer-events: none;
+      transform: translate(-50%, -100%);
+      font-size: 28px; line-height: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
     }
-    .review-sat-crosshair::before, .review-sat-crosshair::after {
-      content: ''; position: absolute;
-      background: rgba(255,50,50,0.9); border-radius: 1px;
-    }
-    .review-sat-crosshair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
-    .review-sat-crosshair::after  { height: 2px; width: 100%; top: 50%; transform: translateY(-50%); }
     .review-sat-badge {
       position: absolute; bottom: 6px; right: 8px;
       background: rgba(0,0,0,0.5); color: white;
@@ -2442,10 +2438,7 @@
           <div class="inline-edit-form" style="flex:1">
             <input type="text" id="edit-loc-name-${loc.id}" value="${esc(loc.name)}">
             ${editPalace && editPalace.routePalace ? `
-            <div style="display:flex;gap:6px;margin-top:4px;">
-              <input type="number" step="any" id="edit-loc-lat-${loc.id}" value="${coordLat}" placeholder="Breddegrad (fx 55.6731)" style="flex:1;font-size:12px;">
-              <input type="number" step="any" id="edit-loc-lng-${loc.id}" value="${coordLng}" placeholder="L&#230;ngdegrad (fx 12.5683)" style="flex:1;font-size:12px;">
-            </div>` : ''}
+            <input type="text" id="edit-loc-coords-${loc.id}" value="${coordLat && coordLng ? coordLat + ', ' + coordLng : ''}" placeholder="Koordinater fra Google Maps (fx 55.6347, 12.6526)" style="font-size:12px;margin-top:4px;">` : ''}
             <button class="btn-primary btn-sm" data-action="save-loc-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}">Gem</button>
             <button class="btn-ghost btn-sm" data-action="cancel-loc-edit">Annuller</button>
           </div>`;
@@ -2543,7 +2536,7 @@
               return `<div class="review-sat-wrap">
                 <div class="review-sat-loading" id="rev-sat-loading">Henter satellit&#8203;billede&#8230;</div>
                 <img src="${imgUrl}" alt="" onload="this.style.opacity=1;document.getElementById('rev-sat-loading').style.display='none';" onerror="document.getElementById('rev-sat-loading').textContent='Ingen forbindelse';" style="opacity:0;transition:opacity 0.3s;">
-                <div class="review-sat-crosshair"></div>
+                <div class="review-sat-crosshair">📌</div>
                 <div class="review-sat-badge">© Esri</div>
               </div>
               <div class="review-sat-body">
@@ -2854,14 +2847,13 @@
         const name = inp ? inp.value.trim() : '';
         if (!name) return;
         updateLocation(palaceId, locId, name);
-        const latEl = document.getElementById(`edit-loc-lat-${locId}`);
-        const lngEl = document.getElementById(`edit-loc-lng-${locId}`);
-        if (latEl && lngEl) {
-          const lat = parseFloat(latEl.value);
-          const lng = parseFloat(lngEl.value);
+        const coordsEl = document.getElementById(`edit-loc-coords-${locId}`);
+        if (coordsEl) {
+          const parts = coordsEl.value.split(',').map(s => parseFloat(s.trim()));
           const loc = getLoc(palaceId, locId);
           if (loc) {
-            loc.coords = (!isNaN(lat) && !isNaN(lng)) ? { lat, lng } : null;
+            loc.coords = (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]))
+              ? { lat: parts[0], lng: parts[1] } : null;
             saveData();
           }
         }
