@@ -3448,7 +3448,7 @@
   }
   const _DK_BADGE = '<span class="dk-flag"></span>';
   function escFlag(str) {
-    return esc(str).replace(/🇩🇰 ?/gu, _DK_BADGE);
+    return esc(str).replace(/\u{1F1E9}\u{1F1F0}\uFE0F? ?/gu, _DK_BADGE);
   }
 
   function escLines(str) {
