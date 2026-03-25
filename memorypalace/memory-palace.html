@@ -621,6 +621,9 @@
       min-height: 300px;
       max-height: 600px;
     }
+    @media (min-width: 481px) {
+      .review-card { max-height: 420px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    }
     .review-card-inner {
       position: relative;
       height: 100%;
@@ -2530,7 +2533,7 @@
         <div class="review-card-inner${app.reviewRevealed ? ' flipped' : ''}" id="review-card-inner">
           <div class="review-card-face${p.routePalace && loc.coords ? ' has-sat-img' : ''}">
             ${p.routePalace && loc.coords ? (() => {
-              const R = 0.0018;
+              const R = 0.0010;
               const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
               const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
               return `<div class="review-sat-wrap">
@@ -2606,7 +2609,7 @@
       [1, 2].forEach(offset => {
         const next = locs2[app.reviewLocIdx + offset];
         if (next && next.coords) {
-          const R = 0.0018;
+          const R = 0.0010;
           const b = `${next.coords.lng-R},${next.coords.lat-R},${next.coords.lng+R},${next.coords.lat+R}`;
           new Image().src = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${b}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
         }
