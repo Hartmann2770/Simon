@@ -692,6 +692,21 @@
       background: rgba(0,0,0,0.5); color: white;
       font-size: 9px; padding: 2px 6px; border-radius: 8px; letter-spacing: 0.03em;
     }
+    .dk-flag {
+      display: inline-block; width: 20px; height: 14px;
+      background: #C60C30; border-radius: 1px;
+      position: relative; vertical-align: middle;
+      margin-right: 5px; flex-shrink: 0; overflow: hidden;
+    }
+    .dk-flag::before {
+      content: ''; position: absolute;
+      left: 6px; top: 0; width: 3px; height: 100%; background: white;
+    }
+    .dk-flag::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: white; top: 50%; transform: translateY(-50%);
+    }
     .review-sat-body {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: flex-start;
@@ -3431,9 +3446,9 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
-  const _DK_BADGE = '<span style="display:inline-block;background:#C60C30;color:#fff;font-size:0.65em;font-weight:700;padding:1px 4px;border-radius:2px;vertical-align:middle;margin-right:4px;letter-spacing:0.5px;line-height:1.4;">DK</span>';
+  const _DK_BADGE = '<span class="dk-flag"></span>';
   function escFlag(str) {
-    return esc(str).replace(/\uD83C\uDDE9\uD83C\uDDF0 ?/g, _DK_BADGE);
+    return esc(str).replace(/🇩🇰 ?/gu, _DK_BADGE);
   }
 
   function escLines(str) {
