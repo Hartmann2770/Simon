@@ -2480,7 +2480,7 @@
       }
     });
 
-    html += app.authenticated ? `
+    html += (app.authenticated ? `
         <div class="add-memory-form">
           <div style="display:flex;gap:6px;flex:1;flex-direction:column;">
             <textarea id="mem-input-${loc.id}" placeholder="Erindring… (Shift+Enter for at tilføje)" rows="1"
@@ -2493,7 +2493,7 @@
               onblur="setTimeout(()=>autoSaveMnemonic('${palaceId}','${loc.id}'),150)"></textarea>
           </div>
           <button class="btn-ghost btn-sm" data-action="add-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" style="align-self:flex-start;margin-top:2px;">Tilføj</button>
-        </div>` : '';
+        </div>` : '') + `
       </div></div>`;
 
     return html;
