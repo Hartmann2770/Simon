@@ -644,8 +644,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 40px 36px;
+      justify-content: flex-start;
+      padding: 40px 36px 40px;
+      padding-top: 52px;
       text-align: center;
       box-shadow: var(--shadow-lg);
       overflow-y: auto;
@@ -693,7 +694,7 @@
     }
     .review-sat-body {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: flex-start;
       text-align: center; padding: 18px 24px; width: 100%;
     }
 
@@ -2543,12 +2544,11 @@
                 <div class="review-sat-badge">© Esri</div>
               </div>
               <div class="review-sat-body">
-                <div class="review-loc-number">${`Stop #${app.reviewLocIdx + 1}`}</div>
                 <div class="review-loc-name">${escFlag(loc.name)}</div>
                 <div class="review-tap-hint">Hvilke erindringer er placeret her?</div>
               </div>`;
             })() : `
-            <div class="review-loc-number">${p.type === 'trivia' ? `Spørgsmål ${app.reviewLocIdx + 1}` : `Stop #${app.reviewLocIdx + 1}`}</div>
+            ${p.type === 'trivia' ? `<div class="review-loc-number">Spørgsmål ${app.reviewLocIdx + 1}</div>` : ''}
             <div class="review-loc-name">${escFlag(loc.name)}</div>
             <div class="review-tap-hint">${p.type === 'trivia' ? 'Hvad er svaret?' : 'Hvilke erindringer er placeret her?'}</div>`}
           </div>
