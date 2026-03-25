@@ -1567,7 +1567,8 @@
   }
   seedCollections();
 
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: false, sessionPw: null };
+  const _savedSession = sessionStorage.getItem('_mp_session');
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: !!_savedSession, sessionPw: _savedSession || null };
   _appReady = true;
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
@@ -3448,7 +3449,7 @@
   }
   const _DK_BADGE = '<span class="dk-flag"></span>';
   function escFlag(str) {
-    return esc(str).replace(/\u{1F1E9}\u{1F1F0}\uFE0F? ?/gu, _DK_BADGE);
+    return esc(str).replace(/\uD83C\uDDE9\uD83C\uDDF0\uFE0F? ?/g, _DK_BADGE);
   }
 
   function escLines(str) {
@@ -3579,6 +3580,7 @@
     if (hash === _PW_HASH) {
       app.authenticated = true;
       app.sessionPw = code;
+      sessionStorage.setItem('_mp_session', code);
       updateAuthButton();
       closeLoginModal();
       if (_loginCallback) { const cb = _loginCallback; _loginCallback = null; cb(); }
