@@ -2532,7 +2532,7 @@
             ${p.routePalace && loc.coords ? (() => {
               const R = 0.0018;
               const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
-              const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=600,340&imageSR=4326&format=png&transparent=false&f=image`;
+              const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
               return `<div class="review-sat-wrap">
                 <div class="review-sat-loading" id="rev-sat-loading">Henter satellit&#8203;billede&#8230;</div>
                 <img src="${imgUrl}" alt="" onload="this.style.opacity=1;document.getElementById('rev-sat-loading').style.display='none';" onerror="document.getElementById('rev-sat-loading').textContent='Ingen forbindelse';" style="opacity:0;transition:opacity 0.3s;">
@@ -2599,6 +2599,19 @@
 
     el.innerHTML = html;
     showView('view-review-session');
+
+    // Forudindlæs satellit-billeder for de næste 2 stop
+    if (p.routePalace) {
+      const locs2 = getReviewLocs(p);
+      [1, 2].forEach(offset => {
+        const next = locs2[app.reviewLocIdx + offset];
+        if (next && next.coords) {
+          const R = 0.0018;
+          const b = `${next.coords.lng-R},${next.coords.lat-R},${next.coords.lng+R},${next.coords.lat+R}`;
+          new Image().src = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${b}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
+        }
+      });
+    }
   }
 
   function completeReview() {
