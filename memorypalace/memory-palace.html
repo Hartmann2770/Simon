@@ -967,8 +967,8 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       color: var(--text);
-      font-size: 12px;
-      padding: 1px 4px;
+      font-size: 14px;
+      padding: 5px 8px;
     }
     .peg-edit-input:focus { outline: none; border-color: var(--accent); }
     #peg-toggle-btn.active {
@@ -1058,7 +1058,7 @@
   <div id="peg-sidebar-header">
     <span>&#128220; Peg-liste</span>
     <div style="display:flex;gap:6px;">
-      <button id="peg-edit-btn" onclick="togglePegEdit()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:12px;padding:2px 8px;cursor:pointer;">Rediger</button>
+      <button id="peg-edit-btn" onclick="togglePegEdit()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:12px;padding:2px 8px;cursor:pointer;display:none;">Rediger</button>
       <button onclick="togglePegSidebar()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>
     </div>
   </div>
@@ -3554,11 +3554,15 @@
   function renderPegList() {
     const list = document.getElementById('peg-sidebar-list');
     const btn  = document.getElementById('peg-edit-btn');
-    if (pegEditMode) {
+    btn.style.display = app.authenticated ? '' : 'none';
+    if (pegEditMode && app.authenticated) {
       list.innerHTML = data.settings.pegList.map(([num, word]) =>
-        `<div class="peg-row">
-          <span class="peg-num">${num}</span>
-          <input class="peg-edit-input" data-peg-num="${num}" value="${esc(word)}"
+        `<div class="peg-row" style="align-items:flex-start;padding:5px 4px;flex-direction:column;gap:2px;">
+          <div style="display:flex;align-items:center;gap:6px;width:100%;">
+            <span class="peg-num">${num}</span>
+            <span style="font-size:12px;color:var(--muted);">${esc(word)}</span>
+          </div>
+          <input class="peg-edit-input" data-peg-num="${num}" placeholder="Skriv nyt ord…"
             onkeydown="if(event.key==='Enter')savePegList()">
         </div>`
       ).join('') +
@@ -3572,6 +3576,7 @@
         `<div class="peg-row"><span class="peg-num">${num}</span><span class="peg-word">${word}</span></div>`
       ).join('');
       btn.textContent = 'Rediger';
+      pegEditMode = false;
     }
   }
 
@@ -3595,12 +3600,15 @@
   };
 
   window.savePegList = function() {
+    let changed = false;
     document.querySelectorAll('.peg-edit-input').forEach(inp => {
       const num = inp.dataset.pegNum;
+      const val = inp.value.trim();
+      if (!val) return;
       const entry = data.settings.pegList.find(([n]) => n === num);
-      if (entry && inp.value.trim()) entry[1] = inp.value.trim();
+      if (entry) { entry[1] = val; changed = true; }
     });
-    saveData();
+    if (changed) saveData();
     pegEditMode = false;
     renderPegList();
   };
