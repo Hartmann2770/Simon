@@ -3768,11 +3768,23 @@
     if (screen === 'result') {
       const tot = _pd.totalCount;
       const k = _pd.knownCount, u = _pd.unknown.length;
-      const pct = Math.round((k / tot) * 100);
-      const repeatLine = _pd.isRepeat
-        ? `<div style="font-size:13px;color:var(--muted);margin-top:4px;">Gentagelse: ${_pd.repeatKnown} af ${_pd.repeatTotal} kendt ved anden forsøg</div>` : '';
+      const pct1 = Math.round(k / tot * 100);
+      const totalKnown = k + (_pd.repeatKnown || 0);
+      const pct2 = Math.round(totalKnown / tot * 100);
+      const hasRepeat = _pd.isRepeat && (_pd.repeatTotal || 0) > 0;
+
+      const scoreHtml = hasRepeat
+        ? `<div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+             <span style="font-family:'Cinzel',serif;font-size:46px;color:var(--accent);line-height:1;">${pct1}%</span>
+             <span style="font-size:28px;color:var(--muted);">&#8594;</span>
+             <span style="font-family:'Cinzel',serif;font-size:46px;color:#22c55e;line-height:1;">${pct2}%</span>
+           </div>
+           <div style="font-size:13px;color:var(--muted);margin-top:8px;">${k}/${tot} første forsøg &nbsp;·&nbsp; +${_pd.repeatKnown}/${_pd.repeatTotal} i gentagelse</div>`
+        : `<div style="font-family:'Cinzel',serif;font-size:52px;color:var(--accent);line-height:1;">${pct1}%</div>
+           <div style="font-size:14px;color:var(--muted);margin-top:6px;">${k} af ${tot} ved første forsøg</div>`;
+
       const unknownList = u > 0
-        ? `<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;max-height:150px;overflow-y:auto;">
+        ? `<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;max-height:130px;overflow-y:auto;">
              <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Stadig ukendte (${u}):</div>
              <div style="display:flex;flex-wrap:wrap;gap:6px;">
                ${_pd.unknown.map(([n,w]) => `<span style="background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;"><strong>${n}</strong> ${esc(w)}</span>`).join('')}
@@ -3784,11 +3796,7 @@
           <h2 style="font-size:17px;">Resultat</h2>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
-        <div style="text-align:center;margin-bottom:8px;">
-          <div style="font-family:'Cinzel',serif;font-size:52px;color:var(--accent);line-height:1;">${pct}%</div>
-          <div style="font-size:14px;color:var(--muted);margin-top:6px;">${k} kendte af ${tot} ved første forsøg</div>
-          ${repeatLine}
-        </div>
+        <div style="text-align:center;margin-bottom:8px;">${scoreHtml}</div>
         ${unknownList}
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
           <button class="btn-ghost" onclick="openPegDrill()">Ny øvelse</button>
@@ -3798,30 +3806,14 @@
     }
 
     if (screen === 'stats') {
-      const stats = (data.settings.pegStats || []).slice().reverse();
+      const stats = (data.settings.pegStats || []).slice(); // ældste først
+
+      // Svage tal
       const weakMap = {};
       for (const s of stats) {
         for (const n of (s.unknown || [])) weakMap[n] = (weakMap[n] || 0) + 1;
       }
       const weakSorted = Object.entries(weakMap).sort((a,b) => b[1]-a[1]).slice(0, 15);
-      const modeLabel = m => m === 'num-to-word' ? 'Tal→Ord' : 'Ord→Tal';
-      const dateStr = ts => {
-        const d = new Date(ts);
-        return d.toLocaleDateString('da-DK', { day:'numeric', month:'short' }) + ' ' +
-               d.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit' });
-      };
-      const sessionRows = stats.slice(0, 20).map(s => {
-        const p = Math.round(s.known / s.total * 100);
-        const col = p >= 80 ? '#22c55e' : p >= 50 ? 'var(--gold,#f8b116)' : 'var(--danger)';
-        const rep = s.repeatTotal > 0
-          ? `<span style="color:var(--muted);font-size:11px;"> +${s.repeatKnown}/${s.repeatTotal}↺</span>` : '';
-        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
-          <span style="font-size:12px;color:var(--muted);min-width:90px;">${dateStr(s.date)}</span>
-          <span style="font-size:11px;color:var(--muted);min-width:50px;">${modeLabel(s.mode)}</span>
-          <span style="font-weight:700;color:${col};min-width:36px;">${p}%</span>
-          <span style="font-size:12px;color:var(--muted);">${s.known}/${s.total}${rep}</span>
-        </div>`;
-      }).join('') || '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Ingen sessioner endnu.</div>';
       const weakHtml = weakSorted.length > 0
         ? weakSorted.map(([n, cnt]) => {
             const word = (data.settings.pegList.find(([x]) => x === n) || [n,'?'])[1];
@@ -3832,17 +3824,75 @@
             </span>`;
           }).join('')
         : '<span style="color:var(--muted);font-size:13px;">Ingen data endnu.</span>';
+
+      // Trendgraf
+      function _trendChart(sessions) {
+        if (sessions.length < 2) return '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0;">Øv mere for at se en trendlinje.</p>';
+        const W = 320, H = 130;
+        const PL = 28, PR = 8, PT = 8, PB = 22;
+        const cW = W - PL - PR, cH = H - PT - PB;
+        const scores = sessions.map(s => Math.round(s.known / s.total * 100));
+        const n = scores.length;
+        const xp = i => PL + (n < 2 ? cW/2 : i / (n-1) * cW);
+        const yp = v => PT + cH - v / 100 * cH;
+
+        // Glidende gennemsnit (vindue 5)
+        const ma = scores.map((_, i) => {
+          const win = scores.slice(Math.max(0, i-4), i+1);
+          return win.reduce((a,b)=>a+b,0) / win.length;
+        });
+        const maLine = ma.map((v,i) => `${xp(i).toFixed(1)},${yp(v).toFixed(1)}`).join(' ');
+
+        // Lineær regression (overordnet tendens)
+        const mx = (n-1)/2;
+        const my = scores.reduce((a,b)=>a+b,0)/n;
+        const num = scores.reduce((s,v,i)=>s+(i-mx)*(v-my),0);
+        const den = scores.reduce((s,_,i)=>s+(i-mx)**2,0);
+        const slope = den ? num/den : 0;
+        const intercept = my - slope*mx;
+        const r0 = intercept, r1 = slope*(n-1)+intercept;
+        const regLine = `<line x1="${xp(0).toFixed(1)}" y1="${yp(r0).toFixed(1)}" x2="${xp(n-1).toFixed(1)}" y2="${yp(r1).toFixed(1)}" stroke="#7557da" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>`;
+
+        // Punkter
+        const dots = scores.map((v,i) => {
+          const col = v>=80?'#22c55e':v>=50?'#f8b116':'#ef4444';
+          return `<circle cx="${xp(i).toFixed(1)}" cy="${yp(v).toFixed(1)}" r="3.5" fill="${col}" opacity="0.9"/>`;
+        }).join('');
+
+        // Grid + labels
+        const grid = [0,50,100].map(v => {
+          const y = yp(v).toFixed(1);
+          return `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>
+                  <text x="${PL-4}" y="${(+y+3.5).toFixed(0)}" text-anchor="end" font-size="9" fill="#9ca3af">${v}</text>`;
+        }).join('');
+
+        // X-akse: første og sidste dato
+        const fmt = ts => { const d=new Date(ts); return d.toLocaleDateString('da-DK',{day:'numeric',month:'short'}); };
+        const xLabels = sessions.length >= 2
+          ? `<text x="${xp(0).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(sessions[0].date)}</text>
+             <text x="${xp(n-1).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(sessions[n-1].date)}</text>` : '';
+
+        return `<svg width="100%" viewBox="0 0 ${W} ${H}" style="display:block;overflow:visible;">
+          ${grid}
+          ${regLine}
+          <polyline points="${maLine}" fill="none" stroke="var(--accent,#7557da)" stroke-width="2" stroke-linejoin="round"/>
+          ${dots}
+          ${xLabels}
+        </svg>`;
+      }
+
       if (_pdKeyHandler) { document.removeEventListener('keydown', _pdKeyHandler); _pdKeyHandler = null; }
       inner.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
           <h2 style="font-size:17px;">&#128200; Statistik</h2>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Svage tal</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">${weakHtml}</div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Seneste sessioner</div>
-        <div style="max-height:230px;overflow-y:auto;">${sessionRows}</div>
-        <button class="btn-ghost" style="width:100%;margin-top:14px;" onclick="openPegDrill()">&#127183; Start øvelse</button>`;
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Udvikling over tid</div>
+        <div style="margin-bottom:4px;font-size:11px;color:var(--muted);">&#8213; glidende gns. &nbsp; &#8943; tendens &nbsp; &#9679; session</div>
+        ${_trendChart(stats)}
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:16px;margin-bottom:8px;">Svage tal</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${weakHtml}</div>
+        <button class="btn-ghost" style="width:100%;" onclick="openPegDrill()">&#127183; Start øvelse</button>`;
     }
   }
 
