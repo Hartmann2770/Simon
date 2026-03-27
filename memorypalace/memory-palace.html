@@ -2159,8 +2159,9 @@
     const f = getCollection(app.editingCollectionId);
     if (!f) { renderView('dashboard'); return; }
     const fps = data.palaces.filter(p => p.collectionId === f.id);
-    const due = fps.filter(isDue);
-    const rest = fps.filter(p => !isDue(p));
+    const alpha = (a, b) => a.name.localeCompare(b.name, 'da');
+    const due = fps.filter(isDue).sort(alpha);
+    const rest = fps.filter(p => !isDue(p)).sort(alpha);
     const sorted = [...due, ...rest];
     let html = `
       <button class="back-btn" data-action="back-from-collection">&#8592; Alle Paladser</button>
