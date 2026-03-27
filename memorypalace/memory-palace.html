@@ -405,6 +405,8 @@
       font-size: 15px;
       flex: 1;
     }
+    .location-name[data-action] { cursor: pointer; }
+    .location-name[data-action]:hover { color: var(--accent); }
     .location-actions { display: flex; gap: 4px; }
     .location-memories {
       padding: 0 16px 14px 52px;
@@ -2488,7 +2490,7 @@
           </div>`;
     } else {
       html += `
-          <span class="location-name">${escFlag(loc.name)}</span>
+          <span class="location-name"${app.authenticated ? ` data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}"` : ''}>${escFlag(loc.name)}</span>
           ${loc.coords ? `<span title="Satellit-koordinater gemt (${loc.coords.lat}, ${loc.coords.lng})" style="font-size:13px;opacity:0.6;flex-shrink:0;">&#128506;</span>` : ''}
           ${app.authenticated ? `<div class="location-actions">
             ${rooms.length > 0 ? `<select class="room-select" data-action="assign-loc-room" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rum">${roomOptions}</select>` : ''}
