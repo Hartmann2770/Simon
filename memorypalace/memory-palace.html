@@ -3827,23 +3827,41 @@
 
       // Trendgraf
       function _trendChart(sessions) {
-        if (sessions.length < 2) return '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0;">Øv mere for at se en trendlinje.</p>';
+        // Aggregér sessioner pr. dag
+        const dayMap = {};
+        for (const s of sessions) {
+          const d = new Date(s.date);
+          const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+          if (!dayMap[key]) dayMap[key] = { ts: s.date, key, known: 0, total: 0, count: 0 };
+          dayMap[key].known += s.known;
+          dayMap[key].total += s.total;
+          dayMap[key].count++;
+          if (s.date > dayMap[key].ts) dayMap[key].ts = s.date;
+        }
+        const days = Object.values(dayMap).sort((a, b) => a.key.localeCompare(b.key));
+        const n = days.length;
+
+        if (n < 2) return '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0;">Øv mere for at se en trendlinje.</p>';
+
         const W = 320, H = 130;
         const PL = 28, PR = 8, PT = 8, PB = 22;
         const cW = W - PL - PR, cH = H - PT - PB;
-        const scores = sessions.map(s => Math.round(s.known / s.total * 100));
-        const n = scores.length;
-        const xp = i => PL + (n < 2 ? cW/2 : i / (n-1) * cW);
+        const scores = days.map(d => Math.round(d.known / d.total * 100));
+
+        // Tidsbaseret x-akse — huller mellem dage er synlige
+        const firstTs = days[0].ts, lastTs = days[n-1].ts;
+        const span = lastTs - firstTs || 1;
+        const xp = ts => PL + (ts - firstTs) / span * cW;
         const yp = v => PT + cH - v / 100 * cH;
 
-        // Glidende gennemsnit (vindue 5)
+        // Glidende gennemsnit (vindue 5 dage)
         const ma = scores.map((_, i) => {
           const win = scores.slice(Math.max(0, i-4), i+1);
           return win.reduce((a,b)=>a+b,0) / win.length;
         });
-        const maLine = ma.map((v,i) => `${xp(i).toFixed(1)},${yp(v).toFixed(1)}`).join(' ');
+        const maLine = ma.map((v,i) => `${xp(days[i].ts).toFixed(1)},${yp(v).toFixed(1)}`).join(' ');
 
-        // Lineær regression (overordnet tendens)
+        // Lineær regression
         const mx = (n-1)/2;
         const my = scores.reduce((a,b)=>a+b,0)/n;
         const num = scores.reduce((s,v,i)=>s+(i-mx)*(v-my),0);
@@ -3851,26 +3869,39 @@
         const slope = den ? num/den : 0;
         const intercept = my - slope*mx;
         const r0 = intercept, r1 = slope*(n-1)+intercept;
-        const regLine = `<line x1="${xp(0).toFixed(1)}" y1="${yp(r0).toFixed(1)}" x2="${xp(n-1).toFixed(1)}" y2="${yp(r1).toFixed(1)}" stroke="#7557da" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>`;
+        const regLine = `<line x1="${xp(firstTs).toFixed(1)}" y1="${yp(r0).toFixed(1)}" x2="${xp(lastTs).toFixed(1)}" y2="${yp(r1).toFixed(1)}" stroke="#7557da" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>`;
 
-        // Punkter
-        const dots = scores.map((v,i) => {
+        // Punkter — størrelse afspejler antal sessioner den dag
+        const dots = days.map((d, i) => {
+          const v = scores[i];
           const col = v>=80?'#22c55e':v>=50?'#f8b116':'#ef4444';
-          return `<circle cx="${xp(i).toFixed(1)}" cy="${yp(v).toFixed(1)}" r="3.5" fill="${col}" opacity="0.9"/>`;
+          const r = d.count === 1 ? 3.5 : d.count <= 3 ? 4.5 : 5.5;
+          return `<circle cx="${xp(d.ts).toFixed(1)}" cy="${yp(v).toFixed(1)}" r="${r}" fill="${col}" opacity="0.9"/>`;
         }).join('');
 
-        // Grid + labels
+        // Grid
         const grid = [0,50,100].map(v => {
           const y = yp(v).toFixed(1);
           return `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>
                   <text x="${PL-4}" y="${(+y+3.5).toFixed(0)}" text-anchor="end" font-size="9" fill="#9ca3af">${v}</text>`;
         }).join('');
 
-        // X-akse: første og sidste dato
+        // X-akse labels: første + sidste, og mellemste hvis span > 30 dage
         const fmt = ts => { const d=new Date(ts); return d.toLocaleDateString('da-DK',{day:'numeric',month:'short'}); };
-        const xLabels = sessions.length >= 2
-          ? `<text x="${xp(0).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(sessions[0].date)}</text>
-             <text x="${xp(n-1).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(sessions[n-1].date)}</text>` : '';
+        let xLabels = `<text x="${xp(firstTs).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(firstTs)}</text>
+                       <text x="${xp(lastTs).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(lastTs)}</text>`;
+        const spanDays = (lastTs - firstTs) / 86400000;
+        if (spanDays > 30 && n > 4) {
+          const midIdx = Math.floor(n / 2);
+          const midX = xp(days[midIdx].ts);
+          if (midX - xp(firstTs) > 40 && xp(lastTs) - midX > 40) {
+            xLabels += `<text x="${midX.toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(days[midIdx].ts)}</text>`;
+          }
+        }
+
+        // Summering under grafen
+        const fmtFull = ts => new Date(ts).toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'});
+        const summary = `<div style="text-align:center;font-size:11px;color:var(--muted);margin-top:4px;">${n} dage med træning · ${fmtFull(firstTs)} – ${fmtFull(lastTs)}</div>`;
 
         return `<svg width="100%" viewBox="0 0 ${W} ${H}" style="display:block;overflow:visible;">
           ${grid}
@@ -3878,7 +3909,7 @@
           <polyline points="${maLine}" fill="none" stroke="var(--accent,#7557da)" stroke-width="2" stroke-linejoin="round"/>
           ${dots}
           ${xLabels}
-        </svg>`;
+        </svg>${summary}`;
       }
 
       if (_pdKeyHandler) { document.removeEventListener('keydown', _pdKeyHandler); _pdKeyHandler = null; }
@@ -3888,7 +3919,7 @@
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
         <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Udvikling over tid</div>
-        <div style="margin-bottom:4px;font-size:11px;color:var(--muted);">&#8213; glidende gns. &nbsp; &#8943; tendens &nbsp; &#9679; session</div>
+        <div style="margin-bottom:4px;font-size:11px;color:var(--muted);">&#8213; glidende gns. &nbsp; &#8943; tendens &nbsp; &#9679; dag (større prik = flere sessioner)</div>
         ${_trendChart(stats)}
         <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:16px;margin-bottom:8px;">Svage tal</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${weakHtml}</div>
@@ -3961,8 +3992,9 @@
       repeatKnown: _pd.repeatKnown || 0,
       unknown: _pd.unknown.map(([n]) => n)
     });
-    // Behold max 100 sessioner
-    if (data.settings.pegStats.length > 100) data.settings.pegStats.shift();
+    // Behold de seneste 90 dages sessioner (rullende vindue)
+    const _cutoff = Date.now() - 90 * 24 * 60 * 60 * 1000;
+    data.settings.pegStats = data.settings.pegStats.filter(s => s.date >= _cutoff);
     saveData();
   }
 
