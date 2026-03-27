@@ -692,6 +692,27 @@
       background: rgba(0,0,0,0.5); color: white;
       font-size: 9px; padding: 2px 6px; border-radius: 8px; letter-spacing: 0.03em;
     }
+    .loc-sat-strip {
+      position: relative; height: 90px; overflow: hidden;
+      cursor: pointer; border-top: 1px solid var(--border);
+      background: #c8d4c8;
+    }
+    .loc-sat-strip img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .loc-sat-strip-pin {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -100%);
+      font-size: 22px; pointer-events: none;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+    }
+    .loc-sat-strip-hint {
+      position: absolute; bottom: 5px; right: 7px;
+      font-size: 10px; color: rgba(255,255,255,0.85);
+      background: rgba(0,0,0,0.45); padding: 1px 6px;
+      border-radius: 4px; pointer-events: none; letter-spacing: 0.02em;
+    }
     .dk-flag {
       display: inline-block; width: 20px; height: 14px;
       background: #C60C30; border-radius: 1px;
@@ -2442,6 +2463,7 @@
 
   function renderLocationHTML(palaceId, loc, idx, total, rooms) {
     const isEditingLoc = app.editingLocId === loc.id;
+    const palace = getPalace(palaceId);
     rooms = rooms || [];
     const roomOptions = `<option value="">— Intet rum —</option>` +
       rooms.map(r => `<option value="${r.id}"${loc.roomId === r.id ? ' selected' : ''}>${esc(r.name)}</option>`).join('');
@@ -2451,13 +2473,12 @@
           <div class="location-number">${idx + 1}</div>`;
 
     if (isEditingLoc) {
-      const editPalace = getPalace(palaceId);
       const coordLat = loc.coords ? loc.coords.lat : '';
       const coordLng = loc.coords ? loc.coords.lng : '';
       html += `
           <div class="inline-edit-form" style="flex:1">
             <input type="text" id="edit-loc-name-${loc.id}" value="${esc(loc.name)}">
-            ${editPalace && editPalace.routePalace ? `
+            ${palace && palace.routePalace ? `
             <input type="text" id="edit-loc-coords-${loc.id}" value="${coordLat && coordLng ? coordLat + ', ' + coordLng : ''}" placeholder="Koordinater fra Google Maps (fx 55.6347, 12.6526)" style="font-size:12px;margin-top:4px;">` : ''}
             <button class="btn-primary btn-sm" data-action="save-loc-edit" data-palace-id="${palaceId}" data-loc-id="${loc.id}">Gem</button>
             <button class="btn-ghost btn-sm" data-action="cancel-loc-edit">Annuller</button>
@@ -2475,7 +2496,18 @@
           </div>` : ''}`;
     }
 
-    html += `</div><div class="location-memories">`;
+    html += `</div>`;
+    if (palace && palace.routePalace && loc.coords) {
+      const R = 0.0010;
+      const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
+      const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
+      html += `<div class="loc-sat-strip" onclick="showSatOverlay(${loc.coords.lat},${loc.coords.lng})" title="Klik for at forstørre">
+        <img src="${imgUrl}" loading="lazy" alt="" onload="this.style.opacity=1">
+        <div class="loc-sat-strip-pin">📌</div>
+        <div class="loc-sat-strip-hint">🔍 Forstør</div>
+      </div>`;
+    }
+    html += `<div class="location-memories">`;
 
     loc.memories.forEach(mem => {
       if (app.editingMemId === mem.id) {
@@ -3388,6 +3420,21 @@
   window.exitPinMode = function() {
     app.pinningRoomId = null;
     renderPalaceDetail();
+  };
+
+  window.showSatOverlay = function(lat, lng) {
+    const R = 0.003;
+    const bbox = `${lng - R},${lat - R},${lng + R},${lat + R}`;
+    const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=800,600&imageSR=4326&format=png&transparent=false&f=image`;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;cursor:pointer;';
+    overlay.innerHTML = `<div style="position:relative;max-width:90vw;max-height:82vh;">
+      <img src="${imgUrl}" style="max-width:90vw;max-height:82vh;display:block;border-radius:8px;">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:32px;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6));">📌</div>
+      <div style="position:absolute;bottom:8px;right:10px;font-size:10px;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:4px;">© Esri · Klik for at lukke</div>
+    </div>`;
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
   };
 
   window.removeMapConfirm = function(palaceId, roomId) {
