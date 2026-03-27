@@ -971,6 +971,32 @@
       padding: 5px 8px;
     }
     .peg-edit-input:focus { outline: none; border-color: var(--accent); }
+    /* PEG FLASHCARD */
+    .peg-flashcard {
+      width: 100%; height: 240px;
+      perspective: 900px;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+    .peg-card-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s ease;
+    }
+    .peg-card-inner.flipped { transform: rotateY(180deg); }
+    .peg-card-front, .peg-card-back {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: var(--surface-raised);
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .peg-card-back { transform: rotateY(180deg); }
     #peg-toggle-btn.active {
       opacity: 1;
       filter: drop-shadow(0 0 4px rgba(255,255,255,0.7));
@@ -3619,7 +3645,7 @@
     renderPegList();
   };
 
-  // ── PEG DRILL ──────────────────────────────────────────────────────
+  // ── PEG FLASHCARDS ─────────────────────────────────────────────────
   let _pd = null;
 
   window.openPegDrill = function() {
@@ -3634,6 +3660,10 @@
     document.getElementById('peg-drill-modal').style.display = 'none';
   };
 
+  function _pegImgSrc(num) {
+    return 'peg-images/peg-' + num + '.jpg';
+  }
+
   function _renderPegDrill(screen) {
     const inner = document.getElementById('peg-drill-inner');
 
@@ -3643,20 +3673,20 @@
           <h2 style="font-size:17px;">&#127890; Øv Peg-liste</h2>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">Vælg retning og øv alle ${data.settings.pegList.length} ord.</p>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">Vend kortet for at se svaret. Marker om du kendte det.</p>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
           <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px;border:1px solid var(--border);border-radius:8px;">
             <input type="radio" name="pd-mode" value="num-to-word" checked style="accent-color:var(--accent);width:16px;height:16px;">
             <div>
-              <div style="font-size:14px;font-weight:600;">Tal &#8594; Ord</div>
-              <div style="font-size:12px;color:var(--muted);">Se et tal (f.eks. 42), skriv ordet</div>
+              <div style="font-size:14px;font-weight:600;">Tal &#8594; Ord + Billede</div>
+              <div style="font-size:12px;color:var(--muted);">Forside: tal &nbsp;·&nbsp; Bagside: ord og billede</div>
             </div>
           </label>
           <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px;border:1px solid var(--border);border-radius:8px;">
             <input type="radio" name="pd-mode" value="word-to-num" style="accent-color:var(--accent);width:16px;height:16px;">
             <div>
-              <div style="font-size:14px;font-weight:600;">Ord &#8594; Tal</div>
-              <div style="font-size:12px;color:var(--muted);">Se et ord (f.eks. Ravn), skriv tallet</div>
+              <div style="font-size:14px;font-weight:600;">Ord + Billede &#8594; Tal</div>
+              <div style="font-size:12px;color:var(--muted);">Forside: ord og billede &nbsp;·&nbsp; Bagside: tal</div>
             </div>
           </label>
         </div>
@@ -3664,67 +3694,63 @@
       return;
     }
 
-    if (screen === 'question') {
-      const [num, word] = _pd.queue[_pd.idx];
+    if (screen === 'card') {
+      const [num, word] = _pd.deck[_pd.idx];
       const isN2W = _pd.mode === 'num-to-word';
-      const q = isN2W ? num : word;
-      const pct = Math.round((_pd.idx / _pd.queue.length) * 100);
-      inner.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-          <span style="font-size:13px;color:var(--muted);">${_pd.idx + 1} / ${_pd.queue.length}</span>
-          <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>
-        </div>
-        <div style="background:var(--border);border-radius:100px;height:4px;margin-bottom:28px;">
-          <div style="background:var(--accent);height:4px;border-radius:100px;width:${pct}%;transition:width 0.3s;"></div>
-        </div>
-        <div style="text-align:center;margin-bottom:28px;">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">${isN2W ? 'Hvilket ord?' : 'Hvilket tal?'}</div>
-          <div style="font-family:'Cinzel',serif;font-size:${isN2W ? '56' : '28'}px;color:var(--accent);line-height:1.1;">${esc(q)}</div>
-        </div>
-        <input id="pd-input" type="${isN2W ? 'text' : 'number'}" placeholder="Dit svar…"
-          style="width:100%;box-sizing:border-box;font-size:16px;padding:10px 14px;background:var(--surface-raised);border:2px solid var(--border);border-radius:8px;color:var(--text);margin-bottom:12px;"
-          onkeydown="if(event.key==='Enter')submitPegAnswer()">
-        <button class="btn-primary" style="width:100%" onclick="submitPegAnswer()">Svar</button>`;
-      setTimeout(() => { const i = document.getElementById('pd-input'); if (i) i.focus(); }, 50);
-      return;
-    }
+      const imgSrc = _pegImgSrc(num);
+      const pct = Math.round((_pd.idx / _pd.deck.length) * 100);
+      const known = _pd.known.length, unk = _pd.unknown.length;
 
-    if (screen === 'feedback') {
-      const [num, word] = _pd.queue[_pd.idx - 1];
-      const isN2W = _pd.mode === 'num-to-word';
-      const right = isN2W ? word : num;
-      const ok = _pd.lastOk;
+      // Front: number (num-to-word) OR word+image (word-to-num)
+      const frontHtml = isN2W
+        ? `<div style="font-family:'Cinzel',serif;font-size:64px;color:var(--accent);line-height:1;">${esc(num)}</div>
+           <div style="font-size:12px;color:var(--muted);margin-top:10px;">Klik for at vende</div>`
+        : `<img src="${imgSrc}" onerror="this.style.display='none'" style="max-height:140px;max-width:100%;object-fit:contain;border-radius:6px;margin-bottom:8px;">
+           <div style="font-size:22px;font-weight:700;color:var(--text);">${esc(word)}</div>
+           <div style="font-size:12px;color:var(--muted);margin-top:8px;">Klik for at vende</div>`;
+
+      // Back: word+image (num-to-word) OR number (word-to-num)
+      const backHtml = isN2W
+        ? `<img src="${imgSrc}" onerror="this.style.display='none'" style="max-height:140px;max-width:100%;object-fit:contain;border-radius:6px;margin-bottom:8px;">
+           <div style="font-size:22px;font-weight:700;color:var(--text);">${esc(word)}</div>`
+        : `<div style="font-family:'Cinzel',serif;font-size:64px;color:var(--accent);line-height:1;">${esc(num)}</div>`;
+
       inner.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-          <span style="font-size:13px;color:var(--muted);">${_pd.idx} / ${_pd.queue.length}</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:13px;color:var(--muted);">${_pd.idx + 1} / ${_pd.deck.length}</span>
+          <div style="display:flex;gap:10px;font-size:12px;">
+            <span style="color:#22c55e;">&#10003; ${known}</span>
+            <span style="color:var(--danger);">&#10007; ${unk}</span>
+          </div>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
-        <div style="text-align:center;margin-bottom:24px;">
-          <div style="font-size:42px;margin-bottom:12px;">${ok ? '&#9989;' : '&#10060;'}</div>
-          ${ok
-            ? `<div style="font-size:20px;font-weight:700;color:#22c55e;">${esc(right)}</div>`
-            : `<div style="font-size:13px;color:var(--danger);margin-bottom:6px;">Du svarede: <strong>${esc(_pd.lastGiven)}</strong></div>
-               <div style="font-size:20px;font-weight:700;color:var(--text);">Rigtigt: ${esc(right)}</div>`
-          }
-          <div style="margin-top:10px;font-size:13px;color:var(--muted);">${num} &#8594; ${esc(word)}</div>
+        <div style="background:var(--border);border-radius:100px;height:3px;margin-bottom:14px;">
+          <div style="background:var(--accent);height:3px;border-radius:100px;width:${pct}%;transition:width 0.3s;"></div>
         </div>
-        <button class="btn-primary" style="width:100%" id="pd-next-btn"
-          onclick="${_pd.idx < _pd.queue.length ? 'nextPegQuestion()' : 'showPegDrillResult()'}">
-          ${_pd.idx < _pd.queue.length ? 'Næste &#8594;' : 'Se resultat'}
-        </button>`;
-      setTimeout(() => { const b = document.getElementById('pd-next-btn'); if (b) b.focus(); }, 50);
+        <div class="peg-flashcard" onclick="flipPegCard()" id="peg-flashcard-wrap">
+          <div class="peg-card-inner" id="peg-card-inner">
+            <div class="peg-card-front">${frontHtml}</div>
+            <div class="peg-card-back">${backHtml}</div>
+          </div>
+        </div>
+        <div id="pd-mark-btns" style="display:none;display:flex;gap:8px;">
+          <button class="btn-ghost" style="flex:1;border-color:var(--danger);color:var(--danger);" onclick="markPegCard(false)">&#10007; Vidste ikke</button>
+          <button class="btn-primary" style="flex:1;background:#22c55e;border-color:#22c55e;" onclick="markPegCard(true)">&#10003; Kendte</button>
+        </div>
+        <div id="pd-flip-hint" style="text-align:center;">
+          <button class="btn-ghost" style="width:100%" onclick="flipPegCard()">Vend kortet</button>
+        </div>`;
       return;
     }
 
     if (screen === 'result') {
-      const ok = _pd.correct.length;
-      const tot = _pd.totalCount;
-      const pct = Math.round((ok / tot) * 100);
-      const wrongList = _pd.wrong.length > 0
-        ? `<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;">
-             <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Forkerte (${_pd.wrong.length}):</div>
+      const k = _pd.known.length, u = _pd.unknown.length, tot = _pd.totalCount;
+      const pct = Math.round((k / tot) * 100);
+      const unknownList = _pd.unknown.length > 0
+        ? `<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;max-height:160px;overflow-y:auto;">
+             <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Øv mere (${u}):</div>
              <div style="display:flex;flex-wrap:wrap;gap:6px;">
-               ${_pd.wrong.map(([n,w]) => `<span style="background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;"><strong>${n}</strong> ${esc(w)}</span>`).join('')}
+               ${_pd.unknown.map(([n,w]) => `<span style="background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;"><strong>${n}</strong> ${esc(w)}</span>`).join('')}
              </div>
            </div>` : '';
       inner.innerHTML = `
@@ -3734,11 +3760,11 @@
         </div>
         <div style="text-align:center;margin-bottom:8px;">
           <div style="font-family:'Cinzel',serif;font-size:52px;color:var(--accent);line-height:1;">${pct}%</div>
-          <div style="font-size:14px;color:var(--muted);margin-top:6px;">${ok} rigtige af ${tot}</div>
+          <div style="font-size:14px;color:var(--muted);margin-top:6px;">${k} kendte af ${tot}</div>
         </div>
-        ${wrongList}
+        ${unknownList}
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
-          ${_pd.wrong.length > 0 ? `<button class="btn-primary" onclick="retryWrongPegDrill()">Øv de ${_pd.wrong.length} forkerte igen</button>` : ''}
+          ${u > 0 ? `<button class="btn-primary" onclick="retryWrongPegDrill()">Øv de ${u} ukendte igen</button>` : ''}
           <button class="btn-ghost" onclick="openPegDrill()">Ny øvelse</button>
           <button class="btn-ghost" onclick="closePegDrill()">Luk</button>
         </div>`;
@@ -3747,40 +3773,40 @@
 
   window.startPegDrill = function() {
     const mode = document.querySelector('input[name="pd-mode"]:checked').value;
-    const queue = [...data.settings.pegList].sort(() => Math.random() - 0.5);
-    _pd = { mode, queue, idx: 0, correct: [], wrong: [], totalCount: queue.length, lastOk: false, lastGiven: '' };
-    _renderPegDrill('question');
+    const deck = [...data.settings.pegList].sort(() => Math.random() - 0.5);
+    _pd = { mode, deck, idx: 0, known: [], unknown: [], totalCount: deck.length, flipped: false };
+    _renderPegDrill('card');
   };
 
-  window.submitPegAnswer = function() {
+  window.flipPegCard = function() {
+    if (!_pd || _pd.flipped) return;
+    _pd.flipped = true;
+    const inner = document.getElementById('peg-card-inner');
+    if (inner) inner.classList.add('flipped');
+    const markBtns = document.getElementById('pd-mark-btns');
+    const flipHint = document.getElementById('pd-flip-hint');
+    if (markBtns) markBtns.style.display = 'flex';
+    if (flipHint) flipHint.style.display = 'none';
+  };
+
+  window.markPegCard = function(known) {
     if (!_pd) return;
-    const inp = document.getElementById('pd-input');
-    if (!inp) return;
-    const given = inp.value.trim();
-    if (!given) return;
-    const [num, word] = _pd.queue[_pd.idx];
-    const right = _pd.mode === 'num-to-word' ? word : num;
-    const ok = given.toLowerCase() === right.toLowerCase();
-    _pd.lastOk = ok;
-    _pd.lastGiven = given;
+    const entry = _pd.deck[_pd.idx];
+    if (known) _pd.known.push(entry);
+    else       _pd.unknown.push(entry);
     _pd.idx++;
-    if (ok) _pd.correct.push([num, word]);
-    else    _pd.wrong.push([num, word]);
-    _renderPegDrill('feedback');
-  };
-
-  window.nextPegQuestion = function() {
-    _renderPegDrill('question');
-  };
-
-  window.showPegDrillResult = function() {
-    _renderPegDrill('result');
+    _pd.flipped = false;
+    if (_pd.idx >= _pd.deck.length) {
+      _renderPegDrill('result');
+    } else {
+      _renderPegDrill('card');
+    }
   };
 
   window.retryWrongPegDrill = function() {
-    const queue = [..._pd.wrong].sort(() => Math.random() - 0.5);
-    _pd = { mode: _pd.mode, queue, idx: 0, correct: [], wrong: [], totalCount: queue.length, lastOk: false, lastGiven: '' };
-    _renderPegDrill('question');
+    const deck = [..._pd.unknown].sort(() => Math.random() - 0.5);
+    _pd = { mode: _pd.mode, deck, idx: 0, known: [], unknown: [], totalCount: deck.length, flipped: false };
+    _renderPegDrill('card');
   };
 
   // ── LOGIN MODAL ────────────────────────────────────────────────────
