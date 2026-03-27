@@ -376,8 +376,10 @@
       border-radius: var(--radius-sm);
       margin-bottom: 10px;
       overflow: hidden;
+      position: relative;
       transition: border-color 0.2s;
     }
+    .location-item:has(.loc-sat-strip) { padding-right: 130px; }
     .location-item:hover { border-color: rgba(117,87,218,0.4); }
     .location-header {
       display: flex;
@@ -693,8 +695,9 @@
       font-size: 9px; padding: 2px 6px; border-radius: 8px; letter-spacing: 0.03em;
     }
     .loc-sat-strip {
-      position: relative; height: 90px; overflow: hidden;
-      cursor: pointer; border-top: 1px solid var(--border);
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: 130px; overflow: hidden;
+      cursor: pointer; border-left: 1px solid var(--border);
       background: #c8d4c8;
     }
     .loc-sat-strip img {
