@@ -3872,8 +3872,8 @@
     if (!_pd || !_pd.flipped) return;
     const entry = _pd.deck[_pd.idx];
     if (known) {
-      _pd.knownCount++;
-      if (_pd.isRepeat) _pd.repeatKnown++;
+      if (!_pd.isRepeat) _pd.knownCount++;
+      else _pd.repeatKnown++;
     } else {
       _pd.unknown.push(entry);
     }
