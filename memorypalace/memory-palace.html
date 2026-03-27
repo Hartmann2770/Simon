@@ -3670,7 +3670,7 @@
       if (document.getElementById('peg-drill-modal').style.display === 'none') return;
       if (!_pd) return;
       if (!_pd.flipped) {
-        if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') { e.preventDefault(); flipPegCard(); }
+        if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); flipPegCard(); }
       } else {
         if (e.key === 'ArrowLeft')  { e.preventDefault(); markPegCard(false); }
         if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); markPegCard(true); }
