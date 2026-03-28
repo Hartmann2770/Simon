@@ -22,6 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['error' => 'Unauthorized']);
         exit;
     }
+    $max_bak = 5;
+    if (file_exists($DATA_FILE . '.bak' . $max_bak)) unlink($DATA_FILE . '.bak' . $max_bak);
+    for ($i = $max_bak - 1; $i >= 1; $i--) {
+        $f = $DATA_FILE . '.bak' . $i;
+        if (file_exists($f)) rename($f, $DATA_FILE . '.bak' . ($i + 1));
+    }
+    if (file_exists($DATA_FILE)) rename($DATA_FILE, $DATA_FILE . '.bak1');
     if (file_put_contents($DATA_FILE, json_encode($payload['data'], JSON_UNESCAPED_UNICODE)) === false) {
         http_response_code(500);
         echo json_encode(['error' => 'Skriv fejlede']);

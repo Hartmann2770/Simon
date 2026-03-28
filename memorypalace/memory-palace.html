@@ -3106,6 +3106,7 @@
       }
 
       case 'delete-note':
+        if (!confirm('Slet denne note?')) break;
         deleteNote(palaceId, el.dataset.roomId, el.dataset.noteId);
         renderPalaceDetail();
         break;
@@ -3214,6 +3215,7 @@
       }
 
       case 'delete-memory':
+        if (!confirm('Slet denne erindring?')) break;
         deleteMemory(palaceId, locId, memId);
         renderPalaceDetail();
         break;
