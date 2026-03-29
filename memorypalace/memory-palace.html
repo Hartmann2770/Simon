@@ -1060,6 +1060,9 @@
         <button class="btn-ghost btn-sm" onclick="triggerExcelImport()" style="flex:1">&#128228; Indlæs Excel</button>
       </div>
     </div>
+    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:16px;">
+      <button class="btn-ghost btn-sm" onclick="handleLogout()" style="width:100%;color:var(--muted);">&#128274; Log ud</button>
+    </div>
   </div>
 </div>
 
@@ -1074,6 +1077,10 @@
     <div class="form-group">
       <input type="password" id="login-code-input" placeholder="Kode" style="letter-spacing:0.2em;" onkeydown="if(event.key==='Enter')submitLogin()">
     </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:14px;cursor:pointer;">
+      <input type="checkbox" id="login-remember-me" style="width:15px;height:15px;cursor:pointer;accent-color:var(--teal);">
+      Husk mig i 30 dage
+    </label>
     <div id="login-error" style="display:none;color:var(--danger);font-size:13px;margin-bottom:12px;">Forkert kode. Prøv igen.</div>
     <button class="btn-primary" style="width:100%" onclick="submitLogin()">Log ind</button>
   </div>
@@ -1639,7 +1646,18 @@
   }
   seedCollections();
 
-  const _savedSession = sessionStorage.getItem('_mp_session');
+  const _savedSession = (() => {
+    // Check sessionStorage first (current tab)
+    const ss = sessionStorage.getItem('_mp_session');
+    if (ss) return ss;
+    // Check localStorage with expiry (remember me)
+    try {
+      const stored = JSON.parse(localStorage.getItem('_mp_remember') || 'null');
+      if (stored && stored.pw && stored.expires > Date.now()) return stored.pw;
+      if (stored) localStorage.removeItem('_mp_remember'); // expired
+    } catch(e) {}
+    return null;
+  })();
   let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: !!_savedSession, sessionPw: _savedSession || null };
   _appReady = true;
 
@@ -4050,6 +4068,10 @@
       app.authenticated = true;
       app.sessionPw = code;
       sessionStorage.setItem('_mp_session', code);
+      const rememberMe = document.getElementById('login-remember-me');
+      if (rememberMe && rememberMe.checked) {
+        localStorage.setItem('_mp_remember', JSON.stringify({ pw: code, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 }));
+      }
       updateAuthButton();
       closeLoginModal();
       if (_loginCallback) { const cb = _loginCallback; _loginCallback = null; cb(); }
@@ -4061,6 +4083,16 @@
 
   window.handleAuthBtn = function() {
     if (!app.authenticated) showLoginModal(null);
+  };
+
+  window.handleLogout = function() {
+    app.authenticated = false;
+    app.sessionPw = null;
+    sessionStorage.removeItem('_mp_session');
+    localStorage.removeItem('_mp_remember');
+    closeSettingsModal();
+    updateAuthButton();
+    renderView('dashboard');
   };
 
   function updateAuthButton() {
