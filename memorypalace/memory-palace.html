@@ -3830,9 +3830,19 @@
             <div style="font-size:14px;font-weight:600;">Ord + Billede &#8594; Tal</div>
           </label>
         </div>
-        ${due.length > 0
-          ? `<button class="btn-primary" style="width:100%" onclick="startPegDrill()">Start ${due.length} kort &#8594;</button>`
-          : `<button class="btn-ghost" style="width:100%" onclick="closePegDrill()">Luk</button>`
+        ${due.length > 0 ? `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Antal kort</div>
+          <div style="display:flex;gap:6px;">
+            ${[10,25,50].concat(due.length > 50 ? [due.length] : []).map((n,i) =>
+              `<button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('btn-primary','pd-sz-active'));this.classList.add('btn-primary','pd-sz-active');"
+                class="btn-ghost pd-sz-btn${i===0?' btn-primary pd-sz-active':''}"
+                data-sz="${n}" style="flex:1;padding:8px 0;">${n===due.length&&n>50?'Alle':n}</button>`
+            ).join('')}
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%" onclick="startPegDrill()">Start &#8594;</button>`
+        : `<button class="btn-ghost" style="width:100%" onclick="closePegDrill()">Luk</button>`
         }`;
       return;
     }
@@ -4016,8 +4026,11 @@
 
   window.startPegDrill = function() {
     const mode = document.querySelector('input[name="pd-mode"]:checked').value;
-    const deck = _getDueCards().sort(() => Math.random() - 0.5);
-    if (deck.length === 0) return;
+    const sizeEl = document.querySelector('.pd-sz-active');
+    const size = sizeEl ? parseInt(sizeEl.dataset.sz) : 10;
+    const all = _getDueCards().sort(() => Math.random() - 0.5);
+    if (all.length === 0) return;
+    const deck = all.slice(0, size);
     _pd = { mode, deck, idx: 0, correct: 0, wrong: [], totalCount: deck.length, flipped: false };
     _renderPegDrill('card');
   };
