@@ -1103,6 +1103,7 @@
     </div>
   </div>
   <div id="peg-sidebar-list"></div>
+  <div id="peg-leitner-bar" style="border-top:1px solid var(--border);padding:8px 8px 6px;flex-shrink:0;"></div>
 </div>
 
 
@@ -3686,25 +3687,21 @@
         <button class="btn-ghost btn-sm" onclick="cancelPegEdit()">Annuller</button>
       </div>`;
       btn.textContent = 'Annuller';
+      const barEl = document.getElementById('peg-leitner-bar');
+      if (barEl) barEl.innerHTML = '';
     } else {
       const boxCounts = _getBoxCounts();
       const dueCount = _getDueCards().length;
-      list.innerHTML = data.settings.pegList.map(([num, word]) => {
-        const box = _getLeitnerState(num).box;
-        const col = BOX_COLORS[box-1];
-        return `<div class="peg-row">
-          <span class="peg-num">${num}</span>
-          <span class="peg-word" style="flex:1;">${word}</span>
-          <span style="font-size:9px;font-weight:700;color:${col};background:${col}22;border-radius:4px;padding:1px 5px;">B${box}</span>
-        </div>`;
-      }).join('') +
-      `<div style="border-top:1px solid var(--border);margin-top:6px;padding:10px 6px 4px;">
-         <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-align:center;">Bunkeoversigt</div>
-         ${_boxBarChart(boxCounts, 32)}
-         <div style="text-align:center;margin-top:8px;font-size:11px;color:${dueCount>0?'var(--accent)':'var(--muted)'};">
-           ${dueCount > 0 ? `<strong>${dueCount}</strong> kort forfaldne i dag` : '✓ Ingen forfaldne i dag'}
-         </div>
-       </div>`;
+      list.innerHTML = data.settings.pegList.map(([num, word]) =>
+        `<div class="peg-row"><span class="peg-num">${num}</span><span class="peg-word">${word}</span></div>`
+      ).join('');
+      const bar = document.getElementById('peg-leitner-bar');
+      if (bar) bar.innerHTML =
+        `<div style="font-size:10px;color:var(--muted);margin-bottom:5px;text-align:center;">Bunkeoversigt</div>
+         ${_boxBarChart(boxCounts, 28)}
+         <div style="text-align:center;margin-top:6px;font-size:11px;color:${dueCount>0?'var(--accent)':'var(--muted)'};">
+           ${dueCount > 0 ? `<strong>${dueCount}</strong> forfaldne i dag` : '✓ Ingen forfaldne i dag'}
+         </div>`;
       btn.textContent = 'Rediger';
       pegEditMode = false;
     }
