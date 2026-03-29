@@ -3614,6 +3614,54 @@
     data.settings.pegList = PEG_LIST_DEFAULT.map(([n, w]) => [n, w]);
     saveData();
   }
+  if (!data.settings.pegLeitner) {
+    data.settings.pegLeitner = {};
+    saveData();
+  }
+  if (!data.settings.pegLeitnerHistory) {
+    data.settings.pegLeitnerHistory = [];
+    saveData();
+  }
+
+  // ── LEITNER ENGINE ────────────────────────────────────────────────────
+  const LEITNER_INTERVALS = [0, 1, 2, 4, 8, 16]; // dage per bunke 1-5
+
+  function _dayStart(ts) {
+    const d = new Date(ts); d.setHours(0,0,0,0); return d.getTime();
+  }
+
+  function _getLeitnerState(num) {
+    if (!data.settings.pegLeitner[num]) {
+      data.settings.pegLeitner[num] = { box: 1, nextReview: _dayStart(Date.now()) };
+    }
+    return data.settings.pegLeitner[num];
+  }
+
+  function _advanceLeitner(num, known) {
+    const s = _getLeitnerState(num);
+    s.box = known ? Math.min(5, s.box + 1) : 1;
+    s.nextReview = _dayStart(Date.now()) + LEITNER_INTERVALS[s.box] * 864e5;
+  }
+
+  function _getDueCards() {
+    const endOfToday = _dayStart(Date.now()) + 864e5;
+    return data.settings.pegList.filter(([num]) => _getLeitnerState(num).nextReview < endOfToday);
+  }
+
+  function _getBoxCounts() {
+    const counts = [0,0,0,0,0];
+    for (const [num] of data.settings.pegList) counts[_getLeitnerState(num).box - 1]++;
+    return counts;
+  }
+
+  function _getNextDueDate() {
+    let earliest = Infinity;
+    for (const [num] of data.settings.pegList) {
+      const nr = _getLeitnerState(num).nextReview;
+      if (nr < earliest) earliest = nr;
+    }
+    return earliest === Infinity ? null : earliest;
+  }
 
   let pegEditMode = false;
 
@@ -3639,9 +3687,33 @@
       </div>`;
       btn.textContent = 'Annuller';
     } else {
-      list.innerHTML = data.settings.pegList.map(([num, word]) =>
-        `<div class="peg-row"><span class="peg-num">${num}</span><span class="peg-word">${word}</span></div>`
+      const boxCounts = _getBoxCounts();
+      const dueCount = _getDueCards().length;
+      const total = data.settings.pegList.length;
+      const boxColors = ['#ef4444','#f8b116','#3b82f6','#8b5cf6','#22c55e'];
+      const boxLabels = boxCounts.map((c,i) =>
+        `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">
+           <div style="width:100%;height:${Math.round(4 + (c/total)*28)}px;background:${boxColors[i]};border-radius:3px;min-height:4px;transition:height 0.3s;"></div>
+           <span style="font-size:9px;color:var(--muted);">B${i+1}</span>
+           <span style="font-size:10px;font-weight:700;color:var(--text);">${c}</span>
+         </div>`
       ).join('');
+      list.innerHTML = data.settings.pegList.map(([num, word]) => {
+        const box = _getLeitnerState(num).box;
+        const col = boxColors[box-1];
+        return `<div class="peg-row">
+          <span class="peg-num">${num}</span>
+          <span class="peg-word" style="flex:1;">${word}</span>
+          <span style="font-size:9px;font-weight:700;color:${col};background:${col}22;border-radius:4px;padding:1px 5px;">B${box}</span>
+        </div>`;
+      }).join('') +
+      `<div style="border-top:1px solid var(--border);margin-top:6px;padding:10px 6px 4px;">
+         <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-align:center;">Bunkeoversigt</div>
+         <div style="display:flex;gap:4px;align-items:flex-end;height:46px;padding:0 2px;">${boxLabels}</div>
+         <div style="text-align:center;margin-top:8px;font-size:11px;color:${dueCount>0?'var(--accent)':'var(--muted)'};">
+           ${dueCount > 0 ? `<strong>${dueCount}</strong> kort forfaldne i dag` : '✓ Ingen forfaldne i dag'}
+         </div>
+       </div>`;
       btn.textContent = 'Rediger';
       pegEditMode = false;
     }
@@ -3718,32 +3790,50 @@
     const inner = document.getElementById('peg-drill-inner');
 
     if (screen === 'start') {
+      const due = _getDueCards();
+      const boxCounts = _getBoxCounts();
+      const boxColors = ['#ef4444','#f8b116','#3b82f6','#8b5cf6','#22c55e'];
+      const total = data.settings.pegList.length;
+      const boxBars = boxCounts.map((c,i) =>
+        `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">
+           <span style="font-size:11px;font-weight:700;color:${boxColors[i]};">${c}</span>
+           <div style="width:100%;height:${Math.round(6 + (c/total)*40)}px;background:${boxColors[i]};border-radius:4px;min-height:4px;"></div>
+           <span style="font-size:10px;color:var(--muted);">B${i+1}</span>
+         </div>`
+      ).join('');
+      const nextDue = due.length === 0 ? _getNextDueDate() : null;
+      const nextDueStr = nextDue ? new Date(nextDue).toLocaleDateString('da-DK',{weekday:'long',day:'numeric',month:'long'}) : '';
       inner.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
           <h2 style="font-size:17px;">&#127183; Øv Peg-liste</h2>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">Bunkeoversigt</div>
+          <div style="display:flex;gap:6px;align-items:flex-end;height:60px;padding:0 2px;">${boxBars}</div>
+        </div>
+        <div style="text-align:center;padding:14px;border:1px solid var(--border);border-radius:10px;margin-bottom:18px;background:var(--surface-raised);">
+          ${due.length > 0
+            ? `<div style="font-size:32px;font-weight:800;color:var(--accent);line-height:1;">${due.length}</div>
+               <div style="font-size:13px;color:var(--muted);margin-top:4px;">kort forfaldne i dag</div>`
+            : `<div style="font-size:22px;font-weight:700;color:#22c55e;">✓ Alt øvet!</div>
+               <div style="font-size:12px;color:var(--muted);margin-top:4px;">Næste øvelse: ${nextDueStr}</div>`
+          }
+        </div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
-          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px;border:1px solid var(--border);border-radius:8px;">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:11px;border:1px solid var(--border);border-radius:8px;">
             <input type="radio" name="pd-mode" value="num-to-word" checked style="accent-color:var(--accent);width:16px;height:16px;">
             <div style="font-size:14px;font-weight:600;">Tal &#8594; Ord + Billede</div>
           </label>
-          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px;border:1px solid var(--border);border-radius:8px;">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:11px;border:1px solid var(--border);border-radius:8px;">
             <input type="radio" name="pd-mode" value="word-to-num" style="accent-color:var(--accent);width:16px;height:16px;">
             <div style="font-size:14px;font-weight:600;">Ord + Billede &#8594; Tal</div>
           </label>
         </div>
-        <div style="margin-bottom:20px;">
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Antal kort</div>
-          <div style="display:flex;gap:6px;">
-            ${[10,25,50,100].map(n =>
-              `<button onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('btn-primary','pd-sz-active'));this.classList.add('btn-primary','pd-sz-active');this.dataset.sz='${n}';"
-                class="btn-ghost pd-sz-btn${n===25?' btn-primary pd-sz-active':''}"
-                data-sz="${n}" style="flex:1;padding:8px 0;">${n===100?'Alle':n}</button>`
-            ).join('')}
-          </div>
-        </div>
-        <button class="btn-primary" style="width:100%" onclick="startPegDrill()">Start &#8594;</button>`;
+        ${due.length > 0
+          ? `<button class="btn-primary" style="width:100%" onclick="startPegDrill()">Start ${due.length} kort &#8594;</button>`
+          : `<button class="btn-ghost" style="width:100%" onclick="closePegDrill()">Luk</button>`
+        }`;
       return;
     }
 
@@ -3752,10 +3842,12 @@
       const isN2W = _pd.mode === 'num-to-word';
       const imgSrc = _pegImgSrc(num);
       const pct = Math.round((_pd.idx / _pd.deck.length) * 100);
-      const isRepeat = _pd.isRepeat;
-      const progressLabel = isRepeat
-        ? `<span style="color:var(--gold,#f8b116);font-size:12px;">↺ Gentagelse ${_pd.idx + 1}/${_pd.deck.length}</span>`
-        : `<span style="font-size:13px;color:var(--muted);">${_pd.idx + 1} / ${_pd.deck.length}</span>`;
+      const curBox = _getLeitnerState(num).box;
+      const boxColors = ['#ef4444','#f8b116','#3b82f6','#8b5cf6','#22c55e'];
+      const progressLabel = `<div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:13px;color:var(--muted);">${_pd.idx + 1} / ${_pd.deck.length}</span>
+        <span style="font-size:10px;font-weight:700;color:${boxColors[curBox-1]};background:${boxColors[curBox-1]}22;border-radius:4px;padding:1px 6px;">B${curBox}</span>
+      </div>`;
 
       const frontHtml = isN2W
         ? `<div style="font-family:'Cinzel',serif;font-size:64px;color:var(--accent);line-height:1;">${esc(num)}</div>`
@@ -3771,13 +3863,13 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
           ${progressLabel}
           <div style="display:flex;gap:10px;font-size:12px;">
-            <span style="color:#22c55e;">&#10003; ${_pd.knownCount}</span>
-            <span style="color:var(--danger);">&#10007; ${_pd.unknown.length}</span>
+            <span style="color:#22c55e;">&#10003; ${_pd.correct}</span>
+            <span style="color:var(--danger);">&#10007; ${_pd.wrong.length}</span>
           </div>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
         <div style="background:var(--border);border-radius:100px;height:3px;margin-bottom:12px;">
-          <div style="background:${isRepeat?'var(--gold,#f8b116)':'var(--accent)'};height:3px;border-radius:100px;width:${pct}%;transition:width 0.3s;"></div>
+          <div style="background:var(--accent);height:3px;border-radius:100px;width:${pct}%;transition:width 0.3s;"></div>
         </div>
         <div class="peg-flashcard" onclick="flipPegCard()" id="peg-flashcard-wrap">
           <div class="peg-card-inner" id="peg-card-inner">
@@ -3801,38 +3893,45 @@
 
     if (screen === 'result') {
       const tot = _pd.totalCount;
-      const k = _pd.knownCount, u = _pd.unknown.length;
-      const pct1 = Math.round(k / tot * 100);
-      const totalKnown = k + (_pd.repeatKnown || 0);
-      const pct2 = Math.round(totalKnown / tot * 100);
-      const hasRepeat = _pd.isRepeat && (_pd.repeatTotal || 0) > 0;
-
-      const scoreHtml = hasRepeat
-        ? `<div style="display:flex;align-items:center;justify-content:center;gap:12px;">
-             <span style="font-family:'Cinzel',serif;font-size:46px;color:var(--accent);line-height:1;">${pct1}%</span>
-             <span style="font-size:28px;color:var(--muted);">&#8594;</span>
-             <span style="font-family:'Cinzel',serif;font-size:46px;color:#22c55e;line-height:1;">${pct2}%</span>
-           </div>
-           <div style="font-size:13px;color:var(--muted);margin-top:8px;">${k}/${tot} første forsøg &nbsp;·&nbsp; +${_pd.repeatKnown}/${_pd.repeatTotal} i gentagelse</div>`
-        : `<div style="font-family:'Cinzel',serif;font-size:52px;color:var(--accent);line-height:1;">${pct1}%</div>
-           <div style="font-size:14px;color:var(--muted);margin-top:6px;">${k} af ${tot} ved første forsøg</div>`;
-
-      const unknownList = u > 0
-        ? `<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;max-height:130px;overflow-y:auto;">
-             <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Stadig ukendte (${u}):</div>
-             <div style="display:flex;flex-wrap:wrap;gap:6px;">
-               ${_pd.unknown.map(([n,w]) => `<span style="background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;"><strong>${n}</strong> ${esc(w)}</span>`).join('')}
+      const pct = Math.round(_pd.correct / tot * 100);
+      const wrongCount = _pd.wrong.length;
+      const boxColors = ['#ef4444','#f8b116','#3b82f6','#8b5cf6','#22c55e'];
+      const wrongList = wrongCount > 0
+        ? `<div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;max-height:120px;overflow-y:auto;">
+             <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Sendt til bunke 1 (${wrongCount}):</div>
+             <div style="display:flex;flex-wrap:wrap;gap:5px;">
+               ${_pd.wrong.map(({entry:[n,w]}) =>
+                 `<span style="background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;"><strong>${n}</strong> ${esc(w)}</span>`
+               ).join('')}
              </div>
            </div>` : '';
+      const boxCounts = _getBoxCounts();
+      const boxBars = boxCounts.map((c,i) =>
+        `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">
+           <span style="font-size:11px;font-weight:700;color:${boxColors[i]};">${c}</span>
+           <div style="width:100%;height:${Math.round(4+(c/data.settings.pegList.length)*36)}px;background:${boxColors[i]};border-radius:3px;min-height:3px;"></div>
+           <span style="font-size:10px;color:var(--muted);">B${i+1}</span>
+         </div>`
+      ).join('');
       if (_pdKeyHandler) { document.removeEventListener('keydown', _pdKeyHandler); _pdKeyHandler = null; }
       inner.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h2 style="font-size:17px;">Resultat</h2>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
-        <div style="text-align:center;margin-bottom:8px;">${scoreHtml}</div>
-        ${unknownList}
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
+        <div style="text-align:center;margin-bottom:14px;">
+          <div style="font-family:'Cinzel',serif;font-size:52px;color:${pct>=80?'#22c55e':pct>=50?'#f8b116':'#ef4444'};line-height:1;">${pct}%</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:6px;">
+            <span style="color:#22c55e;">&#10003; ${_pd.correct} rykket op</span>
+            ${wrongCount > 0 ? `&nbsp;·&nbsp; <span style="color:#ef4444;">&#10007; ${wrongCount} til bunke 1</span>` : ''}
+          </div>
+        </div>
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px;text-align:center;">Bunkeoversigt nu</div>
+          <div style="display:flex;gap:5px;align-items:flex-end;height:50px;padding:0 2px;">${boxBars}</div>
+        </div>
+        ${wrongList}
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
           <button class="btn-ghost" onclick="openPegDrill()">Ny øvelse</button>
           <button class="btn-ghost" onclick="closePegDrill()">Luk</button>
         </div>`;
@@ -3840,135 +3939,86 @@
     }
 
     if (screen === 'stats') {
-      const stats = (data.settings.pegStats || []).slice(); // ældste først
+      const history = (data.settings.pegLeitnerHistory || []).slice().reverse(); // nyeste først
+      const boxCounts = _getBoxCounts();
+      const boxColors = ['#ef4444','#f8b116','#3b82f6','#8b5cf6','#22c55e'];
+      const boxNames  = ['Bunke 1','Bunke 2','Bunke 3','Bunke 4','Bunke 5'];
+      const boxIntervals = ['1 dag','2 dage','4 dage','8 dage','16 dage'];
+      const total = data.settings.pegList.length;
+      const dueCount = _getDueCards().length;
 
-      // Svage tal
+      // Bunkeoversigt — store vandrette bjælker
+      const boxRows = boxCounts.map((c, i) => {
+        const pct = total > 0 ? Math.round(c / total * 100) : 0;
+        return `<div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">
+            <span style="font-weight:600;color:${boxColors[i]};">${boxNames[i]}</span>
+            <span style="color:var(--muted);">${c} kort · ${boxIntervals[i]}</span>
+          </div>
+          <div style="background:var(--surface-raised);border-radius:100px;height:10px;overflow:hidden;">
+            <div style="background:${boxColors[i]};height:100%;width:${pct}%;border-radius:100px;transition:width 0.4s;"></div>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Svage kort — mest reset til bunke 1
       const weakMap = {};
-      for (const s of stats) {
-        for (const n of (s.unknown || [])) weakMap[n] = (weakMap[n] || 0) + 1;
+      for (const s of history) {
+        for (const n of (s.wrongNums || [])) weakMap[n] = (weakMap[n] || 0) + 1;
       }
-      const weakSorted = Object.entries(weakMap).sort((a,b) => b[1]-a[1]).slice(0, 15);
+      const weakSorted = Object.entries(weakMap).sort((a,b) => b[1]-a[1]).slice(0, 12);
       const weakHtml = weakSorted.length > 0
         ? weakSorted.map(([n, cnt]) => {
             const word = (data.settings.pegList.find(([x]) => x === n) || [n,'?'])[1];
-            const heat = Math.min(1, cnt / Math.max(1, stats.length * 0.5));
-            const bg = `rgba(239,68,68,${0.15 + heat * 0.55})`;
-            return `<span style="background:${bg};border-radius:6px;padding:4px 8px;font-size:12px;display:inline-flex;gap:4px;align-items:center;">
+            const heat = Math.min(1, cnt / 5);
+            const bg = `rgba(239,68,68,${0.15 + heat * 0.5})`;
+            return `<span style="background:${bg};border-radius:6px;padding:3px 8px;font-size:12px;display:inline-flex;gap:4px;align-items:center;">
               <strong>${n}</strong><span style="color:var(--muted);">${esc(word)}</span><span style="font-size:10px;color:var(--muted);">×${cnt}</span>
             </span>`;
           }).join('')
         : '<span style="color:var(--muted);font-size:13px;">Ingen data endnu.</span>';
 
-      // Trendgraf
-      function _trendChart(sessions) {
-        // Aggregér sessioner pr. dag
-        const dayMap = {};
-        for (const s of sessions) {
-          const d = new Date(s.date);
-          const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-          if (!dayMap[key]) dayMap[key] = { ts: s.date, key, known: 0, total: 0, count: 0 };
-          dayMap[key].known += s.known;
-          dayMap[key].total += s.total;
-          dayMap[key].count++;
-          if (s.date > dayMap[key].ts) dayMap[key].ts = s.date;
-        }
-        const days = Object.values(dayMap).sort((a, b) => a.key.localeCompare(b.key));
-        const n = days.length;
-
-        if (n < 2) return '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0;">Øv mere for at se en trendlinje.</p>';
-
-        const W = 320, H = 130;
-        const PL = 28, PR = 8, PT = 8, PB = 22;
-        const cW = W - PL - PR, cH = H - PT - PB;
-        const scores = days.map(d => Math.round(d.known / d.total * 100));
-
-        // Tidsbaseret x-akse — huller mellem dage er synlige
-        const firstTs = days[0].ts, lastTs = days[n-1].ts;
-        const span = lastTs - firstTs || 1;
-        const xp = ts => PL + (ts - firstTs) / span * cW;
-        const yp = v => PT + cH - v / 100 * cH;
-
-        // Glidende gennemsnit (vindue 5 dage)
-        const ma = scores.map((_, i) => {
-          const win = scores.slice(Math.max(0, i-4), i+1);
-          return win.reduce((a,b)=>a+b,0) / win.length;
-        });
-        const maLine = ma.map((v,i) => `${xp(days[i].ts).toFixed(1)},${yp(v).toFixed(1)}`).join(' ');
-
-        // Lineær regression
-        const mx = (n-1)/2;
-        const my = scores.reduce((a,b)=>a+b,0)/n;
-        const num = scores.reduce((s,v,i)=>s+(i-mx)*(v-my),0);
-        const den = scores.reduce((s,_,i)=>s+(i-mx)**2,0);
-        const slope = den ? num/den : 0;
-        const intercept = my - slope*mx;
-        const r0 = intercept, r1 = slope*(n-1)+intercept;
-        const regLine = `<line x1="${xp(firstTs).toFixed(1)}" y1="${yp(r0).toFixed(1)}" x2="${xp(lastTs).toFixed(1)}" y2="${yp(r1).toFixed(1)}" stroke="#7557da" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>`;
-
-        // Punkter — størrelse afspejler antal sessioner den dag
-        const dots = days.map((d, i) => {
-          const v = scores[i];
-          const col = v>=80?'#22c55e':v>=50?'#f8b116':'#ef4444';
-          const r = d.count === 1 ? 3.5 : d.count <= 3 ? 4.5 : 5.5;
-          return `<circle cx="${xp(d.ts).toFixed(1)}" cy="${yp(v).toFixed(1)}" r="${r}" fill="${col}" opacity="0.9"/>`;
-        }).join('');
-
-        // Grid
-        const grid = [0,50,100].map(v => {
-          const y = yp(v).toFixed(1);
-          return `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>
-                  <text x="${PL-4}" y="${(+y+3.5).toFixed(0)}" text-anchor="end" font-size="9" fill="#9ca3af">${v}</text>`;
-        }).join('');
-
-        // X-akse labels: første + sidste, og mellemste hvis span > 30 dage
-        const fmt = ts => { const d=new Date(ts); return d.toLocaleDateString('da-DK',{day:'numeric',month:'short'}); };
-        let xLabels = `<text x="${xp(firstTs).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(firstTs)}</text>
-                       <text x="${xp(lastTs).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(lastTs)}</text>`;
-        const spanDays = (lastTs - firstTs) / 86400000;
-        if (spanDays > 30 && n > 4) {
-          const midIdx = Math.floor(n / 2);
-          const midX = xp(days[midIdx].ts);
-          if (midX - xp(firstTs) > 40 && xp(lastTs) - midX > 40) {
-            xLabels += `<text x="${midX.toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="#9ca3af">${fmt(days[midIdx].ts)}</text>`;
-          }
-        }
-
-        // Summering under grafen
-        const fmtFull = ts => new Date(ts).toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'});
-        const summary = `<div style="text-align:center;font-size:11px;color:var(--muted);margin-top:4px;">${n} dage med træning · ${fmtFull(firstTs)} – ${fmtFull(lastTs)}</div>`;
-
-        return `<svg width="100%" viewBox="0 0 ${W} ${H}" style="display:block;overflow:visible;">
-          ${grid}
-          ${regLine}
-          <polyline points="${maLine}" fill="none" stroke="var(--accent,#7557da)" stroke-width="2" stroke-linejoin="round"/>
-          ${dots}
-          ${xLabels}
-        </svg>${summary}`;
-      }
+      // Session-historik (seneste 10)
+      const fmtDate = ts => new Date(ts).toLocaleDateString('da-DK',{day:'numeric',month:'short'});
+      const sessionRows = history.slice(0,10).map(s => {
+        const pct = s.total > 0 ? Math.round(s.correct / s.total * 100) : 0;
+        const col = pct>=80?'#22c55e':pct>=50?'#f8b116':'#ef4444';
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--muted);">${fmtDate(s.date)}</span>
+          <span style="font-size:12px;">${s.total} kort</span>
+          <span style="font-size:13px;font-weight:700;color:${col};">${pct}%</span>
+        </div>`;
+      }).join('');
 
       if (_pdKeyHandler) { document.removeEventListener('keydown', _pdKeyHandler); _pdKeyHandler = null; }
       inner.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-          <h2 style="font-size:17px;">&#128200; Statistik</h2>
+          <h2 style="font-size:17px;">&#128200; Leitner Statistik</h2>
           <button onclick="closePegDrill()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
         </div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Udvikling over tid</div>
-        <div style="margin-bottom:4px;font-size:11px;color:var(--muted);">&#8213; glidende gns. &nbsp; &#8943; tendens &nbsp; &#9679; dag (større prik = flere sessioner)</div>
-        ${_trendChart(stats)}
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:16px;margin-bottom:8px;">Svage tal</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${weakHtml}</div>
-        ${app.authenticated ? `<button class="btn-ghost" style="width:100%;" onclick="openPegDrill()">&#127183; Start øvelse</button>` : ''}`;
+        <div style="text-align:center;margin-bottom:12px;padding:10px;background:var(--surface-raised);border-radius:8px;">
+          <span style="font-size:11px;color:var(--muted);">Forfaldne i dag</span>
+          <div style="font-size:28px;font-weight:800;color:${dueCount>0?'var(--accent)':'#22c55e'};">${dueCount > 0 ? dueCount : '✓'}</div>
+          ${dueCount === 0 ? '<div style="font-size:11px;color:#22c55e;">Alt øvet for i dag</div>' : ''}
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Bunkeoversigt</div>
+        ${boxRows}
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:14px;margin-bottom:8px;">Svageste kort</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;">${weakHtml}</div>
+        ${history.length > 0 ? `
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Seneste sessioner</div>
+        <div style="max-height:160px;overflow-y:auto;">${sessionRows}</div>` : ''}
+        <div style="margin-top:14px;">
+          ${app.authenticated ? `<button class="btn-ghost" style="width:100%;" onclick="openPegDrill()">&#127183; Start øvelse</button>` : ''}
+        </div>`;
     }
   }
 
   window.startPegDrill = function() {
     const mode = document.querySelector('input[name="pd-mode"]:checked').value;
-    const sizeEl = document.querySelector('.pd-sz-active');
-    const size = sizeEl ? parseInt(sizeEl.dataset.sz) : 25;
-    const all = [...data.settings.pegList].sort(() => Math.random() - 0.5);
-    const deck = size >= all.length ? all : all.slice(0, size);
-    _pd = { mode, deck, idx: 0, knownCount: 0, unknown: [], totalCount: deck.length,
-            flipped: false, isRepeat: false, repeatKnown: 0, repeatTotal: 0 };
+    const deck = _getDueCards().sort(() => Math.random() - 0.5);
+    if (deck.length === 0) return;
+    _pd = { mode, deck, idx: 0, correct: 0, wrong: [], totalCount: deck.length, flipped: false };
     _renderPegDrill('card');
   };
 
@@ -3986,29 +4036,17 @@
   window.markPegCard = function(known) {
     if (!_pd || !_pd.flipped) return;
     const entry = _pd.deck[_pd.idx];
-    if (known) {
-      if (!_pd.isRepeat) _pd.knownCount++;
-      else _pd.repeatKnown++;
-    } else {
-      _pd.unknown.push(entry);
-    }
+    const [num] = entry;
+    const prevBox = _getLeitnerState(num).box;
+    _advanceLeitner(num, known);
+    const newBox = _getLeitnerState(num).box;
+    if (known) { _pd.correct++; }
+    else { _pd.wrong.push({ entry, prevBox, newBox }); }
     _pd.idx++;
     _pd.flipped = false;
     if (_pd.idx >= _pd.deck.length) {
-      // Main round done — start repeat if there are unknowns
-      if (!_pd.isRepeat && _pd.unknown.length > 0) {
-        const repeatDeck = [..._pd.unknown].sort(() => Math.random() - 0.5);
-        _pd.isRepeat = true;
-        _pd.repeatTotal = repeatDeck.length;
-        _pd.repeatKnown = 0;
-        _pd.deck = repeatDeck;
-        _pd.unknown = [];
-        _pd.idx = 0;
-        _renderPegDrill('card');
-      } else {
-        _savePegSession();
-        _renderPegDrill('result');
-      }
+      _savePegSession();
+      _renderPegDrill('result');
     } else {
       _renderPegDrill('card');
     }
@@ -4016,19 +4054,17 @@
 
   function _savePegSession() {
     if (!_pd) return;
-    if (!data.settings.pegStats) data.settings.pegStats = [];
-    data.settings.pegStats.push({
+    if (!data.settings.pegLeitnerHistory) data.settings.pegLeitnerHistory = [];
+    data.settings.pegLeitnerHistory.push({
       date: Date.now(),
       mode: _pd.mode,
       total: _pd.totalCount,
-      known: _pd.knownCount,
-      repeatTotal: _pd.repeatTotal || 0,
-      repeatKnown: _pd.repeatKnown || 0,
-      unknown: _pd.unknown.map(([n]) => n)
+      correct: _pd.correct,
+      wrongNums: _pd.wrong.map(({entry}) => entry[0])
     });
-    // Behold de seneste 90 dages sessioner (rullende vindue)
-    const _cutoff = Date.now() - 90 * 24 * 60 * 60 * 1000;
-    data.settings.pegStats = data.settings.pegStats.filter(s => s.date >= _cutoff);
+    // Behold de seneste 180 dages sessioner
+    const cutoff = Date.now() - 180 * 864e5;
+    data.settings.pegLeitnerHistory = data.settings.pegLeitnerHistory.filter(s => s.date >= cutoff);
     saveData();
   }
 
