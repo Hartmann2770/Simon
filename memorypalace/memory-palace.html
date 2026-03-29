@@ -1120,6 +1120,7 @@
 (function () {
   const STORAGE_KEY = 'memoryPalaceApp';
   const API_URL = 'https://simonhartmann.dk/api.php';
+  const PEG_API_URL = 'https://simonhartmann.dk/peg-api.php';
   let _syncTimer = null;
   let _syncStatus = 'idle'; // idle | syncing | ok | error
   let _appReady = false;
@@ -1729,6 +1730,52 @@
     } catch (e) {
       // Ingen server tilgængelig – fortsæt med localStorage
     }
+  }
+
+  async function loadPegFromServer() {
+    try {
+      const resp = await fetch(PEG_API_URL + '?t=' + Date.now());
+      if (!resp.ok) return;
+      const serverPeg = await resp.json();
+      if (!serverPeg || !serverPeg.leitner) return;
+
+      // Merge leitner: behold kortet med den længste nextReview (bedste fremgang)
+      const local = data.settings.pegLeitner || {};
+      const merged = { ...serverPeg.leitner };
+      for (const [num, localState] of Object.entries(local)) {
+        if (!merged[num] || (localState.nextReview || 0) > (merged[num].nextReview || 0)) {
+          merged[num] = localState;
+        }
+      }
+      data.settings.pegLeitner = merged;
+
+      // Merge history: kombiner og dedupliker på dato
+      const localHistory = data.settings.pegLeitnerHistory || [];
+      const serverHistory = serverPeg.history || [];
+      const localDates = new Set(localHistory.map(s => s.date));
+      const combined = [...localHistory];
+      for (const s of serverHistory) {
+        if (!localDates.has(s.date)) combined.push(s);
+      }
+      combined.sort((a, b) => a.date - b.date);
+      const cutoff = Date.now() - 180 * 864e5;
+      data.settings.pegLeitnerHistory = combined.filter(s => s.date >= cutoff);
+
+      saveData();
+    } catch(e) {}
+  }
+
+  async function savePegToServer() {
+    try {
+      fetch(PEG_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          leitner: data.settings.pegLeitner || {},
+          history: data.settings.pegLeitnerHistory || []
+        })
+      });
+    } catch(e) {}
   }
 
   function genId() {
@@ -4074,6 +4121,7 @@
     const cutoff = Date.now() - 180 * 864e5;
     data.settings.pegLeitnerHistory = data.settings.pegLeitnerHistory.filter(s => s.date >= cutoff);
     saveData();
+    savePegToServer();
   }
 
   window.openPegStats = function() {
@@ -4326,6 +4374,7 @@
     updateAuthButton();
     renderView('dashboard');
     loadFromServer();
+    loadPegFromServer();
   });
 
 })();
