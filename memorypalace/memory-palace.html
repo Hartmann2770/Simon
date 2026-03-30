@@ -738,21 +738,6 @@
       align-items: center; justify-content: flex-start;
       text-align: center; padding: 18px 24px; width: 100%;
     }
-    .loc-strip-cam {
-      position: absolute; bottom: 5px; right: 6px;
-      font-size: 13px; cursor: pointer; z-index: 2;
-      background: rgba(0,0,0,0.45); color: rgba(255,255,255,0.9);
-      padding: 2px 7px; border-radius: 4px; line-height: 1.6;
-    }
-    .loc-strip-cam input[type=file] { display: none; }
-    .loc-photo-empty {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 4px;
-      cursor: pointer; background: var(--surface-raised);
-      color: var(--muted); font-size: 22px;
-    }
-    .loc-photo-empty span { font-size: 10px; text-align: center; line-height: 1.3; }
-    .loc-photo-empty input[type=file] { display: none; }
 
     .review-loc-number {
       font-size: 12px;
@@ -2633,28 +2618,15 @@
     }
 
     html += `</div>`;
-    if (palace && palace.routePalace) {
-      if (loc.photo) {
-        html += `<div class="loc-sat-strip" onclick="showPhotoOverlay('${loc.id}')" title="Klik for at forstørre">
-          <img src="${loc.photo}" loading="lazy" alt="" onload="this.style.opacity=1">
-          ${loc.coords ? `<div class="loc-sat-strip-pin">📌</div>` : ''}
-          ${app.authenticated ? `<label class="loc-strip-cam" title="Skift foto" onclick="event.stopPropagation()">📷<input type="file" accept="image/*" onchange="handleLocPhotoUpload(event,'${palaceId}','${loc.id}')"></label>` : `<div class="loc-sat-strip-hint">🔍 Forstør</div>`}
-        </div>`;
-      } else if (loc.coords) {
-        const R = 0.0010;
-        const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
-        const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
-        html += `<div class="loc-sat-strip" onclick="showSatOverlay(${loc.coords.lat},${loc.coords.lng})" title="Klik for at forstørre">
-          <img src="${imgUrl}" loading="lazy" alt="" onload="this.style.opacity=1">
-          <div class="loc-sat-strip-pin">📌</div>
-          ${app.authenticated ? `<label class="loc-strip-cam" title="Upload foto" onclick="event.stopPropagation()">📷<input type="file" accept="image/*" onchange="handleLocPhotoUpload(event,'${palaceId}','${loc.id}')"></label>` : `<div class="loc-sat-strip-hint">🔍 Forstør</div>`}
-        </div>`;
-      } else if (app.authenticated) {
-        html += `<label class="loc-sat-strip loc-photo-empty" title="Upload foto (GPS hentes automatisk)">
-          📷<span>Upload<br>foto</span>
-          <input type="file" accept="image/*" onchange="handleLocPhotoUpload(event,'${palaceId}','${loc.id}')">
-        </label>`;
-      }
+    if (palace && palace.routePalace && loc.coords) {
+      const R = 0.0010;
+      const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
+      const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
+      html += `<div class="loc-sat-strip" onclick="showSatOverlay(${loc.coords.lat},${loc.coords.lng})" title="Klik for at forstørre">
+        <img src="${imgUrl}" loading="lazy" alt="" onload="this.style.opacity=1">
+        <div class="loc-sat-strip-pin">📌</div>
+        <div class="loc-sat-strip-hint">🔍 Forstør</div>
+      </div>`;
     }
     html += `<div class="location-memories">`;
 
@@ -2729,17 +2701,8 @@
 
       <div class="review-card">
         <div class="review-card-inner${app.reviewRevealed ? ' flipped' : ''}" id="review-card-inner">
-          <div class="review-card-face${(p.routePalace && (loc.photo || loc.coords)) ? ' has-sat-img' : ''}">
-            ${p.routePalace && loc.photo ? `
-              <div class="review-sat-wrap" onclick="showPhotoOverlay('${loc.id}')" style="cursor:zoom-in">
-                <img src="${loc.photo}" alt="" style="opacity:1;width:100%;height:100%;object-fit:cover;">
-                ${loc.coords ? `<div class="review-sat-crosshair">📌</div>` : ''}
-              </div>
-              <div class="review-sat-body">
-                <div class="review-loc-name">${escFlag(loc.name)}</div>
-                <div class="review-tap-hint">Hvilke erindringer er placeret her?</div>
-              </div>` :
-            p.routePalace && loc.coords ? (() => {
+          <div class="review-card-face${p.routePalace && loc.coords ? ' has-sat-img' : ''}">
+            ${p.routePalace && loc.coords ? (() => {
               const R = 0.0010;
               const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
               const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
@@ -3593,124 +3556,6 @@
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:32px;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6));">📌</div>
       <div style="position:absolute;bottom:8px;right:10px;font-size:10px;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:4px;">© Esri · Klik for at lukke</div>
     </div>`;
-    overlay.addEventListener('click', () => overlay.remove());
-    document.body.appendChild(overlay);
-  };
-
-  // ── FOTO-UPLOAD MED EXIF GPS ──────────────────────────────────────
-  function _parseExifGPS(buffer) {
-    const view = new DataView(buffer);
-    if (view.byteLength < 4 || view.getUint16(0) !== 0xFFD8) return null;
-    let off = 2;
-    while (off < view.byteLength - 4) {
-      const marker = view.getUint16(off); off += 2;
-      if (marker === 0xFFE1) {
-        // Check "Exif\0\0"
-        if (view.getUint32(off + 2) !== 0x45786966 || view.getUint16(off + 6) !== 0x0000) { off += view.getUint16(off); continue; }
-        const t = off + 8; // TIFF start (absolute in view)
-        const le = view.getUint16(t) === 0x4949;
-        const r16 = o => view.getUint16(t + o, le);
-        const r32 = o => view.getUint32(t + o, le);
-        // IFD0
-        const ifd0 = r32(4);
-        const n0 = r16(ifd0);
-        let gpsOff = null;
-        for (let i = 0; i < n0; i++) {
-          const e = ifd0 + 2 + i * 12;
-          if (r16(e) === 0x8825) { gpsOff = r32(e + 8); break; }
-        }
-        if (!gpsOff) return null;
-        const ng = r16(gpsOff);
-        let latR = null, latV = null, lngR = null, lngV = null;
-        for (let i = 0; i < ng; i++) {
-          const e = gpsOff + 2 + i * 12;
-          const tag = r16(e);
-          const vOff = r32(e + 8);
-          if (tag === 1) latR = String.fromCharCode(view.getUint8(t + e + 8));
-          else if (tag === 3) lngR = String.fromCharCode(view.getUint8(t + e + 8));
-          else if (tag === 2 || tag === 4) {
-            const vals = [0,1,2].map(j => {
-              const num = view.getUint32(t + vOff + j*8, le);
-              const den = view.getUint32(t + vOff + j*8 + 4, le);
-              return den ? num/den : 0;
-            });
-            if (tag === 2) latV = vals; else lngV = vals;
-          }
-        }
-        if (!latV || !lngV) return null;
-        const lat = (latV[0] + latV[1]/60 + latV[2]/3600) * (latR === 'S' ? -1 : 1);
-        const lng = (lngV[0] + lngV[1]/60 + lngV[2]/3600) * (lngR === 'W' ? -1 : 1);
-        return { lat: parseFloat(lat.toFixed(6)), lng: parseFloat(lng.toFixed(6)) };
-      } else if ((marker & 0xFF00) === 0xFF00) {
-        off += view.getUint16(off);
-      } else break;
-    }
-    return null;
-  }
-
-  function _compressPhoto(file, maxPx, quality) {
-    return new Promise(resolve => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      img.onload = () => {
-        const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        URL.revokeObjectURL(url);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
-      img.src = url;
-    });
-  }
-
-  window.handleLocPhotoUpload = async function(e, palaceId, locId) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const loc = getLoc(palaceId, locId);
-    if (!loc) return;
-
-    // Læs EXIF GPS og komprimer parallelt
-    const [gps, photo] = await Promise.all([
-      new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = ev => resolve(_parseExifGPS(ev.target.result));
-        reader.onerror = () => resolve(null);
-        reader.readAsArrayBuffer(file);
-      }),
-      _compressPhoto(file, 800, 0.75)
-    ]);
-
-    if (photo) loc.photo = photo;
-    if (gps) {
-      loc.coords = gps;
-    } else if (!loc.coords) {
-      // Ingen GPS i billedet — vis besked men bevar foto
-      setTimeout(() => alert('Foto gemt. Ingen GPS-data fundet i billedet — du kan indtaste koordinater manuelt.'), 100);
-    }
-    saveData();
-    renderPalaceDetail();
-  };
-
-  window.showPhotoOverlay = function(locId) {
-    const palace = data.palaces.find(p => p.locations.some(l => l.id === locId));
-    if (!palace) return;
-    const loc = palace.locations.find(l => l.id === locId);
-    if (!loc || !loc.photo) return;
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
-    const img = document.createElement('img');
-    img.src = loc.photo;
-    img.style.cssText = 'max-width:92vw;max-height:88vh;object-fit:contain;border-radius:8px;';
-    overlay.appendChild(img);
-    if (loc.coords) {
-      const badge = document.createElement('div');
-      badge.style.cssText = 'position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#fff;font-size:12px;padding:4px 14px;border-radius:20px;';
-      badge.textContent = `📌 ${loc.coords.lat}, ${loc.coords.lng}`;
-      overlay.appendChild(badge);
-    }
     overlay.addEventListener('click', () => overlay.remove());
     document.body.appendChild(overlay);
   };
