@@ -7,6 +7,7 @@ copy /Y simonhartmann\index.html        deploy\simonhartmann.dk\index.html
 copy /Y simonhartmann\about.html        deploy\simonhartmann.dk\about.html
 copy /Y simonhartmann\simon.png         deploy\simonhartmann.dk\simon.png
 copy /Y simonhartmann\favicon.svg       deploy\simonhartmann.dk\favicon.svg
+copy /Y simonhartmann\minecraft.html    deploy\simonhartmann.dk\minecraft.html
 
 copy /Y memorypalace\memory-palace.html deploy\simonhartmann.dk\memory-palace.html
 copy /Y memorypalace\api.php            deploy\simonhartmann.dk\api.php
