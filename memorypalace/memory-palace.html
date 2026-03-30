@@ -1723,7 +1723,9 @@
       const serverTs = serverData._savedAt || 0;
       const localTs  = data._savedAt || 0;
       if (serverTs > localTs) {
+        const localPegList = data.settings && data.settings.pegList;
         data = serverData;
+        if (localPegList) data.settings.pegList = localPegList;
         seedCollections();
         renderView('dashboard');
       }
@@ -1772,7 +1774,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           leitner: data.settings.pegLeitner || {},
-          history: data.settings.pegLeitnerHistory || []
+          history: data.settings.pegLeitnerHistory || [],
+          pegList: data.settings.pegList || []
         })
       });
     } catch(e) {}

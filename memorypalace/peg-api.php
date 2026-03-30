@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $incoming = json_decode(file_get_contents('php://input'), true);
-    if (!$incoming || !isset($incoming['leitner'])) {
+    if (!$incoming || !isset($incoming['leitner']) && !isset($incoming['pegList'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Bad request']);
         exit;
@@ -53,7 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return ($s['date'] ?? 0) >= $cutoff;
     }));
 
+    // pegList: gem den seneste version (last-write-wins)
+    $peg_list = $incoming['pegList'] ?? ($existing['pegList'] ?? null);
+
     $result = ['leitner' => $merged_leitner, 'history' => $merged_history];
+    if ($peg_list !== null) $result['pegList'] = $peg_list;
 
     if (file_put_contents($DATA_FILE, json_encode($result, JSON_UNESCAPED_UNICODE)) === false) {
         http_response_code(500);
