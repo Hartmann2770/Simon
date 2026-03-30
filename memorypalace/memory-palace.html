@@ -1724,8 +1724,24 @@
       const localTs  = data._savedAt || 0;
       if (serverTs > localTs) {
         const localPegList = data.settings && data.settings.pegList;
+        // Bevar lokale coords og photos per lokation-id
+        const localLocData = {};
+        (data.palaces || []).forEach(p =>
+          (p.locations || []).forEach(l => {
+            if (l.coords || l.photo) localLocData[l.id] = { coords: l.coords, photo: l.photo };
+          })
+        );
         data = serverData;
         if (localPegList) data.settings.pegList = localPegList;
+        // Gendan coords og photos på matchende lokationer
+        (data.palaces || []).forEach(p =>
+          (p.locations || []).forEach(l => {
+            if (localLocData[l.id]) {
+              if (localLocData[l.id].coords) l.coords = localLocData[l.id].coords;
+              if (localLocData[l.id].photo)  l.photo  = localLocData[l.id].photo;
+            }
+          })
+        );
         seedCollections();
         renderView('dashboard');
       }
