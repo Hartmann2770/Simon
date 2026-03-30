@@ -1,4 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#C8A96E"/>
-  <text x="16" y="23" font-size="20" text-anchor="middle">🏛</text>
+  <rect width="32" height="32" rx="6" fill="#D4AF37"/>
+  <!-- Pediment -->
+  <polygon points="7,11 25,11 16,4.5" fill="#fff"/>
+  <!-- Architrave -->
+  <rect x="6" y="11" width="20" height="2.5" fill="#fff"/>
+  <!-- 3 Columns -->
+  <rect x="9.1" y="13.5" width="2.5" height="9" fill="#fff"/>
+  <rect x="14.75" y="13.5" width="2.5" height="9" fill="#fff"/>
+  <rect x="20.4" y="13.5" width="2.5" height="9" fill="#fff"/>
+  <!-- Base steps -->
+  <rect x="6" y="22.5" width="20" height="2" fill="#fff"/>
+  <rect x="4" y="24.5" width="24" height="2.5" fill="#fff"/>
 </svg>
