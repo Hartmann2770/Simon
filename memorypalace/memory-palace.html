@@ -2637,7 +2637,7 @@
     html += `</div>`;
     if (palace && palace.routePalace && loc.photo) {
       html += `<div class="loc-sat-strip" onclick="showPhotoOverlay('${loc.id}')" title="Klik for at forstørre">
-        <img src="${loc.photo}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <img src="${loc.photo}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:1;">
         ${loc.coords ? '<div class="loc-sat-strip-pin">&#128204;</div>' : ''}
         <div class="loc-sat-strip-hint">&#128269; Forstør</div>
       </div>`;
@@ -2728,11 +2728,11 @@
             ${p.routePalace && loc.photo ? (() => {
               return `<div class="review-sat-wrap" onclick="showPhotoOverlay('${loc.id}')" style="cursor:zoom-in">
                 <img src="${loc.photo}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:1;">
-                ${loc.coords ? '<div class="review-sat-crosshair">&#128204;</div>' : ''}
               </div>
               <div class="review-sat-body">
                 <div class="review-loc-name">${escFlag(loc.name)}</div>
-                <div class="review-tap-hint">Hvilke erindringer er placeret her?</div>
+                ${loc.coords ? `<div style="margin-top:6px"><button onclick="event.stopPropagation();showSatOverlay(${loc.coords.lat},${loc.coords.lng})" style="background:none;border:1px solid rgba(0,0,0,0.15);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--muted)">&#128204; Se satellit</button></div>` : ''}
+                <div class="review-tap-hint" style="margin-top:6px">Hvilke erindringer er placeret her?</div>
               </div>`;
             })() : p.routePalace && loc.coords ? (() => {
               const R = 0.0010;
