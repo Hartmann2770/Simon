@@ -1723,7 +1723,9 @@
       const serverTs = serverData._savedAt || 0;
       const localTs  = data._savedAt || 0;
       if (serverTs > localTs) {
-        const localPegList = data.settings && data.settings.pegList;
+        // Bevar kun local pegList hvis der rent faktisk er local data (localTs>0).
+        // Hvis localTs=0 er data bare initialiseret fra scratch, og serveren har den rigtige liste.
+        const localPegList = localTs > 0 && data.settings && data.settings.pegList;
         // Bevar lokale coords og photos per lokation-id
         const localLocData = {};
         (data.palaces || []).forEach(p =>
