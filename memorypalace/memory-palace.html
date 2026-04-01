@@ -1032,6 +1032,7 @@
   <div style="display:flex;align-items:center;gap:6px">
     <span id="sync-indicator" style="font-size:12px;min-width:14px;text-align:center;color:rgba(255,255,255,0.85);"></span>
     <button class="bar-icon-btn" id="peg-toggle-btn" onclick="togglePegSidebar()" title="Peg-liste">&#128220;</button>
+    <span id="auth-level-badge" style="display:none;font-size:10px;color:#fff;padding:2px 7px;border-radius:8px;font-family:sans-serif;letter-spacing:0.02em;"></span>
     <button class="bar-icon-btn" id="settings-btn" onclick="openSettingsModal()" title="Indstillinger" style="display:none;">&#9881;</button>
     <button class="bar-icon-btn" id="auth-btn" onclick="handleAuthBtn()" title="Log ind">&#128274;</button>
   </div>
@@ -1045,15 +1046,17 @@
       <h2 style="font-size:16px;">&#9881; Indstillinger</h2>
       <button onclick="closeSettingsModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
     </div>
-    <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px;">Genopfriskningsinterval (dage)</label>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <input type="number" id="settings-interval-input" min="1" max="365"
-        style="width:70px;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;color:var(--text);font-size:15px;">
-      <span style="color:var(--muted);font-size:13px;">dage</span>
-      <button class="btn-primary btn-sm" onclick="saveSettings()">Gem</button>
+    <div class="settings-admin-only">
+      <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px;">Genopfriskningsinterval (dage)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="number" id="settings-interval-input" min="1" max="365"
+          style="width:70px;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;color:var(--text);font-size:15px;">
+        <span style="color:var(--muted);font-size:13px;">dage</span>
+        <button class="btn-primary btn-sm" onclick="saveSettings()">Gem</button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px;">Notifikation vises på paladskortet efter dette antal dage.</p>
     </div>
-    <p style="font-size:12px;color:var(--muted);margin-top:8px;">Notifikation vises på paladskortet efter dette antal dage.</p>
-    <div style="border-top:1px solid var(--border);margin-top:18px;padding-top:16px;">
+    <div class="settings-admin-only" style="border-top:1px solid var(--border);margin-top:18px;padding-top:16px;">
       <label style="display:block;font-size:13px;color:var(--muted);margin-bottom:10px;">Excel</label>
       <div style="display:flex;gap:8px;">
         <button class="btn-ghost btn-sm" onclick="exportToExcel()" style="flex:1">&#128229; Gem Excel</button>
@@ -1073,7 +1076,7 @@
       <h2 style="font-size:17px;">&#128274; Log ind</h2>
       <button onclick="closeLoginModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>
     </div>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Indtast koden for at redigere paladset.</p>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Øvelse-kode = gennemgang &amp; drill.<br>Admin-kode = fuld redigering.</p>
     <div class="form-group">
       <input type="password" id="login-code-input" placeholder="Kode" style="letter-spacing:0.2em;" onkeydown="if(event.key==='Enter')submitLogin()">
     </div>
@@ -1665,17 +1668,19 @@
 
   const _savedSession = (() => {
     // Check sessionStorage first (current tab)
-    const ss = sessionStorage.getItem('_mp_session');
-    if (ss) return ss;
+    try {
+      const ss = sessionStorage.getItem('_mp_session');
+      if (ss) { const p = JSON.parse(ss); return typeof p === 'object' ? p : { pw: ss, level: 'practice' }; }
+    } catch(e) {}
     // Check localStorage with expiry (remember me)
     try {
       const stored = JSON.parse(localStorage.getItem('_mp_remember') || 'null');
-      if (stored && stored.pw && stored.expires > Date.now()) return stored.pw;
+      if (stored && stored.pw && stored.expires > Date.now()) return { pw: stored.pw, level: stored.level || 'practice' };
       if (stored) localStorage.removeItem('_mp_remember'); // expired
     } catch(e) {}
     return null;
   })();
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: !!_savedSession, sessionPw: _savedSession || null };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: !!_savedSession, sessionPw: _savedSession ? _savedSession.pw : null, authLevel: _savedSession ? _savedSession.level : null };
   _appReady = true;
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
@@ -1697,8 +1702,8 @@
   function saveData() {
     if (_appReady) data._savedAt = Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    // Sync KUN til server hvis brugeren har lavet en reel ændring i denne session
-    if (_appReady && _serverChecked && _userEdited && app.authenticated && app.sessionPw) {
+    // Fuld sync KUN for admin-brugere med reelle ændringer
+    if (_appReady && _serverChecked && _userEdited && app.authLevel === 'admin' && app.sessionPw) {
       clearTimeout(_syncTimer);
       _syncTimer = setTimeout(syncToServer, 2000);
     }
@@ -1739,6 +1744,31 @@
         setSyncIndicator('error');
       }
     } catch (e) {
+      setSyncIndicator('error');
+    }
+  }
+
+  async function syncSrsToServer(palaceId) {
+    if (!app.sessionPw) return;
+    const palace = getPalace(palaceId);
+    if (!palace || !palace.srs) return;
+    setSyncIndicator('syncing');
+    try {
+      const resp = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pw: app.sessionPw, action: 'save_srs', palaceId, srs: palace.srs })
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        if (result.version) data._version = result.version;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        setSyncIndicator('ok');
+        setTimeout(() => setSyncIndicator('idle'), 3000);
+      } else {
+        setSyncIndicator('error');
+      }
+    } catch(e) {
       setSyncIndicator('error');
     }
   }
@@ -1811,14 +1841,16 @@
 
   async function savePegToServer() {
     try {
+      const payload = {
+        leitner: data.settings.pegLeitner || {},
+        history: data.settings.pegLeitnerHistory || []
+      };
+      // Kun admin sender pegList (indhold) — øvelse sender kun statistik
+      if (app.authLevel === 'admin') payload.pegList = data.settings.pegList || [];
       fetch(PEG_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          leitner: data.settings.pegLeitner || {},
-          history: data.settings.pegLeitnerHistory || [],
-          pegList: data.settings.pegList || []
-        })
+        body: JSON.stringify(payload)
       });
     } catch(e) {}
   }
@@ -2856,7 +2888,8 @@
       lastReviewDate: Date.now(),
       history: [...(p.srs.history || []), { date: Date.now(), intervalAfter: interval }]
     };
-    saveData();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (app.authenticated) syncSrsToServer(app.reviewPalaceId);
   }
 
   // ── HÆNDELSESHÅNDTERING ────────────────────────────────────────────
@@ -2886,7 +2919,7 @@
       'show-add-note','save-note-edit','edit-note','delete-note',
       'show-add-trivia','save-trivia-edit'
     ]);
-    if (EDIT_ACTIONS.has(action) && !app.authenticated) {
+    if (EDIT_ACTIONS.has(action) && app.authLevel !== 'admin') {
       showLoginModal(() => el.click());
       return;
     }
@@ -3898,7 +3931,7 @@
   function renderPegList() {
     const list = document.getElementById('peg-sidebar-list');
     const btn  = document.getElementById('peg-edit-btn');
-    btn.style.display = app.authenticated ? '' : 'none';
+    btn.style.display = app.authLevel === 'admin' ? '' : 'none';
     document.getElementById('peg-drill-btn').style.display = app.authenticated ? '' : 'none';
     if (pegEditMode && app.authenticated) {
       list.innerHTML = data.settings.pegList.map(([num, word]) =>
@@ -3946,6 +3979,7 @@
   };
 
   window.togglePegEdit = function() {
+    if (app.authLevel !== 'admin') { showLoginModal(() => togglePegEdit()); return; }
     pegEditMode = !pegEditMode;
     renderPegList();
   };
@@ -4331,7 +4365,8 @@
     _loginCallback = null;
   };
 
-  const _PW_HASH = '808927a4db0b89e1ca292ccfe2a9dcc77ebbc6a96be7c7115a0980f7c3e9e776';
+  const _PW_HASH_ADMIN    = '808927a4db0b89e1ca292ccfe2a9dcc77ebbc6a96be7c7115a0980f7c3e9e776';
+  const _PW_HASH_PRACTICE = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
   async function _sha256(str) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -4340,16 +4375,22 @@
   window.submitLogin = async function() {
     const code = document.getElementById('login-code-input').value;
     const hash = await _sha256(code);
-    if (hash === _PW_HASH) {
+    let level = null;
+    if (hash === _PW_HASH_ADMIN) level = 'admin';
+    else if (hash === _PW_HASH_PRACTICE) level = 'practice';
+
+    if (level) {
       app.authenticated = true;
+      app.authLevel = level;
       app.sessionPw = code;
-      sessionStorage.setItem('_mp_session', code);
+      sessionStorage.setItem('_mp_session', JSON.stringify({ pw: code, level }));
       const rememberMe = document.getElementById('login-remember-me');
       if (rememberMe && rememberMe.checked) {
-        localStorage.setItem('_mp_remember', JSON.stringify({ pw: code, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 }));
+        localStorage.setItem('_mp_remember', JSON.stringify({ pw: code, level, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 }));
       }
       updateAuthButton();
       closeLoginModal();
+      renderView(app.view);
       if (_loginCallback) { const cb = _loginCallback; _loginCallback = null; cb(); }
     } else {
       document.getElementById('login-error').style.display = 'block';
@@ -4363,6 +4404,7 @@
 
   window.handleLogout = function() {
     app.authenticated = false;
+    app.authLevel = null;
     app.sessionPw = null;
     sessionStorage.removeItem('_mp_session');
     localStorage.removeItem('_mp_remember');
@@ -4374,8 +4416,22 @@
   function updateAuthButton() {
     const authBtn = document.getElementById('auth-btn');
     const settingsBtn = document.getElementById('settings-btn');
+    const levelBadge = document.getElementById('auth-level-badge');
     if (authBtn) authBtn.style.display = app.authenticated ? 'none' : '';
     if (settingsBtn) settingsBtn.style.display = app.authenticated ? '' : 'none';
+    if (levelBadge) {
+      if (app.authLevel === 'practice') {
+        levelBadge.textContent = 'Øvelse';
+        levelBadge.style.display = '';
+        levelBadge.style.background = '#22c55e';
+      } else if (app.authLevel === 'admin') {
+        levelBadge.textContent = 'Redigering';
+        levelBadge.style.display = '';
+        levelBadge.style.background = 'var(--accent)';
+      } else {
+        levelBadge.style.display = 'none';
+      }
+    }
   }
 
   document.getElementById('login-modal').addEventListener('click', function(e) {
@@ -4385,6 +4441,9 @@
   // ── SETTINGS MODAL ─────────────────────────────────────────────────
   window.openSettingsModal = function() {
     document.getElementById('settings-interval-input').value = data.settings.reviewIntervalDays || 30;
+    // Skjul redigeringsfelter i øvelse-mode
+    const adminOnly = document.querySelectorAll('.settings-admin-only');
+    adminOnly.forEach(el => el.style.display = app.authLevel === 'admin' ? '' : 'none');
     document.getElementById('settings-modal').style.display = 'flex';
   };
 
