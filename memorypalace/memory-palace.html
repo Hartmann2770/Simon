@@ -1124,7 +1124,8 @@
   let _syncTimer = null;
   let _syncStatus = 'idle'; // idle | syncing | ok | error
   let _appReady = false;
-  let _serverChecked = false; // true efter loadFromServer() er kørt — forhindrer sync af seed-data
+  let _serverChecked = false; // true efter loadFromServer() er kørt
+  let _userEdited = false;    // true når brugeren faktisk ændrer data i denne session
   const SM2_EF_DEFAULT = 2.5;
   const SM2_EF_MIN = 1.3;
 
@@ -1696,7 +1697,8 @@
   function saveData() {
     if (_appReady) data._savedAt = Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    if (_appReady && _serverChecked && app.authenticated && app.sessionPw) {
+    // Sync KUN til server hvis brugeren har lavet en reel ændring i denne session
+    if (_appReady && _serverChecked && _userEdited && app.authenticated && app.sessionPw) {
       clearTimeout(_syncTimer);
       _syncTimer = setTimeout(syncToServer, 2000);
     }
@@ -1734,33 +1736,27 @@
       if (!resp.ok) { _serverChecked = true; return; }
       const serverData = await resp.json();
       if (!serverData || !serverData.palaces) { _serverChecked = true; return; }
-      const serverTs = serverData._savedAt || 0;
-      const localTs  = data._savedAt || 0;
-      if (serverTs > localTs) {
-        // Bevar kun local pegList hvis der rent faktisk er local data (localTs>0).
-        // Hvis localTs=0 er data bare initialiseret fra scratch, og serveren har den rigtige liste.
-        const localPegList = localTs > 0 && data.settings && data.settings.pegList;
-        // Bevar lokale coords og photos per lokation-id
-        const localLocData = {};
-        (data.palaces || []).forEach(p =>
-          (p.locations || []).forEach(l => {
-            if (l.coords || l.photo) localLocData[l.id] = { coords: l.coords, photo: l.photo };
-          })
-        );
-        data = serverData;
-        if (localPegList) data.settings.pegList = localPegList;
-        // Gendan coords og photos på matchende lokationer
-        (data.palaces || []).forEach(p =>
-          (p.locations || []).forEach(l => {
-            if (localLocData[l.id]) {
-              if (localLocData[l.id].coords) l.coords = localLocData[l.id].coords;
-              if (localLocData[l.id].photo)  l.photo  = localLocData[l.id].photo;
-            }
-          })
-        );
-        seedCollections();
-        renderView('dashboard');
-      }
+      // Server er ALTID sandhed — brug serverdata uanset timestamps.
+      // Bevar kun lokale coords/photos (de ligger ikke på serveren).
+      const localLocData = {};
+      (data.palaces || []).forEach(p =>
+        (p.locations || []).forEach(l => {
+          if (l.coords || l.photo) localLocData[l.id] = { coords: l.coords, photo: l.photo };
+        })
+      );
+      data = serverData;
+      // Gendan coords og photos på matchende lokationer
+      (data.palaces || []).forEach(p =>
+        (p.locations || []).forEach(l => {
+          if (localLocData[l.id]) {
+            if (localLocData[l.id].coords) l.coords = localLocData[l.id].coords;
+            if (localLocData[l.id].photo)  l.photo  = localLocData[l.id].photo;
+          }
+        })
+      );
+      seedCollections();
+      saveData(); // gem serverdata i localStorage (uden server-sync pga _userEdited=false)
+      renderView('dashboard');
     } catch (e) {
       // Ingen server tilgængelig – fortsæt med localStorage
     }
@@ -2882,6 +2878,9 @@
       return;
     }
 
+    // Enhver bruger-aktion der kalder saveData() skal synce til server
+    _userEdited = true;
+
     switch (action) {
       case 'new-palace':
         app.editingPalaceId = null;
@@ -3496,6 +3495,7 @@
   window.handleMemKeydown = function (e, palaceId, locId) {
     if (e.key !== 'Enter' || !e.shiftKey) return;
     e.preventDefault();
+    _userEdited = true;
     const textInp     = document.getElementById(`mem-input-${locId}`);
     const mnemonicInp = document.getElementById(`mem-mnemonic-${locId}`);
     const text     = textInp     ? textInp.value.trim()     : '';
@@ -3548,6 +3548,7 @@
     if (text) return; // Har brugeren udfyldt tekstfeltet, gemmes begge ved submit i stedet
     const loc = getLoc(palaceId, locId);
     if (!loc) return;
+    _userEdited = true;
     loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic, createdAt: Date.now() });
     saveData();
     renderPalaceDetail();
@@ -3734,6 +3735,7 @@
   window.handleNoteEditKeydown = function(e, palaceId, roomId, noteId) {
     if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault();
+      _userEdited = true;
       const text = e.target.value.trim();
       if (text) updateNote(palaceId, roomId, noteId, text);
       app.editingNoteId = null;
@@ -3747,6 +3749,7 @@
   window.handleMemEditKeydown = function(e, palaceId, locId, memId) {
     if (e.key === 'Enter' && e.shiftKey) {
       e.preventDefault();
+      _userEdited = true;
       const text = e.target.value.trim();
       if (text) updateMemory(palaceId, locId, memId, text);
       app.editingMemId = null;
@@ -3761,6 +3764,7 @@
     if (e.key === 'Enter') {
       const name = e.target.value.trim();
       if (!name) return;
+      _userEdited = true;
       addLocation(palaceId, name, roomId || undefined);
       renderPalaceDetail();
     }
@@ -3939,6 +3943,7 @@
   };
 
   window.savePegList = function() {
+    _userEdited = true;
     let changed = false;
     document.querySelectorAll('.peg-edit-input').forEach(inp => {
       const num = inp.dataset.pegNum;
@@ -4274,6 +4279,7 @@
 
   function _savePegSession() {
     if (!_pd) return;
+    _userEdited = true;
     if (!data.settings.pegLeitnerHistory) data.settings.pegLeitnerHistory = [];
     data.settings.pegLeitnerHistory.push({
       date: Date.now(),
@@ -4375,6 +4381,7 @@
 
   window.saveSettings = function() {
     if (!app.authenticated) { closeSettingsModal(); showLoginModal(window.saveSettings); return; }
+    _userEdited = true;
     const val = parseInt(document.getElementById('settings-interval-input').value, 10);
     if (val > 0) {
       data.settings.reviewIntervalDays = val;
@@ -4502,6 +4509,7 @@
           else data.palaces.push(importedPalace);
         }
 
+        _userEdited = true;
         saveData();
         renderView('dashboard');
         alert('✓ Importeret ' + wb.SheetNames.length + ' palads(er).');
