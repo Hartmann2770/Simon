@@ -1718,13 +1718,26 @@
     if (!app.sessionPw) return;
     setSyncIndicator('syncing');
     try {
+      // Send _baseVersion så serveren kan afvise stale data
+      const payload = Object.assign({}, data, { _baseVersion: data._version || 0 });
       const resp = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pw: app.sessionPw, data })
+        body: JSON.stringify({ pw: app.sessionPw, data: payload })
       });
-      setSyncIndicator(resp.ok ? 'ok' : 'error');
-      if (resp.ok) setTimeout(() => setSyncIndicator('idle'), 3000);
+      if (resp.ok) {
+        const result = await resp.json();
+        if (result.version) data._version = result.version;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); // gem version lokalt uden re-sync
+        setSyncIndicator('ok');
+        setTimeout(() => setSyncIndicator('idle'), 3000);
+      } else if (resp.status === 409) {
+        // Konflikt — server har nyere data, genindlæs
+        setSyncIndicator('error');
+        loadFromServer();
+      } else {
+        setSyncIndicator('error');
+      }
     } catch (e) {
       setSyncIndicator('error');
     }
