@@ -1865,8 +1865,10 @@
   }
 
   async function savePegToServer() {
+    if (!app.sessionPw) return;
     try {
       const payload = {
+        pw: app.sessionPw,
         leitner: data.settings.pegLeitner || {},
         history: data.settings.pegLeitnerHistory || []
       };
