@@ -1855,6 +1855,11 @@
       const cutoff = Date.now() - 180 * 864e5;
       data.settings.pegLeitnerHistory = combined.filter(s => s.date >= cutoff);
 
+      // Server er sandhed for pegList — overskriver altid lokal kopi
+      if (serverPeg.pegList && serverPeg.pegList.length > 0) {
+        data.settings.pegList = serverPeg.pegList;
+      }
+
       saveData();
     } catch(e) {}
   }
