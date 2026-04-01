@@ -1080,10 +1080,7 @@
     <div class="form-group">
       <input type="password" id="login-code-input" placeholder="Kode" style="letter-spacing:0.2em;" onkeydown="if(event.key==='Enter')submitLogin()">
     </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:14px;cursor:pointer;">
-      <input type="checkbox" id="login-remember-me" checked style="width:15px;height:15px;cursor:pointer;accent-color:var(--teal);">
-      Husk mig i 30 dage
-    </label>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;">Admin logges ud efter 2 timer. Øvelse huskes i 30 dage.</p>
     <div id="login-error" style="display:none;color:var(--danger);font-size:13px;margin-bottom:12px;">Forkert kode. Prøv igen.</div>
     <button class="btn-primary" style="width:100%" onclick="submitLogin()">Log ind</button>
   </div>
@@ -1669,10 +1666,11 @@
   const _savedSession = (() => {
     // Check sessionStorage first (current tab)
     try {
-      const ss = sessionStorage.getItem('_mp_session');
-      if (ss) { const p = JSON.parse(ss); return typeof p === 'object' ? p : { pw: ss, level: 'practice' }; }
+      const ss = JSON.parse(sessionStorage.getItem('_mp_session') || 'null');
+      if (ss && ss.pw && ss.expires > Date.now()) return { pw: ss.pw, level: ss.level || 'practice' };
+      if (ss) sessionStorage.removeItem('_mp_session'); // expired
     } catch(e) {}
-    // Check localStorage with expiry (remember me)
+    // Check localStorage with expiry
     try {
       const stored = JSON.parse(localStorage.getItem('_mp_remember') || 'null');
       if (stored && stored.pw && stored.expires > Date.now()) return { pw: stored.pw, level: stored.level || 'practice' };
@@ -4383,11 +4381,11 @@
       app.authenticated = true;
       app.authLevel = level;
       app.sessionPw = code;
-      sessionStorage.setItem('_mp_session', JSON.stringify({ pw: code, level }));
-      const rememberMe = document.getElementById('login-remember-me');
-      if (rememberMe && rememberMe.checked) {
-        localStorage.setItem('_mp_remember', JSON.stringify({ pw: code, level, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 }));
-      }
+      // Admin: udløber efter 2 timer. Øvelse: 30 dage.
+      const ttl = level === 'admin' ? 2 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000;
+      const expires = Date.now() + ttl;
+      sessionStorage.setItem('_mp_session', JSON.stringify({ pw: code, level, expires }));
+      localStorage.setItem('_mp_remember', JSON.stringify({ pw: code, level, expires }));
       updateAuthButton();
       closeLoginModal();
       renderView(app.view);
