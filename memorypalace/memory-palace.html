@@ -24,12 +24,12 @@
       --danger: #991b1b;
       --gold: #f8b116;          /* Palads amber */
       --text: #1c1412;
-      --muted: #78716c;
+      --muted: #635a54;         /* Mørkere for WCAG AA kontrast */
       --border: #e4dff5;
-      --shadow: 0 2px 12px rgba(117,87,218,0.08);
-      --shadow-lg: 0 6px 28px rgba(117,87,218,0.14);
+      --shadow: 0 2px 12px rgba(117,87,218,0.10);
+      --shadow-lg: 0 6px 24px rgba(117,87,218,0.16);
       --radius: 14px;
-      --radius-sm: 9px;
+      --radius-sm: 8px;
     }
 
     html { height: 100%; }
@@ -78,7 +78,7 @@
       padding-left: 14px;
       padding-right: 14px;
       z-index: 100;
-      box-shadow: 0 2px 12px rgba(117,87,218,0.18);
+      box-shadow: var(--shadow-lg);
     }
     @media (prefers-reduced-motion: reduce) {
       #app-bar { animation: none; }
@@ -127,7 +127,7 @@
     h3 { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 600; }
     .muted { color: var(--muted); font-size: 13px; }
 
-    /* BUTTONS */
+    /* BUTTONS — min 44px touch target */
     button {
       cursor: pointer;
       font-family: 'Inter', sans-serif;
@@ -135,22 +135,27 @@
       font-weight: 500;
       border: none;
       border-radius: var(--radius-sm);
-      padding: 9px 18px;
+      padding: 10px 18px;
+      min-height: 44px;
       transition: transform 0.1s, opacity 0.1s, background 0.15s;
     }
     button:hover { transform: translateY(-1px); }
-    button:active { transform: translateY(0); }
+    button:active { transform: translateY(0); background: rgba(0,0,0,0.04); }
+    @media (pointer: coarse) {
+      button:hover { transform: none; }
+      button:active { transform: scale(0.97); }
+    }
 
-    .btn-primary { background: linear-gradient(135deg, var(--accent), #4a2db0); color: #fff; box-shadow: 0 2px 12px rgba(117,87,218,0.32); }
-    .btn-primary:hover { background: linear-gradient(135deg, var(--accent-light), var(--accent)); box-shadow: 0 4px 16px rgba(117,87,218,0.42); }
-    .btn-teal { background: linear-gradient(135deg, var(--teal), #a040b8); color: #fff; font-weight: 600; box-shadow: 0 2px 10px rgba(209,120,222,0.30); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #4a2db0); color: #fff; box-shadow: var(--shadow); }
+    .btn-primary:hover { background: linear-gradient(135deg, var(--accent-light), var(--accent)); box-shadow: var(--shadow-lg); }
+    .btn-teal { background: linear-gradient(135deg, var(--teal), #a040b8); color: #fff; font-weight: 600; box-shadow: var(--shadow); }
     .btn-teal:hover { background: linear-gradient(135deg, #dc8ce8, var(--teal)); }
-    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(224,92,107,0.5); padding: 7px 14px; }
+    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(224,92,107,0.5); }
     .btn-danger:hover { background: rgba(224,92,107,0.1); border-color: var(--danger); }
     .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
     .btn-ghost:hover { background: var(--surface-raised); border-color: var(--accent); color: var(--accent); }
-    .btn-sm { padding: 5px 12px; font-size: 12px; }
-    .btn-icon { background: transparent; color: var(--muted); padding: 4px 8px; font-size: 16px; border-radius: 6px; }
+    .btn-sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+    .btn-icon { background: transparent; color: var(--muted); padding: 8px 10px; font-size: 16px; border-radius: var(--radius-sm); min-height: 36px; }
     .btn-icon:hover { background: var(--surface-raised); color: var(--text); }
 
     /* CARDS */
@@ -276,7 +281,7 @@
     }
     .collection-card:hover {
       border-color: rgba(117,87,218,0.5);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
       box-shadow: var(--shadow-lg);
     }
     .collection-card-body { flex: 1; min-width: 0; }
@@ -307,7 +312,7 @@
       height: 10px;
       border-radius: 50%;
       flex-shrink: 0;
-      box-shadow: 0 0 4px rgba(0,0,0,0.4);
+      box-shadow: 0 0 4px rgba(0,0,0,0.25);
     }
     .collection-card-meta {
       font-size: 12px;
@@ -379,7 +384,7 @@
       position: relative;
       transition: border-color 0.2s;
     }
-    .location-item:has(.loc-sat-strip) { padding-right: 130px; }
+    .location-item:has(.loc-sat-strip) { padding-right: min(130px, 35%); }
     .location-item:hover { border-color: rgba(117,87,218,0.4); }
     .location-header {
       display: flex;
@@ -421,7 +426,7 @@
     }
     .memory-item:last-child { border-bottom: none; }
     .memory-text { flex: 1; }
-    .memory-item .btn-icon { font-size: 13px; padding: 3px 6px; flex-shrink: 0; }
+    .memory-item .btn-icon { font-size: 14px; padding: 6px 8px; flex-shrink: 0; min-height: 32px; }
 
     .add-memory-form {
       margin-top: 10px;
@@ -632,7 +637,7 @@
       position: relative;
       height: 100%;
       transform-style: preserve-3d;
-      transition: transform 0.5s ease;
+      transition: transform 0.35s ease;
     }
     .review-card-inner.flipped { transform: rotateY(180deg); }
 
@@ -649,8 +654,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 40px 36px 40px;
-      padding-top: 52px;
+      padding: 48px 36px 40px;
       text-align: center;
       box-shadow: var(--shadow-lg);
       overflow-y: auto;
@@ -660,7 +664,7 @@
       align-items: flex-start;
       justify-content: flex-start;
       text-align: left;
-      padding: 32px 36px 48px;
+      padding: 36px 36px 40px;
       background: var(--surface-raised);
     }
     .review-card-face.has-sat-img {
@@ -698,7 +702,7 @@
     }
     .loc-sat-strip {
       position: absolute; right: 0; top: 0; bottom: 0;
-      width: 130px; overflow: hidden;
+      width: min(130px, 35%); overflow: hidden;
       cursor: pointer; border-left: 1px solid var(--border);
       background: #c8d4c8;
     }
@@ -756,7 +760,8 @@
     }
     .review-tap-hint {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
+      font-style: italic;
     }
 
     .review-memories-list {
@@ -765,6 +770,7 @@
     .review-memories-list.size-lg  { font-size: 16px; }
     .review-memories-list.size-md  { font-size: 15px; }
     .review-memories-list.size-sm  { font-size: 14px; }
+    .review-memories-list.size-xs  { font-size: 13px; }
     .review-memories-list.size-xs  { font-size: 12px; }
     .review-memory-item {
       padding: 10px 0;
@@ -784,12 +790,11 @@
     }
     .review-back-label {
       font-family: 'Cinzel', serif;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--muted);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      opacity: 0.7;
+      letter-spacing: 0.10em;
     }
 
     .review-nav {
@@ -854,43 +859,51 @@
       input, textarea, select { font-size: 16px !important; }
     }
 
+    /* TABLET breakpoint */
+    @media (min-width: 481px) and (max-width: 1024px) {
+      #app-root { max-width: 680px; }
+      .palaces-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    }
+
     @media (max-width: 480px) {
-      /* App bar: behold safe-area top-padding, tilføj sidepadding */
-      #app-bar { padding-left: 10px; padding-right: 10px; gap: 6px; }
+      /* App bar */
+      #app-bar { padding-left: 10px; padding-right: 10px; gap: 6px;
+        animation-duration: 40s; /* Spar batteri: langsommere gradient */
+      }
       .app-title { font-size: 15px; letter-spacing: 0; }
       .btn-label { display: none; }
 
-      /* Indhold: top-padding matcher app-bar højde inkl. safe-area */
+      /* Indhold */
       #app-root { padding-left: 10px; padding-right: 10px; }
 
-      /* Typografi */
+      /* Typografi — bedre hierarki */
       h1 { font-size: 22px; }
       h2 { font-size: 18px; }
+      h3 { font-size: 16px; }
+      .muted { font-size: 13px; }
 
-      /* Dashboard-grid: altid én kolonne */
+      /* Dashboard */
       .palaces-grid { grid-template-columns: 1fr; }
       .palace-card { padding: 16px; }
       .palace-card-actions { flex-wrap: wrap; gap: 6px; }
-      .collection-card { padding: 14px; }
+      .collection-card { padding: 16px; }
 
-      /* Touch targets: større ikonknapper */
-      .btn-icon { padding: 8px 10px; font-size: 16px; }
-      .btn-sm { padding: 7px 12px; font-size: 13px; }
-
-      /* Review-kort: kompakt højde */
+      /* Review-kort */
       .review-card { height: min(42vh, 340px); min-height: 220px; margin-bottom: 16px; }
       .review-card-face { padding: 20px 16px; }
       .review-card-back { padding: 16px; }
       .review-loc-name { font-size: 22px; margin-bottom: 10px; }
 
-      /* Peg-liste: håndteres i separat media query efter desktop-reglerne */
-
-      /* Location-header: undgå overflow */
+      /* Location-header */
       .location-header { padding: 12px 10px; gap: 8px; }
-      .location-actions { gap: 2px; }
+      .location-actions { gap: 4px; }
 
-      /* Rum-knapper: lidt mere luft */
+      /* Rum */
       .room-header { padding: 10px 10px; }
+
+      /* Satellit-strip responsiv */
+      .loc-sat-strip { width: min(100px, 30%) !important; }
+      .location-item:has(.loc-sat-strip) { padding-right: min(100px, 30%) !important; }
     }
 
     /* Safe-area padding til bund (iPhone home bar) */
@@ -1020,6 +1033,15 @@
       body.peg-sidebar-open #view-review-session {
         padding-bottom: 42vh;
       }
+      /* 2 kolonner i stedet for 4 på mobil */
+      #peg-sidebar-list {
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-rows: repeat(50, auto) !important;
+        gap: 2px;
+        padding: 6px 10px;
+      }
+      .peg-row { padding: 4px 6px; }
+      .peg-word { font-size: 13px; }
     }
   </style>
 </head>
