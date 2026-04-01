@@ -2228,8 +2228,8 @@
       ${_bannerEl ? `<div style="margin-bottom:20px;overflow:hidden;"><img src="${_bannerEl.src}" alt="Palads" style="width:100%;display:block;max-height:200px;object-fit:cover;object-position:center 30%;-webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 100%);"></div>` : ''}
       <div class="section-header">
         <div style="display:flex;gap:8px;align-items:center">
-          ${app.authenticated ? `<button class="btn-ghost" data-action="new-collection">+ Ny Samling</button>` : ''}
-          ${app.authenticated ? `<button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-ghost" data-action="new-collection">+ Ny Samling</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>` : ''}
         </div>
       </div>
       <div style="margin-bottom:20px;">
@@ -2244,7 +2244,7 @@
         <div class="empty-state">
           <div class="empty-icon">&#127963;</div>
           <p>Ingen hukommelsespaladser endnu.<br>Opret dit første for at komme i gang.</p>
-          ${app.authenticated ? `<button class="btn-primary" data-action="new-palace">Opret Palads</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace">Opret Palads</button>` : ''}
         </div>`;
     } else if (q && filtered.length === 0) {
       html += `<p style="color:var(--muted);text-align:center;padding:40px 0;">Ingen resultater for "${esc(q)}"</p>`;
@@ -2270,7 +2270,7 @@
                 <div class="collection-card-name">${esc(f.name)}</div>
                 <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">${palaceChips}</div>
               </div>
-              ${app.authenticated ? `
+              ${app.authLevel === 'admin' ? `
               <div class="collection-card-auth-actions" onclick="event.stopPropagation()">
                 <button class="btn-ghost btn-sm" data-action="edit-collection" data-collection-id="${f.id}">&#9998;</button>
                 <button class="btn-danger btn-sm" data-action="delete-collection" data-collection-id="${f.id}">&#128465;</button>
@@ -2320,7 +2320,7 @@
         </div>
         <div class="palace-card-actions">
           <button class="btn-ghost btn-sm" data-action="choose-review" data-palace-id="${p.id}">&#9654; Øv</button>
-          ${app.authenticated ? `
+          ${app.authLevel === 'admin' ? `
             <button class="btn-ghost btn-sm" data-action="edit-palace" data-palace-id="${p.id}">&#9998; Rediger</button>
             <button class="btn-danger btn-sm" data-action="delete-palace" data-palace-id="${p.id}">&#128465;</button>
           ` : ''}
@@ -2361,14 +2361,14 @@
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           ${fps.length > 1 ? `<button class="btn-teal" data-action="review-all-in-collection" data-collection-id="${f.id}">Gennemgå alle &#8594;</button>` : ''}
-          ${app.authenticated ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
         </div>
       </div>`;
     if (sorted.length === 0) {
       html += `<div class="empty-state">
         <div class="empty-icon">&#127963;</div>
         <p>Ingen paladser i denne samling endnu.</p>
-        ${app.authenticated ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">Opret Palads</button>` : ''}
+        ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">Opret Palads</button>` : ''}
       </div>`;
     } else {
       html += `<div class="palaces-grid">` + sorted.map(p => palaceCardHtml(p, '')).join('') + `</div>`;
@@ -2491,7 +2491,7 @@
 
       <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:10px;margin-top:18px;">
         <h2 style="font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Rum (${(p.rooms||[]).length})</h2>
-        ${app.authenticated ? `<button class="btn-ghost btn-sm" data-action="show-add-room" data-palace-id="${p.id}">+ Nyt Rum</button>` : ''}
+        ${app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" data-action="show-add-room" data-palace-id="${p.id}">+ Nyt Rum</button>` : ''}
       </div>
       <div id="add-room-area"></div>`;
 
@@ -2511,7 +2511,7 @@
           <span class="room-name">${esc(room.name)}</span>
           <div style="display:flex;gap:6px;align-items:center;margin-left:auto;">
             <button class="btn-ghost btn-sm" data-action="start-review" data-palace-id="${p.id}" data-room-id="${room.id}">&#9654; Øv rum</button>
-            ${app.authenticated ? `<button class="btn-icon" data-action="edit-room" data-palace-id="${p.id}" data-room-id="${room.id}" title="Omdøb">&#9998;</button>
+            ${app.authLevel === 'admin' ? `<button class="btn-icon" data-action="edit-room" data-palace-id="${p.id}" data-room-id="${room.id}" title="Omdøb">&#9998;</button>
             <button class="btn-icon" data-action="delete-room" data-palace-id="${p.id}" data-room-id="${room.id}" title="Slet rum" style="color:var(--danger)">&#128465;</button>` : ''}
           </div>`;
       }
@@ -2539,12 +2539,12 @@
             ${isPinning
               ? `<span class="map-hint">${nextUnpinned ? `Klik for at placere: <strong>${esc(nextUnpinned.name)}</strong>` : '✓ Alle pins placeret'}</span>
                  <button class="btn-primary btn-sm" onclick="exitPinMode()">Færdig</button>`
-              : app.authenticated ? `<button class="btn-ghost btn-sm" onclick="enterPinMode('${room.id}')">&#128204; Placer Pins</button>
+              : app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" onclick="enterPinMode('${room.id}')">&#128204; Placer Pins</button>
                  <button class="btn-ghost btn-sm" onclick="removeMapConfirm('${p.id}','${room.id}')" style="color:var(--muted);">Fjern Kort</button>` : ''
             }
           </div>
         </div>`;
-      } else if (app.authenticated) {
+      } else if (app.authLevel === 'admin') {
         html += `<div style="padding:6px 14px 2px;">
           <label class="btn-ghost btn-sm" style="cursor:pointer;">
             &#128247; Upload Kort
@@ -2556,7 +2556,7 @@
       html += `<div class="room-locations">`;
       if (p.type === 'trivia') {
         roomLocs.forEach(loc => { html += renderTriviaCardHTML(p.id, loc); });
-        html += app.authenticated ? `<div style="padding:6px 0 2px;">
+        html += app.authLevel === 'admin' ? `<div style="padding:6px 0 2px;">
           <button class="btn-ghost btn-sm" data-action="show-add-trivia" data-palace-id="${p.id}" data-room-id="${room.id}">+ Tilføj Spørgsmål</button>
         </div>` : '';
         html += `<div id="add-trivia-area-${room.id}"></div>`;
@@ -2565,7 +2565,7 @@
           const idx = p.locations.indexOf(loc);
           html += renderLocationHTML(p.id, loc, idx, p.locations.length, rooms);
         });
-        html += app.authenticated ? `<div style="padding:6px 0 2px;">
+        html += app.authLevel === 'admin' ? `<div style="padding:6px 0 2px;">
           <button class="btn-ghost btn-sm" data-action="show-add-location" data-room-id="${room.id}">+ Tilføj Sted</button>
         </div>` : '';
       }
@@ -2588,7 +2588,7 @@
           html += `
           <div class="memory-item">
             <span class="memory-text">${escLines(note.text)}</span>
-            ${app.authenticated ? `<button class="btn-icon" data-action="edit-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Rediger">&#9998;</button>
+            ${app.authLevel === 'admin' ? `<button class="btn-icon" data-action="edit-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Rediger">&#9998;</button>
             <button class="btn-icon" data-action="delete-note" data-palace-id="${p.id}" data-room-id="${room.id}" data-note-id="${note.id}" title="Slet" style="color:var(--danger)">&#10005;</button>` : ''}
           </div>`;
         }
@@ -2597,7 +2597,7 @@
         html += `<p style="color:var(--muted);font-size:13px;padding:4px 0;">Ingen frie erindringer endnu.</p>`;
       }
       html += `<div style="padding:4px 0 6px;">
-        ${app.authenticated ? `<button class="btn-ghost btn-sm" data-action="show-add-note" data-palace-id="${p.id}" data-room-id="${room.id}">+ Tilføj Erindring</button>` : ''}
+        ${app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" data-action="show-add-note" data-palace-id="${p.id}" data-room-id="${room.id}">+ Tilføj Erindring</button>` : ''}
       </div>
       </div></div>`;
     });
@@ -2607,7 +2607,7 @@
       html += `
         <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:14px;margin-top:${rooms.length > 0 ? '18px' : '0'};">
           <h2 style="font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Steder uden rum (${unassigned.length})</h2>
-          ${app.authenticated ? `<button class="btn-ghost btn-sm" data-action="show-add-location">+ Tilføj Sted</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" data-action="show-add-location">+ Tilføj Sted</button>` : ''}
         </div>
         <div id="add-location-area"></div>
         <div class="locations-list">`;
@@ -2646,7 +2646,7 @@
     <div class="trivia-card" id="loc-${loc.id}">
       <div class="trivia-q">
         <span>${escFlag(loc.name)}</span>
-        ${app.authenticated ? `<div style="display:flex;gap:4px;flex-shrink:0;">
+        ${app.authLevel === 'admin' ? `<div style="display:flex;gap:4px;flex-shrink:0;">
           <button class="btn-icon" data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rediger">&#9998;</button>
           <button class="btn-icon" data-action="delete-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Slet" style="color:var(--danger)">&#128465;</button>
         </div>` : ''}
@@ -2680,9 +2680,9 @@
           </div>`;
     } else {
       html += `
-          <span class="location-name"${app.authenticated ? ` data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}"` : ''}>${escFlag(loc.name)}</span>
+          <span class="location-name"${app.authLevel === 'admin' ? ` data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}"` : ''}>${escFlag(loc.name)}</span>
           ${loc.coords ? `<span title="Satellit-koordinater gemt (${loc.coords.lat}, ${loc.coords.lng})" style="font-size:13px;opacity:0.6;flex-shrink:0;">&#128506;</span>` : ''}
-          ${app.authenticated ? `<div class="location-actions">
+          ${app.authLevel === 'admin' ? `<div class="location-actions">
             ${rooms.length > 0 ? `<select class="room-select" data-action="assign-loc-room" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rum">${roomOptions}</select>` : ''}
             ${idx > 0 ? `<button class="btn-icon" title="Flyt op" data-action="move-loc-up" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9650;</button>` : ''}
             ${idx < total - 1 ? `<button class="btn-icon" title="Flyt ned" data-action="move-loc-down" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9660;</button>` : ''}
@@ -2725,13 +2725,13 @@
         html += `
         <div class="memory-item">
           <span class="memory-text">${escLines(mem.text)}</span>
-          ${app.authenticated ? `<button class="btn-icon" data-action="edit-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Rediger erindring">&#9998;</button>
+          ${app.authLevel === 'admin' ? `<button class="btn-icon" data-action="edit-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Rediger erindring">&#9998;</button>
           <button class="btn-icon" data-action="delete-memory" data-palace-id="${palaceId}" data-loc-id="${loc.id}" data-mem-id="${mem.id}" title="Slet erindring" style="color:var(--danger)">&#10005;</button>` : ''}
         </div>`;
       }
     });
 
-    html += (app.authenticated ? `
+    html += (app.authLevel === 'admin' ? `
         <div class="add-memory-form">
           <div style="display:flex;gap:6px;flex:1;flex-direction:column;">
             <textarea id="mem-input-${loc.id}" placeholder="Erindring… (Shift+Enter for at tilføje)" rows="1"
@@ -4452,7 +4452,7 @@
   };
 
   window.saveSettings = function() {
-    if (!app.authenticated) { closeSettingsModal(); showLoginModal(window.saveSettings); return; }
+    if (app.authLevel !== 'admin') { closeSettingsModal(); showLoginModal(window.saveSettings); return; }
     _userEdited = true;
     const val = parseInt(document.getElementById('settings-interval-input').value, 10);
     if (val > 0) {
@@ -4603,11 +4603,11 @@
   };
 
   window.exportToExcel = function() {
-    if (!app.authenticated) { showLoginModal(window.exportToExcel); return; }
+    if (app.authLevel !== 'admin') { showLoginModal(window.exportToExcel); return; }
     exportToExcel();
   };
   window.triggerExcelImport = function() {
-    if (!app.authenticated) { showLoginModal(window.triggerExcelImport); return; }
+    if (app.authLevel !== 'admin') { showLoginModal(window.triggerExcelImport); return; }
     document.getElementById('excel-file-input').click();
   };
   window.handleExcelFile = function(input) {
