@@ -2189,36 +2189,39 @@
     { tag: 'hist-1990-2000', name: '1990–2000', from: 1990, to: 2000 },
   ];
   // Remove legacy single hist-all palace; keep only tagged quarter palaces
-  data.palaces = data.palaces.filter(p => !p._histTag || HISTORY_QUARTERS.some(q => q.tag === p._histTag));
-  for (const q of HISTORY_QUARTERS) {
-    const idx = data.palaces.findIndex(p => p._histTag === q.tag);
-    if (idx !== -1 && (data.palaces[idx]._v || 0) >= HISTORY_VERSION) continue;
-    const built = buildHistoryPalace(q.from, q.to, q.name);
-    built._v = HISTORY_VERSION;
-    built._histTag = q.tag;
-    if (idx !== -1) {
-      built.srs = data.palaces[idx].srs;
-      built.id  = data.palaces[idx].id;
-      // Bevar brugerens redigerede erindringer ved rebuild — match via lokationsnavn
-      const oldByName = {};
-      (data.palaces[idx].locations || []).forEach(l => { oldByName[l.name] = l; });
-      built.locations.forEach(loc => {
-        const old = oldByName[loc.name];
-        if (old) {
-          loc.id = old.id;
-          loc.memories = old.memories;
-          if (old.coords) loc.coords = old.coords;
-          if (old.photo)  loc.photo  = old.photo;
-          if (old.pin)    loc.pin    = old.pin;
-        }
-      });
-      data.palaces.splice(idx, 1, built);
-    } else {
-      _restoreSrs(built);
-      data.palaces.push(built);
+  function seedHistoryPalaces() {
+    data.palaces = data.palaces.filter(p => !p._histTag || HISTORY_QUARTERS.some(q => q.tag === p._histTag));
+    for (const q of HISTORY_QUARTERS) {
+      const idx = data.palaces.findIndex(p => p._histTag === q.tag);
+      if (idx !== -1 && (data.palaces[idx]._v || 0) >= HISTORY_VERSION) continue;
+      const built = buildHistoryPalace(q.from, q.to, q.name);
+      built._v = HISTORY_VERSION;
+      built._histTag = q.tag;
+      if (idx !== -1) {
+        built.srs = data.palaces[idx].srs;
+        built.id  = data.palaces[idx].id;
+        // Bevar brugerens redigerede erindringer ved rebuild — match via lokationsnavn
+        const oldByName = {};
+        (data.palaces[idx].locations || []).forEach(l => { oldByName[l.name] = l; });
+        built.locations.forEach(loc => {
+          const old = oldByName[loc.name];
+          if (old) {
+            loc.id = old.id;
+            loc.memories = old.memories;
+            if (old.coords) loc.coords = old.coords;
+            if (old.photo)  loc.photo  = old.photo;
+            if (old.pin)    loc.pin    = old.pin;
+          }
+        });
+        data.palaces.splice(idx, 1, built);
+      } else {
+        _restoreSrs(built);
+        data.palaces.push(built);
+      }
     }
+    saveData();
   }
-  saveData();
+  seedHistoryPalaces();
 
   // Fjern dubletter: behold kun det første palads per navn
   const seenNames = new Set();
@@ -2423,6 +2426,7 @@
           }
         })
       );
+      seedHistoryPalaces();
       seedCollections();
       saveData(); // gem serverdata i localStorage (uden server-sync pga _userEdited=false)
       renderView('dashboard');
