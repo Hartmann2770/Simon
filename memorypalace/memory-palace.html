@@ -2223,6 +2223,169 @@
   }
   seedHistoryPalaces();
 
+  // Info-tekster til 1800-tallets begivenheder (tilføjes via migration, ikke seed-rebuild)
+  const HISTORY_1800_INFO = {
+    '1800: Voltas første batteri': 'Alessandro Volta opfinder det første elektriske batteri, voltasøjlen, i år 1800. Opfindelsen beviser at elektricitet kan skabes kemisk og lægger grunden til al moderne elektronik.',
+    '1801: Thomas Jefferson bliver præsident i USA': 'Thomas Jefferson tiltræder i 1801 som USA\'s tredje præsident. Det er første gang magten skifter fredeligt mellem to politiske partier i USA.',
+    '1801: Beethoven skriver Moonlight Sonata': 'Beethoven komponerer Klaversonate nr. 14, bedre kendt som Moonlight Sonata, i 1801. Det er et af de mest genkendelige stykker klassisk musik nogensinde.',
+    '1801: Det Forenede Kongerige grundlægges — GB og Irland smelter sammen': 'I 1801 træder Acts of Union i kraft, og Irland forenes med Storbritannien til Det Forenede Kongerige. Unionen varer frem til Irlands delvise uafhængighed i 1922.',
+    '1803: Louisiana-købet — USA fordobler sit areal': 'I 1803 køber USA Louisiana-territoriet fra Frankrig for 15 millioner dollar — ca. 4 cent per acre. Handlen fordobler USA\'s areal og åbner vejen for vestlig ekspansion.',
+    '1804: Det første damplokomotiv': 'Richard Trevithick bygger i 1804 det første damplokomotiv, der kører på skinner, i Wales. Lokomotivet trækker ti tons jern og 70 passagerer over 16 km.',
+    '1804: Morfin isoleret': 'Den tyske apoteker Friedrich Sertürner isolerer morfin fra opium i 1804. Det er første gang et aktivt stof udvindes fra en plante i ren form.',
+    '1804: Verdens befolkning runder 1 milliard': 'Omkring 1804 når verdens befolkning for første gang én milliard mennesker. Den næste milliard kommer allerede 123 år senere i 1927.',
+    '1804: Napoleon bliver kejser af Frankrig': 'Napoleon kroner sig selv som kejser den 2. december 1804 i Notre-Dame i Paris. Han tager kronen fra pavens hænder som symbol på sin uafhængighed af kirken.',
+    '1805: Kampen ved Trafalgar – Nelson sikrer Brittisk flådedominans': 'Den 21. oktober 1805 besejrer den britiske flåde under Admiral Nelson den fransk-spanske flåde ved Trafalgar. Sejren sikrer britisk flådedominans i over hundrede år. Nelson dør under slaget.',
+    '1806: Det Hellige Romerske Rige bliver opløst efter Franske angreb': 'I 1806 opløses Det Hellige Romerske Rige efter næsten tusind års eksistens under pres fra Napoleon. Voltaire havde sagt at riget hverken var helligt, romersk eller et rige.',
+    '1804\u20131806: Lewis og Clark-ekspeditionen udforsker det vestlige USA': 'Lewis og Clark leder en ekspedition tværs over Nordamerika til Stillehavet over 12.000 km. Den indianske kvinde Sacagawea er deres uundværlige guide og tolk.',
+    '1807: Napoleon bomber København og overtager den danske flåde': 'I september 1807 bombarderer den britiske flåde København i tre dage og tvinger Danmark til at udlevere hele sin flåde. Briterne frygtede at Napoleon ville overtage de danske skibe.',
+    '1807: Slavehandel kriminaliseret i UK og USA': 'I 1807 vedtager både Storbritannien og USA love der forbyder den transatlantiske slavehandel. Selve slaveriet som institution fortsætter dog i årtier endnu.',
+    '1808: Beethoven\'s 5. symfoni': 'Beethovens femte symfoni opføres for første gang i Wien i 1808. De ikoniske fire åbningstoner — da-da-da-daa — er nok det mest genkendelige motiv i al klassisk musik.',
+    '1808-1809: Den Finske Krig – Finland bliver russisk': 'Rusland angriber det svenske Finland og vinder Den Finske Krig. Finland bliver et storfyrstendømme under den russiske zar, og Sverige mister en tredjedel af sit territorium.',
+    '1810: Første atommodel af John Dalton': 'John Dalton foreslår at al materie består af udelelige atomer, hvor hvert grundstof har sin egen type atom med bestemt vægt. Teorien lægger fundamentet for moderne kemi.',
+    '1812: Snehvide af brødrene Grimm': 'Brødrene Grimm udgiver i 1812 deres første samling af folkeeventyr, herunder Snehvide. De indsamler og nedskriver mundtlige fortælletraditioner fra hele Tyskland.',
+    '1812: Napoleons russiske felttog — vendepunktet i Napoleonskrigene': 'Napoleon invaderer Rusland med over 600.000 mand. Russerne bruger den brændte jords taktik, og kun omkring 100.000 soldater overlever den katastrofale tilbagetrækning.',
+    '1813: Simón Bolivar bliver befrieren – den venezuleanske republik': 'Simón Bolívar leder en militærkampagne der genvinder Venezuela fra spansk kontrol. Han får tilnavnet El Libertador og befrier store dele af Sydamerika.',
+    '1813: Jane Austen udgiver Pride and Prejudice': 'Jane Austens roman om Elizabeth Bennet og Mr. Darcy er en af de mest elskede kærlighedshistorier i verdenslitteraturen. Austen udgiver bogen anonymt.',
+    '1814: Napoleon abdicerer — Wienerkongressen omtegner Europa': 'Napoleon tvinges til at abdicere og forvises til Elba. Wienerkongressen samler Europas magter for at omtegne grænser og genoprette orden efter årtiers krig.',
+    '\u{1f1e9}\u{1f1f0} 1814: Danmark mister Norge til Sverige (Kieltraktaten)': 'Med Kieltraktaten i 1814 tvinges Danmark til at afstå Norge til Sverige efter at have været på Napoleons tabende side. Det dansk-norske rige, der har bestået i over 400 år, opløses.',
+    '1815: Slaget ved Waterloo – Napoleon besejret endeligt': 'Den 18. juni 1815 besejrer Wellington og Blücher Napoleon ved Waterloo i Belgien. Napoleon forvises til Sankt Helena, og Europa får endelig fred.',
+    '1815: Det største vulkanudbrud nogensinde – Tambora, Indonesien': 'Vulkanen Tambora eksploderer i april 1815 i det kraftigste vulkanudbrud i historisk tid. Udbruddet dræber mindst 70.000 og sender enorme mængder aske i atmosfæren.',
+    '1816: Året uden sommer – pga. askesky fra Tambora': 'Askepartikler fra Tambora forårsager dramatisk temperaturfald i 1816. Afgrøder fejler, sne falder i juni, og Mary Shelley inspireres til at skrive Frankenstein.',
+    '1818: Frankenstein af Mary Shelley': 'Den kun 20-årige Mary Shelley udgiver Frankenstein i 1818 — ofte betragtet som den første science fiction-roman. Ideen opstod under en uhyggelig sommeraften i Schweiz i 1816.',
+    '1819: Singapore grundlagt som britisk handelsstation': 'Sir Stamford Raffles grundlægger en britisk handelsstation på øen Singapore i 1819. Placeringen ved Malakkastræde gør byen til et knudepunkt for handelen mellem Europa og Østasien.',
+    '\u{1f1e9}\u{1f1f0} 1820: Ørsted opdager elektromagnetisme': 'Hans Christian Ørsted opdager under en forelæsning, at en elektrisk strøm påvirker en kompasnål. Opdagelsen af sammenhængen mellem elektricitet og magnetisme baner vejen for den moderne elektriske verden.',
+    '1821: Napoleons død på Sankt Helena': 'Napoleon dør den 5. maj 1821 på Sankt Helena i Sydatlanten, 51 år gammel. Han har tilbragt sine sidste seks år i eksil under britisk bevogtning.',
+    '1821: Første elektriske motor — Faraday': 'Michael Faraday demonstrerer det første eksperiment med elektromagnetisk rotation i 1821 — forløberen for den elektriske motor. Faraday, selvlært smed-søn, bliver en af historiens mest indflydelsesrige videnskabsmænd.',
+    '1822: Champollion tyder hieroglyferne ved Rosettastenen — 3000 år egyptisk civilisation låst op': 'Jean-François Champollion tyder de egyptiske hieroglyffer i 1822 ved hjælp af Rosettastenen, fundet i 1799. Pludselig kan man læse 3.000 års egyptisk historie.',
+    '1823: Monroe Doktrinen – Amerika for amerikanerne': 'Præsident Monroe erklærer i 1823, at de amerikanske kontinenter ikke er åbne for europæisk kolonisering. Doktrinen bliver en hjørnesten i amerikansk udenrigspolitik.',
+    '1824: Beethovens 9. symfoni urframføres — han var døv': 'Beethovens niende symfoni med "Ode an die Freude" urframføres i Wien i 1824. Beethoven er næsten fuldstændig døv og må vendes om for at se publikums ovationer. Symfonien er i dag EU\'s hymne.',
+    '1825: Første jernbane': 'Stockton and Darlington Railway åbner i 1825 som verdens første offentlige jernbane med damplokomotiv. George Stephensons Locomotion No. 1 trækker vogne med kul og passagerer.',
+    '1825: Erie-kanalen åbner og forbinder de store søer med Atlanterhavet': 'Erie-kanalen åbner i 1825 og forbinder Eriesøen med Atlanterhavet over 584 km. Kanalen reducerer transportomkostningerne drastisk og gør New York til USA\'s vigtigste havneby.',
+    '1826: Opfindelsen af fotografiet af Niepce': 'Nicéphore Niépce skaber det ældste bevarede fotografi i 1826 med en eksponeringstid på omkring otte timer. Det markerer begyndelsen på fotografiets historie.',
+    '1827: Beethovens død — 20.000 mennesker ved begravelsen (1770–1827)': 'Beethoven dør den 26. marts 1827 i Wien, 56 år gammel. Omkring 20.000 mennesker deltager i begravelsesprocessionen — et vidnesbyrd om hans enorme berømmelse.',
+    '1828: Noah Webster udgiver den første amerikanske ordbog (70.000 ord)': 'Noah Webster udgiver sin American Dictionary med 70.000 opslagsord i 1828. Ordbogen standardiserer amerikansk stavemåde og adskiller den bevidst fra britisk engelsk.',
+    '1808-1829: De sydamerikanske uafhængighedskrige fra Spanien og Portugal': 'Fra 1808 til 1829 kæmper næsten alle kolonier i Sydamerika sig fri under ledere som Bolívar og San Martín. Ved slutningen er det spanske imperium reduceret til Cuba og Puerto Rico.',
+    '1829: Robert Peel grundlægger Metropolitan Police — første moderne politi': 'Robert Peel opretter Londons Metropolitan Police i 1829 som det første professionelle, uniformerede politikorps. Betjentene kaldes "Bobbies" efter Peels fornavn.',
+    '1830: Belgien løsriver sig fra Nederlandene': 'I 1830 gør Belgien oprør efter en operaforestilling i Bruxelles udløser gadekampe. Stormagterne anerkender Belgiens uafhængighed året efter.',
+    '1821\u20131830: Den græske frihedskrig — Grækenland uafhængigt af Osmannerriget': 'Grækerne kæmper for uafhængighed fra det Osmanniske Rige efter 400 års tyrkerherredømme. Lord Byron dør som frivillig i Grækenland. Med støtte fra stormagterne opnår Grækenland selvstændighed.',
+    '1831: Faraday opdager elektromagnetisk induktion — princippet bag alle elmotorer og generatorer': 'Faraday opdager i 1831, at en bevægende magnet kan skabe elektrisk strøm i en ledning. Dette princip er grundlaget for alle elektriske generatorer og transformatorer i verden.',
+    '1832: Goethe dør — Faust del II udkommer posthumt': 'Goethe dør den 22. marts 1832 i Weimar, 82 år gammel. Hans livs hovedværk Faust del II udkommer kort efter. Hans sidste ord var angiveligt "Mehr Licht!".',
+    '1834: Slaveriet afskaffes formelt i det Britiske Imperium (Slavery Abolition Act 1833 træder i kraft)': 'Slavery Abolition Act frigør omkring 800.000 slaver i det Britiske Imperium den 1. august 1834. Slavejerne modtager 20 millioner pund i kompensation — de frigivne får intet.',
+    '\u{1f1e9}\u{1f1f0} 1835: H.C. Andersen udgiver første eventyr (Eventyr, fortalte for Børn)': 'H.C. Andersen udgiver sit første hefte eventyr i 1835 med bl.a. Fyrtøjet og Prinsessen på ærten. Den fattige skomagersøn fra Odense begynder sin vej til at blive en af verdens mest oversatte forfattere.',
+    '1836: Samuel Colt opfinder revolveren': 'Samuel Colt patenterer sin revolvermekanisme i 1836, der gør det muligt at affyre flere skud uden genladning. Colts revolver spiller en afgørende rolle i USA\'s vestlige ekspansion.',
+    '1836: Slaget om Alamo': 'I marts 1836 belejrer en mexicansk hær Alamo i Texas i 13 dage. Alle forsvarere, heriblandt Davy Crockett, dræbes. "Remember the Alamo!" driver Texas til uafhængighed.',
+    '1831\u20131836: Darwins rejse med HMS Beagle': 'Charles Darwin rejser jorden rundt ombord på HMS Beagle som skibets naturforsker. Hans observationer af finker på Galápagos lægger grunden til evolutionsteorien.',
+    '\u{1f1e9}\u{1f1f0} 1837: H.C. Andersen udgiver Den lille havfrue og Kejserens nye klæder': 'Andersen udgiver to af sine mest ikoniske eventyr i 1837. Den lille havfrue inspirerer senere statuen i Københavns havn. Kejserens nye klæder er en tidløs satire over forfængelighed.',
+    '1838: Trail of Tears – Cherokees tvangsforflytning i USA': 'I 1838 tvinges Cherokee-nationen til at marchere fra det sydøstlige USA til Oklahoma. Omkring 4.000 af 15.000 dør undervejs. Det er et af de mørkeste kapitler i USA\'s historie.',
+    '1840: Penny Black – verdens første frimærke': 'Storbritannien udsteder Penny Black i 1840 — verdens første selvklæbende frimærke med Dronning Victorias portræt. Det revolutionerer postvæsenet ved at gøre det billigt at sende breve.',
+    '1841: Livingstone ankommer til Afrika — begyndelsen på en generation af afrikansk udforskning': 'David Livingstone ankommer til det sydlige Afrika i 1841 og bruger 30 år på at udforske kontinentet. Han kæmper mod den arabiske slavehandel.',
+    '1842: Ordet "dinosaur" opfindes af Richard Owen': 'Richard Owen opfinder ordet "dinosaur" (frygtelig øgle) i 1842 for en gruppe forhistoriske reptiler. Opdagelsen fanger offentlighedens fantasi og skaber en fascination der varer den dag i dag.',
+    '1842: Hong Kong afstås til Storbritannien (Nankingaftalen)': 'Nankingaftalen afslutter den første opiumskrig i 1842, og Kina tvinges til at afstå Hong Kong til Storbritannien. Det markerer begyndelsen på "ydmygelsernes århundrede" for Kina.',
+    '1843: En julesang af Charles Dickens': 'Dickens udgiver A Christmas Carol i 1843 om den gerrige Scrooge. Bogen forandrer den vestlige verdens måde at fejre jul på. Dickens\' budskab om medfølelse definerer stadig julens ånd.',
+    '\u{1f1e9}\u{1f1f0} 1843: Kierkegaard udgiver Enten\u2013Eller — eksistentialismens fader': 'Søren Kierkegaard udgiver Enten–Eller i 1843, der udforsker valget mellem det æstetiske og etiske liv. Værket gør ham til eksistentialismens grundlægger og inspirerer Sartre og Camus.',
+    '1844: Første morsekode sendt af Samuel Morse': 'Samuel Morse sender den første telegrafbesked "What hath God wrought?" fra Washington til Baltimore i 1844. Telegrafen revolutionerer kommunikation og gør det muligt at sende beskeder på sekunder.',
+    '1845: Edgar Allan Poe udgiver The Raven': 'Poe udgiver The Raven i 1845 med det dystre refræn "Nevermore". Digtet gør ham øjeblikkeligt berømt. Poe dør blot fire år senere under mystiske omstændigheder.',
+    '1846: Bedøvelse (anæstesi) demonstreres offentligt første gang (Morton, Boston)': 'William Morton demonstrerer æter som bedøvelse under en operation i Boston i 1846. Patienten sover fredeligt mens kirurgen opererer. Dagen kaldes "Ether Day" og markerer smertefri kirurgis begyndelse.',
+    '1846: Neptun opdages': 'Planeten Neptun opdages i 1846 baseret på matematiske beregninger af Le Verrier. Det er første gang en planet opdages ved beregning frem for observation.',
+    '1847: Thomson patenterede det pneumatiske dæk': 'Robert William Thomson patenterer det luftfyldte gummidæk i 1847. Ideen bliver dog først kommercielt succesfuld da Dunlop genopfinder den i 1888.',
+    '1848: Californian Gold Rush': 'I 1848 findes guld ved Sutter\'s Mill i Californien, og over 300.000 "forty-niners" strømmer til fra hele verden. Guldfeberen transformerer Californien fra et afsides område til en blomstrende stat.',
+    '\'Det kommunistiske manifest\' af Marx og Engels': 'Marx og Engels udgiver Det kommunistiske manifest i 1848 og erklærer at "al hidtidig historie er klassekampens historie." Det bliver et af de mest indflydelsesrige politiske skrifter i verdenshistorien.',
+    '1845-1849: Den store hungersnød i Irland (Kartoffelpest)': 'Kartoffelpesten rammer Irland og ødelægger hovedafgrøden. Omkring en million dør, og en million emigrerer. Hungersnøden halverer næsten Irlands befolkning.',
+    '\u{1f1e9}\u{1f1f0} 1849: Grundloven vedtages 5. juni — Danmark konstitutionelt monarki': 'Den 5. juni 1849 underskriver Frederik VII Grundloven og afslutter enevælden. Danmark bliver et konstitutionelt monarki med folkestyre og ytringsfrihed. Grundlovsdag fejres stadig.',
+    '1850: Californien bliver den 31. stat': 'Californien optages som den 31. stat i USA i 1850, blot to år efter guldfundet. Statens befolkning er vokset fra 15.000 til over 300.000 på kun to år.',
+    '1851: Verdensudstillingen i London (Crystal Palace) — den første nogensinde': 'Den første verdensudstilling afholdes i Hyde Park i London i 1851 i Crystal Palace, en enorm konstruktion af glas og støbejern. Over seks millioner besøgende oplevede udstillinger fra hele verden.',
+    '1851: Herman Melville udgiver Moby Dick': 'Melvilles roman om kaptajn Ahabs besatte jagt på den hvide hval blev en fiasko ved udgivelsen i 1851. I dag anses den for et af de største værker i amerikansk litteratur.',
+    '1854: Florence Nightingale ankommer til Krim — revolutionerer sygepleje': 'Nightingale rejste til Krim i 1854 med 38 sygeplejersker og indførte grundlæggende hygiejne. Hun blev "Damen med lampen" og grundlagde moderne sygepleje.',
+    '1855: Livingstone ser Victoria Falls — første europæer til at se den': 'David Livingstone nåede de enorme vandfald på Zambezifloden i 1855. Han opkaldte dem Victoria Falls. Lokalt kendes de som Mosi-oa-Tunya — "røgen der tordner".',
+    '1853-1856: Krimkrigen': 'Krimkrigen blev udkæmpet mellem Rusland og en alliance af Osmannerriget, Frankrig og Storbritannien. Den er også kendt for det katastrofale "Charge of the Light Brigade".',
+    '1856: Bessemer-processen — stål kan nu masseproduceres': 'Henry Bessemer patenterer i 1856 en metode til at masseproducere stål. Det billige stål muliggjorde bygningen af skyskrabere, broer og jernbaner.',
+    '1857: Videnskabsmuseet i London': 'Science Museum i London blev grundlagt i 1857 med samlinger fra Verdensudstillingen i 1851. Det rummer banebrydende genstande som Stephensons Rocket.',
+    '1858: Første transatlantiske telegrafkabel fuldføres — Europa og Amerika forbundet': 'I 1858 blev det første telegrafkabel lagt over Atlanterhavet mellem Irland og Newfoundland. Kablet holdt kun tre uger — en permanent forbindelse kom i 1866.',
+    '1859: Darwin udgiver Arternes Oprinden': 'Darwins teori om evolution ved naturlig selektion fra 1859 revolutionerede biologien. Værket var baseret på årtiers forskning og ændrede fundamentalt menneskets syn på livet.',
+    '1860: Pony Ekspressen mellem Missouri og Californien': 'Pony Ekspressen brugte ryttere på hesteryg til at fragte post over 3.200 km i 1860–1861. Tjenesten blev overflødig efter blot 18 måneder, da telegraflinjen blev fuldført.',
+    '1861: Italien samles som stat': 'Kongeriget Italien proklameres i 1861 med Viktor Emanuel II som konge. Garibaldi, Cavour og Mazzini drev den italienske enhedsbevægelse, Risorgimento.',
+    '1862: The Flying Scotsman – togforbindelse mellem Edinburgh og London': 'Togforbindelsen "The Flying Scotsman" etableredes i 1862 mellem Edinburgh og London. Ruten blev en af verdens mest berømte jernbaneruter.',
+    '1863: London Underground åbner — verdens første metro': 'London Underground åbnede i 1863 som verdens første underjordiske jernbane med damplokomotiver. I dag har netværket over 270 stationer.',
+    '1863: Røde Kors grundlægges i Genève': 'Henry Dunant grundlagde Røde Kors i 1863 efter oplevelser ved Slaget ved Solferino. Organisationens formål er neutral humanitær hjælp til sårede.',
+    '\u{1f1e9}\u{1f1f0} 1864: Danmark taber Slesvig-Holsten (2. Slesvigske Krig, Dybbøl)': 'Danmark tabte krigen mod Preussen og Østrig i 1864. Stormen på Dybbøl Skanser den 18. april blev et nationalt traume, og Danmark mistede en tredjedel af sit territorium.',
+    '1865: Abraham Lincoln myrdet': 'Lincoln blev skudt af John Wilkes Booth den 14. april 1865 i Ford\'s Theatre. Det var den første amerikanske præsidentmord og skete kun fem dage efter Borgerkrigens reelle afslutning.',
+    '1865: Enden på slaveriet i USA': 'Den 13. forfatningstilføjelse afskaffede slaveri i hele USA i 1865. Omkring fire millioner mennesker blev formelt befriet.',
+    '1861-1865: Den Amerikanske Borgerkrig slutter': 'Borgerkrigen mellem Nordstaterne og Sydstaterne kostede over 600.000 liv og er den blodigste konflikt i amerikansk historie. General Lees overgivelse ved Appomattox markerede krigens afslutning.',
+    '1865: Alice i Eventyrland af Lewis Carroll': 'Lewis Carrolls Alice i Eventyrland fra 1865 er en af de mest indflydelsesrige børnebøger nogensinde. Den er oversat til over 170 sprog.',
+    '1867: USA køber Alaska af Rusland': 'USA købte Alaska i 1867 for 7,2 millioner dollars — kaldt "Sewards dårskab". Alaskas enorme naturrigdomme viste sig senere at gøre det til et kæmpe kup.',
+    '1867: Alfred Nobel opfinder dynamit': 'Alfred Nobel patenterede dynamit i 1867 ved at stabilisere nitroglycerin. Opfindelsen revolutionerede minedrift, og Nobels formue finansierede senere Nobelprisen.',
+    '1868: Meiji-restaurationen – Japan åbner sig for verden': 'I 1868 væltede en gruppe samuraier Tokugawa-shogunatet og genindsatte kejseren. Under kejser Meiji gennemgik Japan en rivende modernisering på få årtier.',
+    '1869: Suezkanalen åbner': 'Suezkanalen indviedes den 17. november 1869 og forbinder Middelhavet med Det Røde Hav. Den halverede sejltiden fra Europa til Asien.',
+    '1869: Mendeleev opfinder den periodiske tabel': 'Mendeleev ordnede grundstofferne i et system og efterlod genialt tomme pladser til uopdagede grundstoffer. Det periodiske system er stadig fundamentet i moderne kemi.',
+    '1869: Jules Verne udgiver \'En verdensomsejling under havet\'': 'Vernes roman om kaptajn Nemo og ubåden Nautilus fra 1869 forudsagde elementer af den moderne ubåd årtier før dens udvikling.',
+    '1869: Transkontinentalbanen fuldføres i USA': 'Den første transkontinentale jernbane fuldførtes den 10. maj 1869 ved Promontory Summit i Utah. Banen reducerede rejsetiden fra kyst til kyst fra måneder til dage.',
+    '1812-1870: Charles Dickens lever': 'Charles Dickens (1812–1870) skrev klassikere som Oliver Twist og En Julefortælling, der skildrede fattigdom i det victorianske England. Hans værker var enormt populære allerede i hans levetid.',
+    '1871: Det Tyske Kejserrige proklameres i Versailles – Kong Wilhelm 1 bliver første kejser': 'Det Tyske Kejserrige proklameres i Versailles\' Spejlsal den 18. januar 1871 efter sejr over Frankrig. Samlingen af de tyske stater under Bismarck ændrede Europas magtbalance fundamentalt.',
+    '1872: Yellowstone – første nationalpark': 'Yellowstone blev verdens første nationalpark i 1872, berømt for gejsere, varme kilder og vilde dyr. Old Faithful-gejseren er parkens mest kendte attraktion.',
+    '1872: Første internationale fodboldkamp – England mod Skotland': 'Den 30. november 1872 spillede England og Skotland den første officielle internationale fodboldkamp i Glasgow. Kampen endte 0-0.',
+    '\u{1f1e9}\u{1f1f0} 1873: Skandinavisk møntunion — Danmark og Sverige indfører fælles valuta (Norge 1875)': 'Danmark og Sverige indgik møntunionen i 1873 med kronen som fælles valuta. Unionen ophørte under WWI, men kronens navn lever videre i alle tre lande.',
+    '1875: Mathew Webb svømmer Den Engelske Kanal': 'Matthew Webb blev i 1875 det første menneske til at svømme over Den Engelske Kanal. Turen fra Dover til Calais tog 21 timer og 45 minutter.',
+    '1875: Bizet\'s Carmen-opera åbner': 'Bizets Carmen havde premiere i Paris i 1875 og chokerede med sin realistiske skildring af begær og vold. Bizet døde tre måneder efter, uden at vide Carmen ville blive en af de mest elskede operaer.',
+    '1876: Graham Bells første telefonsamtale': 'Bell foretog den første telefonsamtale den 10. marts 1876 med ordene "Mr. Watson, come here." Opfindelsen revolutionerede kommunikation.',
+    '1876: Battle of Little Bighorn – Custer besejret af Sioux': 'Oberstløjtnant Custer led katastrofalt nederlag ved Little Bighorn den 25. juni 1876. Lakota-siouxer og Cheyenner under Sitting Bull og Crazy Horse udslettede hans styrke.',
+    '1877: Edison opfinder fonografen': 'Edison opfandt fonografen i 1877 — den første maskine der kunne optage og afspille lyd. Den første optagelse var "Mary Had a Little Lamb".',
+    '1878: Berlinkongressen — Bismarck omtegner Balkan, Serbien og Rumænien selvstændige': 'Berlinkongressen i 1878 anerkendte Serbien, Rumænien og Montenegros uafhængighed. Beslutningerne såede kimen til de spændinger, der senere udløste Første Verdenskrig.',
+    '1879: Thomas Edison opfinder glødepæren': 'Edison demonstrerede en praktisk glødepære i 1879, der kunne lyse i over 13 timer. Opfindelsen ændrede menneskehedens forhold til mørket for altid.',
+    '1821-1881: Fjodor Dostojevskij': 'Dostojevskij (1821–1881) skrev mesterværker som Forbrydelse og Straf og Brødrene Karamazov. Hans psykologiske dybde har haft enorm indflydelse på moderne litteratur og filosofi.',
+    '1809-1882: Charles Darwin lever': 'Darwin (1809–1882) ændrede vores forståelse af livet med sin evolutionsteori. Om Arternes Oprindelse fra 1859 er et af videnskabshistoriens mest skelsættende værker.',
+    '1883: Krakatau eksploderer – historiens største brag': 'Krakatau eksploderede den 27. august 1883. Eksplosionen kunne høres 4.800 km væk, tsunamier dræbte over 36.000, og asken sænkede den globale temperatur.',
+    '1884: Parsons opfinder dampturbinen': 'Charles Parsons opfandt den moderne dampturbine i 1884. Dampturbinen er stadig grundlaget for størstedelen af verdens elproduktion.',
+    '1885: Verdens første skyskraber bygget i Chicago': 'Home Insurance Building i Chicago fra 1885 var verdens første skyskraber med stålskelet-konstruktion. Princippet muliggjorde de langt højere bygninger der fulgte.',
+    '1884-1885: Berlin-konferencen om opdeling af Afrika (Kapløbet om Afrika)': 'Europæiske stormagter opdelte Afrika med linjal og blyant uden hensyn til lokale folk eller grænser. Konferencen accelererede "Kapløbet om Afrika".',
+    '1885: Benz bygger verdens første benzindrevne bil': 'Karl Benz byggede det første benzindrevne køretøj i 1885 med en topfart på 16 km/t. Hans kone Bertha beviste bilens nytte med den første langdistancekørsel i 1888.',
+    '1885: Pasteur udvikler første rabiesvaccine': 'Louis Pasteur vaccinerede i 1885 den 9-årige Joseph Meister, bidt af en rabiessmittet hund. Drengen overlevede, og Pasteurs arbejde lagde grunden til moderne vaccinologi.',
+    '1886: Frihedsgudinden indvies i New York': 'Frihedsgudinden blev indviet den 28. oktober 1886 som gave fra Frankrig til USA. Med 93 meter i højden blev den et ikonisk vartegn og det første mange immigranter så ved ankomst.',
+    '1887: Sherlock Holmes af Arthur Conan Doyle': 'Doyles første Sherlock Holmes-roman udkom i 1887. Detektiven fra Baker Street 221B er en af litteraturhistoriens mest kendte fiktive skikkelser.',
+    '1888: Jack the Ripper-mordene i London': 'I efteråret 1888 blev mindst fem kvinder brutalt myrdet i Whitechapel, London. Morderen blev aldrig identificeret, og sagen er et af historiens mest berømte uopklarede mysterier.',
+    '1888: Verdens første film optages (Roundhay Garden Scene)': 'Louis Le Prince optog den ældste kendte filmsekvens i Leeds i 1888. Filmen varer kun to sekunder og viser fire personer i en have.',
+    '1889: Starry Night af Vincent van Gogh': 'Van Gogh malede Stjernenatten i 1889 fra sindssygeanstalten i Saint-Rémy. Maleriet med dets hvirvlende himmel er et af kunsthistoriens mest genkendelige værker. Van Gogh solgte kun ét maleri i sin levetid.',
+    '1889: Eiffeltårnet færdigbygget': 'Eiffeltårnet blev opført til Verdensudstillingen i Paris i 1889. Med 300 meter var det verdens højeste bygningsværk i over 40 år. Det var stærkt kritiseret under opførelsen.',
+    '1889: Moulin Rouge åbner i Paris': 'Moulin Rouge åbnede i 1889 i Pigalle-kvarteret på Montmartre. Stedet blev berømt for cancan-dans og Toulouse-Lautrecs plakater og er stadig i drift.',
+    '1891: Basketball opfindes af James Naismith': 'Naismith opfandt basketball i 1891 på et YMCA i Springfield ved at hænge to ferskenkurve op. Sporten er i dag en af verdens mest populære.',
+    '1892: Ellis Island åbner — millioner af europæiske immigranter strømmer ind i USA': 'Ellis Island åbnede i 1892 og over 12 millioner immigranter passerede i de næste 62 år. For mange europæere var det det første skridt mod et nyt liv i Amerika.',
+    '1893: New Zealand – første land der giver kvinder stemmeret': 'New Zealand blev det første selvstyrende land med kvindelig stemmeret i 1893 efter Kate Sheppards kampagne med over 30.000 underskrifter.',
+    '1894: Maxim bygger den første dampflyvemaskine': 'Hiram Maxim byggede en enorm dampflyvemaskine i 1894, der kortvarigt lettede fra sine skinner. Maxim er bedre kendt for sin opfindelse af maskingeværet.',
+    '1895: Røntgenbilledet opfindes af W. C. Roentgen': 'Röntgen opdagede røntgenstråler i 1895. Det første røntgenbillede viste knoglerne i hans kones hånd. Opdagelsen revolutionerede lægevidenskaben.',
+    '1896: De første moderne olympiske lege i Athen': 'De første moderne OL afholdes i Athen i 1896 med 241 atleter fra 14 nationer. Legene genoplivede den antikke tradition og blev starten på verdens største sportsbegivenhed.',
+    '1897: J.J. Thomson opdager elektronen': 'J.J. Thomson opdagede elektronen i 1897 og viste at atomet indeholder endnu mindre dele. Opdagelsen lagde grunden til moderne elektronik og atomfysik.',
+    '1897: Bram Stoker udgiver Dracula': 'Bram Stokers gotiske roman om den transsylvanske vampyrgrev udkom i 1897. Dracula er den mest ikoniske skurk i horrorgenren og har inspireret hundredvis af film.',
+    '1898: Marie Curie opdager Polonium og Radium': 'Marie Curie opdagede to radioaktive grundstoffer i 1898: polonium (opkaldt efter Polen) og radium. Hun er den eneste person med Nobelpriser i to forskellige videnskaber.',
+    '1899: Første radiosignal over Den Engelske Kanal af Marconi': 'Marconi sendte det første trådløse radiosignal over Den Engelske Kanal i 1899. To år senere lykkedes det at sende signal over Atlanterhavet.',
+    '1837-1901: Victorias regeringsperiode': 'Dronning Victoria regerede fra 1837 til 1901 i den længste britiske regeringsperiode på det tidspunkt. Under hendes styre voksede det britiske imperium til at omfatte en fjerdedel af jordens overflade.',
+  };
+
+  // Migration: tilføj info til eksisterende erindringer uden at genbygge paladser
+  function migrateInfoToMemories() {
+    // Byg lookup fra seed-data (1900-tallet har info i HISTORY_PALACE_DATA)
+    const infoLookup = {};
+    for (const entry of HISTORY_PALACE_DATA) {
+      const [yr, type, text, info] = entry;
+      if (type === 'E' && info) infoLookup[text] = info;
+    }
+    // Tilføj 1800-tallets info fra separat map
+    Object.assign(infoLookup, HISTORY_1800_INFO);
+
+    let changed = false;
+    data.palaces.forEach(p => {
+      if (!p._histTag) return;
+      p.locations.forEach(loc => {
+        loc.memories.forEach(mem => {
+          if (!mem.info && infoLookup[mem.text]) {
+            mem.info = infoLookup[mem.text];
+            changed = true;
+          }
+        });
+      });
+    });
+    if (changed) saveData();
+  }
+  migrateInfoToMemories();
+
   // Fjern dubletter: behold kun det første palads per navn
   const seenNames = new Set();
   data.palaces = data.palaces.filter(p => {
@@ -2427,6 +2590,7 @@
         })
       );
       seedHistoryPalaces();
+      migrateInfoToMemories();
       seedCollections();
       saveData(); // gem serverdata i localStorage (uden server-sync pga _userEdited=false)
       renderView('dashboard');
