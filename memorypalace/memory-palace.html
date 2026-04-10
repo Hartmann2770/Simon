@@ -2212,7 +2212,7 @@
     }
   }
 
-  const HISTORY_VERSION = 9; // bump to force rebuild
+  const HISTORY_VERSION = 10; // bump to force rebuild (10: omsorterede begivenheder + mnemoniske noter 1900-1909)
   const HISTORY_QUARTERS = [
     { tag: 'hist-1800-1825', name: '1800–1825', from: 1800, to: 1825 },
     { tag: 'hist-1826-1850', name: '1826–1850', from: 1826, to: 1850 },
@@ -2440,7 +2440,7 @@
   migrateInfoToMemories();
 
   // Migration: tilføj mnemoniske noter (M-entries) til eksisterende paladser
-  (function migrateMnemonicNotes() {
+  function migrateMnemonicNotes() {
     const mnemonicsBySeed = {};
     for (const entry of HISTORY_PALACE_DATA) {
       const [yr, type, text] = entry;
@@ -2465,7 +2465,8 @@
       });
     });
     if (changed) saveData();
-  })();
+  }
+  migrateMnemonicNotes();
 
   // Fjern dubletter: behold kun det første palads per navn
   const seenNames = new Set();
@@ -2672,6 +2673,7 @@
       );
       seedHistoryPalaces();
       migrateInfoToMemories();
+      migrateMnemonicNotes();
       seedCollections();
       saveData(); // gem serverdata i localStorage (uden server-sync pga _userEdited=false)
       renderView('dashboard');
