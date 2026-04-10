@@ -500,6 +500,38 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
     .map-pin-num span { transform: rotate(45deg); display:block; }
+    /* OVERVIEW MAP */
+    .overview-map-section { margin-bottom: 24px; }
+    .overview-map-header {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      font-size: 14px; color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 8px;
+    }
+    .overview-map-container {
+      position: relative; width: 100%; border-radius: var(--radius-sm);
+      overflow: hidden; border: 1px solid var(--border); background: #c8d4c8;
+      cursor: pointer;
+    }
+    .overview-map-container img {
+      display: block; width: 100%; height: auto;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .overview-map-pin {
+      position: absolute; transform: translate(-50%, -100%);
+      pointer-events: auto; cursor: pointer; z-index: 2;
+    }
+    .overview-map-pin .map-pin-year {
+      background: var(--accent); color: #fff; font-size: 9px; font-weight: 700;
+      padding: 3px 5px; border-radius: 8px 8px 8px 0; transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4); white-space: nowrap;
+    }
+    .overview-map-pin .map-pin-year span { transform: rotate(45deg); display: block; }
+    .overview-map-badge {
+      position: absolute; bottom: 6px; right: 8px; font-size: 10px;
+      color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.45);
+      padding: 1px 6px; border-radius: 4px; pointer-events: none;
+    }
     .map-pin-del {
       position: absolute;
       top: -6px;
@@ -2472,7 +2504,7 @@
     } catch(e) {}
     return null;
   })();
-  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), searchQuery: '', authenticated: !!_savedSession, sessionPw: _savedSession ? _savedSession.pw : null, authLevel: _savedSession ? _savedSession.level : null };
+  let app = { view: 'dashboard', reviewPalaceId: null, reviewLocIdx: 0, reviewLocStart: 0, reviewLocEnd: null, reviewRoomId: null, reviewRevealed: false, reviewPegOpen: false, reviewQueue: [], reviewQueueIdx: 0, editingCollectionId: null, editingPalaceId: null, editingLocId: null, editingRoomId: null, editingMemId: null, editingNoteId: null, pinningRoomId: null, collapsedRooms: new Set(), overviewMapCollapsed: false, searchQuery: '', authenticated: !!_savedSession, sessionPw: _savedSession ? _savedSession.pw : null, authLevel: _savedSession ? _savedSession.level : null };
   _appReady = true;
 
   // ── LAGERLAG ───────────────────────────────────────────────────────
@@ -2633,6 +2665,9 @@
       if (serverPeg.pegList && serverPeg.pegList.length > 0) {
         data.settings.pegList = serverPeg.pegList;
       }
+
+      // Migration: 00 = Sauce (var Dosis), flyt 00 til front
+      _migratePeg00();
 
       saveData();
     } catch(e) {}
@@ -3059,13 +3094,32 @@
         html += `<div class="collections-section-title">Samlinger</div><div class="palaces-grid" style="margin-bottom:28px;">`;
         for (const f of data.collections) {
           const fps = allPalaces.filter(p => p.collectionId === f.id);
-          const palaceChips = fps.length > 0
-            ? fps.map(p => `
+          const chipHtml = p => `
                 <div data-action="view-palace" data-palace-id="${p.id}" style="display:inline-flex;align-items:center;gap:5px;background:var(--surface-raised);border-radius:20px;padding:3px 10px 3px 7px;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.15s;" onmouseenter="this.style.background='var(--border)'" onmouseleave="this.style.background='var(--surface-raised)'">
                   <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${srsColor(p.srs)};box-shadow:${srsIsOverdue(p.srs)?'0 0 5px 2px #dc2626,0 0 12px 3px rgba(220,38,38,0.4)':'0 0 4px '+srsColor(p.srs)};"></div>
                   ${esc(p.name)}
-                </div>`).join('')
-            : `<span style="color:var(--muted);font-size:12px;font-style:italic;">Ingen paladser endnu</span>`;
+                </div>`;
+          let palaceChips;
+          if (fps.length === 0) {
+            palaceChips = `<span style="color:var(--muted);font-size:12px;font-style:italic;">Ingen paladser endnu</span>`;
+          } else if (f._collTag === 'col-history') {
+            const c19 = fps.filter(p => p._histTag && p._histTag.startsWith('hist-18'));
+            const c20 = fps.filter(p => p._histTag && (p._histTag.startsWith('hist-19') || p._histTag.startsWith('hist-20')));
+            const other = fps.filter(p => !p._histTag);
+            palaceChips = '';
+            if (c19.length) {
+              palaceChips += `<div style="width:100%;font-size:10px;font-weight:600;color:var(--muted);opacity:0.45;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">1800–1900</div>` + c19.map(chipHtml).join('');
+            }
+            if (c19.length && c20.length) {
+              palaceChips += `<div style="width:100%;border-top:1px solid var(--border);opacity:0.35;margin:4px 0;"></div>`;
+            }
+            if (c20.length) {
+              palaceChips += `<div style="width:100%;font-size:10px;font-weight:600;color:var(--muted);opacity:0.45;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;">1900–2000</div>` + c20.map(chipHtml).join('');
+            }
+            if (other.length) palaceChips += other.map(chipHtml).join('');
+          } else {
+            palaceChips = fps.map(chipHtml).join('');
+          }
           html += `
             <div class="collection-card" data-action="open-collection" data-collection-id="${f.id}">
               <div class="collection-card-body">
@@ -3178,11 +3232,14 @@
       const c20 = sorted.filter(p => p._histTag && p._histTag.startsWith('hist-19') || p._histTag && p._histTag.startsWith('hist-20'));
       const other = sorted.filter(p => !p._histTag);
       if (c19.length) {
-        html += `<h2 style="font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;">1800-tallet</h2>`;
+        html += `<div style="color:var(--muted);opacity:0.45;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin:18px 0 8px;">1800–1900</div>`;
         html += `<div class="palaces-grid">` + c19.map(p => palaceCardHtml(p, '')).join('') + `</div>`;
       }
+      if (c19.length && c20.length) {
+        html += `<hr style="border:none;border-top:1px solid var(--border);opacity:0.4;margin:24px 0 4px;">`;
+      }
       if (c20.length) {
-        html += `<h2 style="font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin:28px 0 10px;">1900-tallet</h2>`;
+        html += `<div style="color:var(--muted);opacity:0.45;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin:12px 0 8px;">1900–2000</div>`;
         html += `<div class="palaces-grid">` + c20.map(p => palaceCardHtml(p, '')).join('') + `</div>`;
       }
       if (other.length) {
@@ -3260,6 +3317,7 @@
             <input type="checkbox" id="editor-route-palace" ${palace && palace.routePalace ? 'checked' : ''}>
             <span>&#128506; L&#248;bepalads <small style="color:var(--muted);font-weight:400;">(viser satellit-billede ved hvert sted under gennemgang)</small></span>
           </label>
+          <input type="text" id="editor-route-map-title" placeholder="Ruteoverblik (valgfrit navn)" value="${palace && palace.routeMapTitle ? esc(palace.routeMapTitle) : ''}" style="margin-top:6px;width:100%;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:14px;padding:8px 12px;outline:none;">
         </div>
         ${data.collections.length > 0 ? `
         <div class="form-group">
@@ -3277,6 +3335,82 @@
 
     showView('view-palace-editor');
     document.getElementById('editor-name').focus();
+  }
+
+  // RUTEOVERBLIK
+  function renderOverviewMap(palace) {
+    if (!palace.routePalace) return '';
+    const locsWithCoords = palace.locations.filter(l => l.coords);
+    if (locsWithCoords.length < 2) return '';
+
+    let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+    locsWithCoords.forEach(l => {
+      if (l.coords.lat < minLat) minLat = l.coords.lat;
+      if (l.coords.lat > maxLat) maxLat = l.coords.lat;
+      if (l.coords.lng < minLng) minLng = l.coords.lng;
+      if (l.coords.lng > maxLng) maxLng = l.coords.lng;
+    });
+
+    // Padding (20%, min 0.001°)
+    const latPad = Math.max((maxLat - minLat) * 0.2, 0.001);
+    const lngPad = Math.max((maxLng - minLng) * 0.2, 0.001);
+    minLat -= latPad; maxLat += latPad;
+    minLng -= lngPad; maxLng += lngPad;
+
+    // Enforce 2:1 aspect ratio to match size=800,400
+    const targetAspect = 2;
+    const bboxAspect = (maxLng - minLng) / (maxLat - minLat);
+    if (bboxAspect < targetAspect) {
+      const center = (minLng + maxLng) / 2;
+      const halfW = (maxLat - minLat) * targetAspect / 2;
+      minLng = center - halfW; maxLng = center + halfW;
+    } else {
+      const center = (minLat + maxLat) / 2;
+      const halfH = (maxLng - minLng) / targetAspect / 2;
+      minLat = center - halfH; maxLat = center + halfH;
+    }
+
+    const bbox = `${minLng},${minLat},${maxLng},${maxLat}`;
+    const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=800,400&imageSR=4326&format=png&transparent=false&f=image`;
+
+    function toPercent(lat, lng) {
+      return {
+        x: (((lng - minLng) / (maxLng - minLng)) * 100).toFixed(2),
+        y: (((maxLat - lat) / (maxLat - minLat)) * 100).toFixed(2)
+      };
+    }
+
+    const isCollapsed = app.overviewMapCollapsed;
+    let html = `<div class="overview-map-section">
+      <div class="overview-map-header" data-action="toggle-overview-map">
+        <span style="font-size:10px;">${isCollapsed ? '&#9654;' : '&#9660;'}</span>
+        &#128506; ${palace.routeMapTitle ? esc(palace.routeMapTitle) : `Ruteoverblik (${locsWithCoords.length} steder)`}
+      </div>`;
+
+    // Build pin data for reuse in overlay
+    const pinData = locsWithCoords.map(loc => {
+      const pos = toPercent(loc.coords.lat, loc.coords.lng);
+      const yearMatch = loc.name.match(/^(\d{4})/);
+      const label = yearMatch ? yearMatch[1] : String(palace.locations.indexOf(loc) + 1);
+      return { x: pos.x, y: pos.y, label, name: loc.name, id: loc.id };
+    });
+
+    if (!isCollapsed) {
+      html += `<div class="overview-map-container" onclick="showOverviewMapOverlay('${palace.id}')">
+        <img src="${imgUrl}" loading="lazy" alt="Ruteoverblik" onload="this.style.opacity=1">`;
+      pinData.forEach(pin => {
+        html += `<div class="overview-map-pin" style="left:${pin.x}%;top:${pin.y}%;"
+                      title="${esc(pin.name)}"
+                      onclick="event.stopPropagation();document.getElementById('loc-${pin.id}')?.scrollIntoView({behavior:'smooth',block:'center'})">
+          <div class="map-pin-year"><span>${pin.label}</span></div>
+        </div>`;
+      });
+      html += `<div class="overview-map-badge">&copy; Esri &middot; Klik for at forstørre</div>
+      </div>`;
+    }
+
+    html += `</div>`;
+    return html;
   }
 
   // PALADS-DETALJER
@@ -3306,6 +3440,8 @@
           <span>&#127381; Interval: ${p.srs ? p.srs.interval : 1} dag${(p.srs && p.srs.interval !== 1) ? 'e' : ''}</span>
         </div>
       </div>
+
+      ${renderOverviewMap(p)}
 
       <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:10px;margin-top:18px;">
         <h2 style="font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Rum (${(p.rooms||[]).length})</h2>
@@ -3779,14 +3915,16 @@
         const collectionEl = document.getElementById('editor-collection');
         const collectionId = collectionEl ? collectionEl.value || undefined : undefined;
         const routePalace = document.getElementById('editor-route-palace')?.checked || false;
+        const routeMapTitle = document.getElementById('editor-route-map-title')?.value.trim() || undefined;
         if (app.editingPalaceId) {
-          updatePalace(app.editingPalaceId, { name, description: desc, type, collectionId: collectionId || undefined, routePalace });
+          updatePalace(app.editingPalaceId, { name, description: desc, type, collectionId: collectionId || undefined, routePalace, routeMapTitle });
           if (app.editingCollectionId) renderView('collection-detail');
           else renderView('palace-detail');
         } else {
           const p = createPalace(name, desc, type);
           if (collectionId) p.collectionId = collectionId;
           if (routePalace) p.routePalace = true;
+          if (routeMapTitle) p.routeMapTitle = routeMapTitle;
           saveData();
           app.editingPalaceId = p.id;
           if (collectionId) { app.editingCollectionId = collectionId; renderView('collection-detail'); }
@@ -4131,6 +4269,10 @@
         renderPalaceDetail();
         break;
       }
+      case 'toggle-overview-map':
+        app.overviewMapCollapsed = !app.overviewMapCollapsed;
+        renderPalaceDetail();
+        break;
 
       case 'edit-room':
         app.editingRoomId = el.dataset.roomId;
@@ -4476,6 +4618,116 @@
     document.body.appendChild(overlay);
   };
 
+  window.showOverviewMapOverlay = function(palaceId) {
+    const p = getPalace(palaceId);
+    if (!p) return;
+    const locsWithCoords = p.locations.filter(l => l.coords);
+    if (locsWithCoords.length < 2) return;
+
+    let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+    locsWithCoords.forEach(l => {
+      if (l.coords.lat < minLat) minLat = l.coords.lat;
+      if (l.coords.lat > maxLat) maxLat = l.coords.lat;
+      if (l.coords.lng < minLng) minLng = l.coords.lng;
+      if (l.coords.lng > maxLng) maxLng = l.coords.lng;
+    });
+    const latPad = Math.max((maxLat - minLat) * 0.2, 0.001);
+    const lngPad = Math.max((maxLng - minLng) * 0.2, 0.001);
+    minLat -= latPad; maxLat += latPad;
+    minLng -= lngPad; maxLng += lngPad;
+    const targetAspect = 2;
+    const bboxAspect = (maxLng - minLng) / (maxLat - minLat);
+    if (bboxAspect < targetAspect) {
+      const center = (minLng + maxLng) / 2;
+      const halfW = (maxLat - minLat) * targetAspect / 2;
+      minLng = center - halfW; maxLng = center + halfW;
+    } else {
+      const center = (minLat + maxLat) / 2;
+      const halfH = (maxLng - minLng) / targetAspect / 2;
+      minLat = center - halfH; maxLat = center + halfH;
+    }
+    const bbox = `${minLng},${minLat},${maxLng},${maxLat}`;
+    const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=1600,800&imageSR=4326&format=png&transparent=false&f=image`;
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;';
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;width:92vw;height:85vh;overflow:hidden;border-radius:8px;cursor:grab;';
+
+    const inner = document.createElement('div');
+    inner.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;';
+
+    let scale = 1, panX = 0, panY = 0;
+    function applyTransform() { inner.style.transform = `translate(${panX}px,${panY}px) scale(${scale})`; }
+
+    // Map image
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.style.cssText = 'width:100%;height:100%;display:block;object-fit:cover;';
+    inner.appendChild(img);
+
+    // Pins
+    locsWithCoords.forEach(loc => {
+      const xPct = ((loc.coords.lng - minLng) / (maxLng - minLng)) * 100;
+      const yPct = ((maxLat - loc.coords.lat) / (maxLat - minLat)) * 100;
+      const yearMatch = loc.name.match(/^(\d{4})/);
+      const label = yearMatch ? yearMatch[1] : String(p.locations.indexOf(loc) + 1);
+      const pin = document.createElement('div');
+      pin.className = 'overview-map-pin';
+      pin.style.cssText = `left:${xPct.toFixed(2)}%;top:${yPct.toFixed(2)}%;`;
+      pin.title = loc.name;
+      pin.innerHTML = `<div class="map-pin-year"><span>${label}</span></div>`;
+      inner.appendChild(pin);
+    });
+
+    wrap.appendChild(inner);
+
+    // Zoom with mouse wheel
+    wrap.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = wrap.getBoundingClientRect();
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      const prev = scale;
+      scale = Math.min(8, Math.max(1, scale * (e.deltaY < 0 ? 1.15 : 0.87)));
+      panX = mx - (mx - panX) * (scale / prev);
+      panY = my - (my - panY) * (scale / prev);
+      applyTransform();
+    }, { passive: false });
+
+    // Pan with mouse drag
+    let dragging = false, startX, startY;
+    wrap.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || e.target.closest('[data-close]')) return;
+      dragging = true; startX = e.clientX - panX; startY = e.clientY - panY;
+      wrap.style.cursor = 'grabbing'; wrap.setPointerCapture(e.pointerId);
+    });
+    wrap.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      panX = e.clientX - startX; panY = e.clientY - startY;
+      applyTransform();
+    });
+    wrap.addEventListener('pointerup', () => { dragging = false; wrap.style.cursor = 'grab'; });
+
+    // Close button
+    const closeBtn = document.createElement('div');
+    closeBtn.style.cssText = 'position:absolute;top:12px;right:16px;z-index:10;font-size:28px;color:rgba(255,255,255,0.8);cursor:pointer;background:rgba(0,0,0,0.5);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.setAttribute('data-close', '');
+    closeBtn.addEventListener('pointerup', e => { e.stopPropagation(); overlay.remove(); });
+    wrap.appendChild(closeBtn);
+
+    // Badge
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:absolute;bottom:8px;right:10px;z-index:10;font-size:10px;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:4px;pointer-events:none;';
+    badge.textContent = '© Esri · Scroll for at zoome · Træk for at panorere';
+    wrap.appendChild(badge);
+
+    overlay.appendChild(wrap);
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+  };
+
   // ── FOTO-UPLOAD MED EXIF GPS ──────────────────────────────────────
   function _parseExifGPS(buffer) {
     try {
@@ -4672,7 +4924,7 @@
 
   // ── PEG-LISTE MODAL ────────────────────────────────────────────────
   const PEG_LIST_DEFAULT = [
-    ['01','Sut'],['02','Sand'],['03','Søm'],['04','Zorro'],['05','Sol'],
+    ['00','Sauce'],['01','Sut'],['02','Sand'],['03','Søm'],['04','Zorro'],['05','Sol'],
     ['06','Sushi'],['07','Sok'],['08','Sofa'],['09','Sæbe'],['10','Dåse'],
     ['11','Tid'],['12','Tønde'],['13','Atom'],['14','Dør'],['15','Tyl'],
     ['16','DJ'],['17','Dukke'],['18','TV'],['19','Tuba'],['20','Næse'],
@@ -4684,19 +4936,30 @@
     ['46','Røg'],['47','Rokke'],['48','Ræv'],['49','Reb'],['50','Lasso'],
     ['51','Ludo'],['52','Lian'],['53','Lime'],['54','Ler'],['55','Lilla'],
     ['56','Løg'],['57','Lego'],['58','Løve'],['59','Læbe'],['60','Juice'],
-    ['61','Jedi'],['62','Genie'],['63','Hjem'],['64','Cherry'],['65','Jul'],
+    ['61','Jedi'],['62','Genie'],['63','Hjem'],['64','Jord'],['65','Jul'],
     ['66','Yo-Yo'],['67','Choko'],['68','Java'],['69','Jeep'],['70','Kasse'],
     ['71','Kat'],['72','Kane'],['73','Kam'],['74','Kar'],['75','Koala'],
     ['76','Kage'],['77','Kok'],['78','Kaffe'],['79','Kop'],['80','Vase'],
     ['81','Fod'],['82','Vin'],['83','Fem'],['84','Får'],['85','Fly'],
     ['86','Fuji'],['87','Vok'],['88','Fifa'],['89','Vippe'],['90','Bus'],
     ['91','Bat'],['92','Piano'],['93','Bom'],['94','Pære'],['95','Bil'],
-    ['96','Bøje'],['97','Bog'],['98','Bøf'],['99','Pibe'],['00','Dosis'],
+    ['96','Bøje'],['97','Bog'],['98','Bøf'],['99','Pibe'],
   ];
   if (!data.settings.pegList) {
     data.settings.pegList = PEG_LIST_DEFAULT.map(([n, w]) => [n, w]);
     saveData();
   }
+  // Migration-funktion: 00 = Sauce (var Dosis), flyt 00 til front
+  function _migratePeg00() {
+    const pl = data.settings.pegList;
+    if (!pl) return;
+    const idx = pl.findIndex(([n]) => n === '00');
+    if (idx > -1) {
+      if (pl[idx][1] === 'Dosis') pl[idx][1] = 'Sauce';
+      if (idx > 0) { pl.unshift(pl.splice(idx, 1)[0]); }
+    }
+  }
+  _migratePeg00();
   if (!data.settings.pegLeitner) {
     data.settings.pegLeitner = {};
     saveData();
