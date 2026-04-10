@@ -2239,19 +2239,27 @@
       built._v = HISTORY_VERSION;
       built._histTag = q.tag;
       if (idx !== -1) {
-        built.srs = data.palaces[idx].srs;
-        built.id  = data.palaces[idx].id;
+        const old = data.palaces[idx];
+        built.srs = old.srs;
+        built.id  = old.id;
+        // Bevar bruger-felter der ikke er del af seed-data
+        if (old.routePalace)   built.routePalace   = old.routePalace;
+        if (old.routeMapTitle) built.routeMapTitle  = old.routeMapTitle;
+        if (old.collectionId)  built.collectionId   = old.collectionId;
+        if (old.type)          built.type           = old.type;
+        if (old.rooms && old.rooms.length) built.rooms = old.rooms;
         // Bevar brugerens redigerede erindringer ved rebuild — match via lokationsnavn
         const oldByName = {};
-        (data.palaces[idx].locations || []).forEach(l => { oldByName[l.name] = l; });
+        (old.locations || []).forEach(l => { oldByName[l.name] = l; });
         built.locations.forEach(loc => {
-          const old = oldByName[loc.name];
-          if (old) {
-            loc.id = old.id;
-            loc.memories = old.memories;
-            if (old.coords) loc.coords = old.coords;
-            if (old.photo)  loc.photo  = old.photo;
-            if (old.pin)    loc.pin    = old.pin;
+          const prev = oldByName[loc.name];
+          if (prev) {
+            loc.id = prev.id;
+            loc.memories = prev.memories;
+            if (prev.coords) loc.coords = prev.coords;
+            if (prev.photo)  loc.photo  = prev.photo;
+            if (prev.pin)    loc.pin    = prev.pin;
+            if (prev._deletedMnemonics) loc._deletedMnemonics = prev._deletedMnemonics;
           }
         });
         data.palaces.splice(idx, 1, built);
@@ -2456,8 +2464,9 @@
         const yr = parseInt(loc.name);
         if (!yr || !mnemonicsBySeed[yr]) return;
         const existing = new Set(loc.memories.map(m => m.text));
+        const deleted  = new Set(loc._deletedMnemonics || []);
         mnemonicsBySeed[yr].forEach(mText => {
-          if (!existing.has(mText)) {
+          if (!existing.has(mText) && !deleted.has(mText)) {
             loc.memories.push({ id: genId(), text: mText, createdAt: Date.now() });
             changed = true;
           }
@@ -3066,6 +3075,12 @@
   function deleteMemory(palaceId, locId, memId) {
     const loc = getLoc(palaceId, locId);
     if (!loc) return;
+    const mem = loc.memories.find(m => m.id === memId);
+    // Track slettede seed-mnemonics så migrateMnemonicNotes() ikke genindsætter dem
+    if (mem && mem.text && mem.text.startsWith('\uD83E\uDDE0 ')) {
+      if (!loc._deletedMnemonics) loc._deletedMnemonics = [];
+      if (!loc._deletedMnemonics.includes(mem.text)) loc._deletedMnemonics.push(mem.text);
+    }
     loc.memories = loc.memories.filter(m => m.id !== memId);
     saveData();
   }
