@@ -4896,7 +4896,7 @@
       _compressPhoto(file, 800, 0.75)
     ]);
     if (photo) loc.photo = photo;
-    if (gps)   loc.coords = gps;
+    if (gps && !loc.coords)   loc.coords = gps;
     else if (!loc.coords) setTimeout(function() { alert('Foto gemt \u2013 ingen GPS-data fundet i billedet. Du kan taste koordinater ind manuelt.'); }, 100);
     saveData();
     renderPalaceDetail();
