@@ -2264,6 +2264,18 @@
   }
   seedHistoryPalaces();
 
+  // Gendan SRS fra backup efter force-reseed
+  (function restoreSrsBackup() {
+    const backup = localStorage.getItem('_mp_srs_backup');
+    if (!backup) return;
+    try {
+      const srs = JSON.parse(backup);
+      data.palaces.forEach(p => { if (srs[p.name]) p.srs = srs[p.name]; });
+      saveData();
+    } catch(e) {}
+    localStorage.removeItem('_mp_srs_backup');
+  })();
+
   // Info-tekster til 1800-tallets begivenheder (tilføjes via migration, ikke seed-rebuild)
   const HISTORY_1800_INFO = {
     '1800: Voltas første batteri': 'Alessandro Volta opfinder det første elektriske batteri, voltasøjlen, i år 1800. Opfindelsen beviser at elektricitet kan skabes kemisk og lægger grunden til al moderne elektronik.',
@@ -2426,6 +2438,34 @@
     if (changed) saveData();
   }
   migrateInfoToMemories();
+
+  // Migration: tilføj mnemoniske noter (M-entries) til eksisterende paladser
+  (function migrateMnemonicNotes() {
+    const mnemonicsBySeed = {};
+    for (const entry of HISTORY_PALACE_DATA) {
+      const [yr, type, text] = entry;
+      if (type !== 'M') continue;
+      const prefixed = '\uD83E\uDDE0 ' + text;
+      if (!mnemonicsBySeed[yr]) mnemonicsBySeed[yr] = [];
+      mnemonicsBySeed[yr].push(prefixed);
+    }
+    let changed = false;
+    data.palaces.forEach(p => {
+      if (!p._histTag) return;
+      p.locations.forEach(loc => {
+        const yr = parseInt(loc.name);
+        if (!yr || !mnemonicsBySeed[yr]) return;
+        const existing = new Set(loc.memories.map(m => m.text));
+        mnemonicsBySeed[yr].forEach(mText => {
+          if (!existing.has(mText)) {
+            loc.memories.push({ id: genId(), text: mText, createdAt: Date.now() });
+            changed = true;
+          }
+        });
+      });
+    });
+    if (changed) saveData();
+  })();
 
   // Fjern dubletter: behold kun det første palads per navn
   const seenNames = new Set();
@@ -3075,6 +3115,7 @@
       <div class="section-header">
         <div style="display:flex;gap:8px;align-items:center">
           ${app.authLevel === 'admin' ? `<button class="btn-ghost" data-action="new-collection">+ Ny Samling</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-ghost" data-action="force-reseed" title="Nulstil indhold fra kildefilen">&#128260; Genindlæs</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace">+ Nyt Palads</button>` : ''}
         </div>
       </div>
@@ -4282,6 +4323,17 @@
         app.overviewMapCollapsed = !app.overviewMapCollapsed;
         renderPalaceDetail();
         break;
+      case 'force-reseed': {
+        if (!confirm('Genindlæs alt indhold fra kildefilen?\n\nDin gennemgangsstatistik (SRS) bevares.')) break;
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const d = raw ? JSON.parse(raw) : null;
+        const srsBackup = {};
+        if (d && d.palaces) d.palaces.forEach(p => { if (p.srs && p.name) srsBackup[p.name] = p.srs; });
+        localStorage.setItem('_mp_srs_backup', JSON.stringify(srsBackup));
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+        break;
+      }
 
       case 'edit-room':
         app.editingRoomId = el.dataset.roomId;
