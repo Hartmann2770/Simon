@@ -2486,6 +2486,15 @@
   });
   saveData();
 
+  // Migrate: gendan routePalace på alle historie-paladser (mistet ved HISTORY_VERSION 10 rebuild)
+  function migrateRoutePalace() {
+    if (data._migratedRoutePalace) return;
+    data.palaces.forEach(p => { if (p._histTag) p.routePalace = true; });
+    data._migratedRoutePalace = true;
+    saveData();
+  }
+  migrateRoutePalace();
+
   // Migrate: opdater periodiske system-palads hvis det har færre end 26 lokationer
   const PERIODIC_VERSION = 3;
   const periodicPalace = data.palaces.find(p => p._builtinTag === 'periodic');
@@ -2681,6 +2690,7 @@
         })
       );
       seedHistoryPalaces();
+      migrateRoutePalace();
       migrateInfoToMemories();
       migrateMnemonicNotes();
       seedCollections();
