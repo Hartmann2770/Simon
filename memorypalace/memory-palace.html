@@ -705,16 +705,24 @@
       align-items: flex-start;
       overflow: hidden;
     }
-    .review-sat-wrap {
+    .review-media-row {
       width: 100%;
-      height: 55%;
-      overflow: hidden;
-      border-radius: var(--radius) var(--radius) 0 0;
-      position: relative;
+      height: 75%;
+      display: flex;
       flex-shrink: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+      overflow: hidden;
+    }
+    .review-media-item {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
       background: #ccc;
     }
-    .review-sat-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .review-media-item + .review-media-item {
+      border-left: 2px solid var(--surface);
+    }
+    .review-media-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .review-sat-loading {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
@@ -771,8 +779,8 @@
     }
     .review-sat-body {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
-      text-align: center; padding: 18px 24px; width: 100%;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 10px 16px; width: 100%;
     }
 
     .review-loc-number {
@@ -921,10 +929,13 @@
       .collection-card { padding: 16px; }
 
       /* Review-kort */
-      .review-card { height: min(42vh, 340px); min-height: 220px; margin-bottom: 16px; }
+      .review-card { height: min(50vh, 400px); min-height: 240px; margin-bottom: 16px; }
       .review-card-face { padding: 20px 16px; }
       .review-card-back { padding: 16px; }
       .review-loc-name { font-size: 22px; margin-bottom: 10px; }
+      .review-sat-body { padding: 8px 12px; }
+      .review-sat-body .review-loc-name { font-size: 18px; margin-bottom: 4px; }
+      .review-sat-body .review-tap-hint { font-size: 12px; }
 
       /* Location-header */
       .location-header { padding: 12px 10px; gap: 8px; }
@@ -3707,6 +3718,7 @@
       html += `
           <span class="location-name"${app.authLevel === 'admin' ? ` data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}"` : ''}>${escFlag(loc.name)}</span>
           ${loc.coords ? `<span title="Satellit-koordinater gemt (${loc.coords.lat}, ${loc.coords.lng})" style="font-size:13px;opacity:0.6;flex-shrink:0;">&#128506;</span>` : ''}
+          ${loc.photo ? `<span title="Foto gemt — klik for at se" style="font-size:14px;opacity:0.6;flex-shrink:0;cursor:pointer;" onclick="showPhotoOverlay('${loc.id}')">&#128444;&#65039;</span>` : ''}
           ${app.authLevel === 'admin' ? `<div class="location-actions">
             ${rooms.length > 0 ? `<select class="room-select" data-action="assign-loc-room" data-palace-id="${palaceId}" data-loc-id="${loc.id}" title="Rum">${roomOptions}</select>` : ''}
             ${idx > 0 ? `<button class="btn-icon" title="Flyt op" data-action="move-loc-up" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9650;</button>` : ''}
@@ -3718,13 +3730,7 @@
     }
 
     html += `</div>`;
-    if (palace && palace.routePalace && loc.photo) {
-      html += `<div class="loc-sat-strip" onclick="showPhotoOverlay('${loc.id}')" title="Klik for at forstørre">
-        <img src="${loc.photo}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:1;">
-        ${loc.coords ? '<div class="loc-sat-strip-pin">&#128204;</div>' : ''}
-        <div class="loc-sat-strip-hint">&#128269; Forstør</div>
-      </div>`;
-    } else if (palace && palace.routePalace && loc.coords) {
+    if (palace && palace.routePalace && !loc.photo && loc.coords) {
       const R = 0.0010;
       const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
       const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
@@ -3809,29 +3815,30 @@
       <div class="review-card">
         <div class="review-card-inner${app.reviewRevealed ? ' flipped' : ''}" id="review-card-inner">
           <div class="review-card-face${p.routePalace && (loc.photo || loc.coords) ? ' has-sat-img' : ''}">
-            ${p.routePalace && loc.photo ? (() => {
-              return `<div class="review-sat-wrap" onclick="showPhotoOverlay('${loc.id}')" style="cursor:zoom-in">
-                <img src="${loc.photo}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:1;">
-              </div>
-              <div class="review-sat-body">
-                <div class="review-loc-name">${escFlag(loc.name)}</div>
-                ${loc.coords ? `<div style="margin-top:6px"><button onclick="event.stopPropagation();showSatOverlay(${loc.coords.lat},${loc.coords.lng})" style="background:none;border:1px solid rgba(0,0,0,0.15);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--muted)">&#128204; Se satellit</button></div>` : ''}
-                <div class="review-tap-hint" style="margin-top:6px">Hvilke erindringer er placeret her?</div>
-              </div>`;
-            })() : p.routePalace && loc.coords ? (() => {
-              const R = 0.0010;
-              const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
-              const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
-              return `<div class="review-sat-wrap">
-                <div class="review-sat-loading" id="rev-sat-loading">Henter satellit&#8203;billede&#8230;</div>
-                <img src="${imgUrl}" alt="" onload="this.style.opacity=1;document.getElementById('rev-sat-loading').style.display='none';" onerror="document.getElementById('rev-sat-loading').textContent='Ingen forbindelse';" style="opacity:0;transition:opacity 0.3s;">
-                <div class="review-sat-crosshair">📌</div>
-                <div class="review-sat-badge">© Esri</div>
-              </div>
-              <div class="review-sat-body">
+            ${p.routePalace && (loc.photo || loc.coords) ? (() => {
+              let media = '<div class="review-media-row">';
+              if (loc.photo) {
+                media += `<div class="review-media-item" onclick="showPhotoOverlay('${loc.id}')" style="cursor:zoom-in">
+                  <img src="${loc.photo}" alt="" style="opacity:1;">
+                </div>`;
+              }
+              if (loc.coords) {
+                const R = 0.0010;
+                const bbox = `${loc.coords.lng - R},${loc.coords.lat - R},${loc.coords.lng + R},${loc.coords.lat + R}`;
+                const imgUrl = `https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox=${bbox}&bboxSR=4326&size=400,240&imageSR=4326&format=png&transparent=false&f=image`;
+                media += `<div class="review-media-item" onclick="event.stopPropagation();showSatOverlay(${loc.coords.lat},${loc.coords.lng})" style="cursor:pointer">
+                  <div class="review-sat-loading" id="rev-sat-loading">Henter satellit&#8203;billede&#8230;</div>
+                  <img src="${imgUrl}" alt="" onload="this.style.opacity=1;document.getElementById('rev-sat-loading').style.display='none';" onerror="document.getElementById('rev-sat-loading').textContent='Ingen forbindelse';" style="opacity:0;transition:opacity 0.3s;">
+                  <div class="review-sat-crosshair">&#128204;</div>
+                  <div class="review-sat-badge">© Esri</div>
+                </div>`;
+              }
+              media += '</div>';
+              media += `<div class="review-sat-body">
                 <div class="review-loc-name">${escFlag(loc.name)}</div>
                 <div class="review-tap-hint">Hvilke erindringer er placeret her?</div>
               </div>`;
+              return media;
             })() : `
             ${p.type === 'trivia' ? `<div class="review-loc-number">Spørgsmål ${app.reviewLocIdx + 1}</div>` : ''}
             <div class="review-loc-name">${escFlag(loc.name)}</div>
