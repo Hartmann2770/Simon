@@ -3096,10 +3096,20 @@
   }
 
   // ── VISNINGER ──────────────────────────────────────────────────────
+  let _historyNavigation = false; // true under popstate-håndtering
   function renderView(view) {
     document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
     app.view = view;
     updateDueBadge();
+
+    // Push browser-historik så tilbage/frem-knapper virker
+    if (!_historyNavigation) {
+      const state = { view, palaceId: app.editingPalaceId || null, collectionId: app.editingCollectionId || null };
+      const cur = history.state;
+      if (!cur || cur.view !== state.view || cur.palaceId !== state.palaceId || cur.collectionId !== state.collectionId) {
+        history.pushState(state, '');
+      }
+    }
 
     switch (view) {
       case 'dashboard': renderDashboard(); break;
@@ -3110,6 +3120,15 @@
       case 'review-session': renderReviewSession(); break;
     }
   }
+
+  window.addEventListener('popstate', (e) => {
+    if (!e.state || !e.state.view) return;
+    _historyNavigation = true;
+    app.editingPalaceId = e.state.palaceId || null;
+    app.editingCollectionId = e.state.collectionId || null;
+    renderView(e.state.view);
+    _historyNavigation = false;
+  });
 
   function showView(id) {
     document.getElementById(id).classList.add('active');
@@ -5797,6 +5816,8 @@
   // ── INIT ───────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     updateAuthButton();
+    // Sæt initial history-state FØR renderView, så den ikke pusher en ekstra entry
+    history.replaceState({ view: 'dashboard', palaceId: null, collectionId: null }, '');
     renderView('dashboard');
     loadFromServer();
     loadPegFromServer();
