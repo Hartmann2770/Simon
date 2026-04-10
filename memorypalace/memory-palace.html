@@ -3222,11 +3222,6 @@
                 <div class="collection-card-name">${esc(f.name)}</div>
                 <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">${palaceChips}</div>
               </div>
-              ${app.authLevel === 'admin' ? `
-              <div class="collection-card-auth-actions" onclick="event.stopPropagation()">
-                <button class="btn-ghost btn-sm" data-action="edit-collection" data-collection-id="${f.id}">&#9998;</button>
-                <button class="btn-danger btn-sm" data-action="delete-collection" data-collection-id="${f.id}">&#128465;</button>
-              </div>` : ''}
             </div>`;
         }
         html += `</div>`;
@@ -3313,6 +3308,8 @@
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           ${fps.length > 1 ? `<button class="btn-teal" data-action="review-all-in-collection" data-collection-id="${f.id}">Gennemgå alle &#8594;</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" data-action="edit-collection" data-collection-id="${f.id}" title="Rediger samling">&#9998;</button>` : ''}
+          ${app.authLevel === 'admin' ? `<button class="btn-danger btn-sm" data-action="delete-collection" data-collection-id="${f.id}" title="Slet samling">&#128465;</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
         </div>
       </div>`;
