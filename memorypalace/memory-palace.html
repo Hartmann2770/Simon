@@ -938,8 +938,13 @@
       .review-sat-body .review-tap-hint { font-size: 12px; }
 
       /* Location-header */
-      .location-header { padding: 12px 10px; gap: 8px; }
+      .location-header { padding: 12px 10px; gap: 8px; flex-wrap: wrap; }
       .location-actions { gap: 4px; }
+
+      /* Memory-items: knapper under tekst på mobil */
+      .memory-item { flex-wrap: wrap; }
+      .memory-text { min-width: 100%; }
+      .memory-item .btn-icon { padding: 4px 6px; }
 
       /* Rum */
       .room-header { padding: 10px 10px; }
@@ -3725,7 +3730,7 @@
             ${idx < total - 1 ? `<button class="btn-icon" title="Flyt ned" data-action="move-loc-down" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9660;</button>` : ''}
             <button class="btn-icon" title="Rediger" data-action="edit-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}">&#9998;</button>
             <button class="btn-icon" title="Slet" data-action="delete-loc" data-palace-id="${palaceId}" data-loc-id="${loc.id}" style="color:var(--danger)">&#128465;</button>
-            ${palace && palace.routePalace ? `<label class="btn-icon" title="${loc.photo ? 'Skift foto' : 'Upload foto (GPS hentes automatisk)'}" style="cursor:pointer;margin:0">&#128247;<input type="file" accept="image/*" style="display:none" onchange="handleLocPhotoUpload(event,'${palaceId}','${loc.id}')"></label>` : ''}
+            ${palace && palace.routePalace && !loc.photo ? `<label class="btn-icon" title="Upload foto (GPS hentes automatisk)" style="cursor:pointer;margin:0">&#128247;<input type="file" accept="image/*" style="display:none" onchange="handleLocPhotoUpload(event,'${palaceId}','${loc.id}')"></label>` : ''}
           </div>` : ''}`;
     }
 
@@ -4925,6 +4930,22 @@
       badge.style.cssText = 'position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#fff;font-size:12px;padding:4px 14px;border-radius:20px;pointer-events:none;';
       badge.textContent = '\uD83D\uDCCC ' + loc.coords.lat + ', ' + loc.coords.lng;
       overlay.appendChild(badge);
+    }
+    if (app.authLevel === 'admin') {
+      const changeBtn = document.createElement('label');
+      changeBtn.style.cssText = 'position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);color:#fff;font-size:14px;padding:8px 14px;border-radius:8px;cursor:pointer;backdrop-filter:blur(4px);';
+      changeBtn.textContent = '\uD83D\uDCF7 Skift foto';
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.style.display = 'none';
+      fileInput.addEventListener('change', function(e) {
+        overlay.remove();
+        handleLocPhotoUpload(e, palace.id, locId);
+      });
+      changeBtn.appendChild(fileInput);
+      changeBtn.addEventListener('click', function(e) { e.stopPropagation(); });
+      overlay.appendChild(changeBtn);
     }
     overlay.addEventListener('click', function() { overlay.remove(); });
     document.body.appendChild(overlay);
