@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ── Theme tokens ── */
+:root{
+  --transition: 0.5s cubic-bezier(.4,0,.2,1);
+}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  font-weight:400;
+  background:var(--bg);
+  color:var(--text);
+  transition:background var(--transition), color var(--transition);
+  min-height:100vh;
+}
+
+/* ── Glad ── */
+[data-theme="glad"]{
+  --bg:#FFFAF3;--bg2:#FFF3E0;--text:#4A3520;--text2:#8B7355;--accent:#E8A830;
+  --accent2:#F5C242;--card:#FFFDF8;--card-border:#F0E0CC;--card-hover:#FFF8ED;
+  --nav-bg:rgba(255,250,243,.92);--overlay:rgba(74,53,32,.85);
+  --radius:10px;--heading:'Cormorant Garamond',Georgia,serif;--hw:400;
+  --input-bg:#FFF8ED;--input-border:#E8D5B8;--btn-bg:#E8A830;--btn-text:#FFF;
+}
+/* ── Rolig ── */
+[data-theme="rolig"]{
+  --bg:#F2F6FA;--bg2:#E4ECF4;--text:#2C3E50;--text2:#7B8FA0;--accent:#5B8DB0;
+  --accent2:#7BAAC8;--card:#F8FAFC;--card-border:#D4DEE8;--card-hover:#EDF2F7;
+  --nav-bg:rgba(242,246,250,.92);--overlay:rgba(44,62,80,.85);
+  --radius:6px;--heading:'Cormorant Garamond',Georgia,serif;--hw:300;
+  --input-bg:#EDF2F7;--input-border:#C8D8E8;--btn-bg:#5B8DB0;--btn-text:#FFF;
+}
+/* ── Fjollet ── */
+[data-theme="fjollet"]{
+  --bg:linear-gradient(135deg,#FFF0F8,#F0F0FF,#F0FFF4,#FFFFF0);--bg-flat:#FFF5FA;
+  --bg2:#FFE8F2;--text:#6B2080;--text2:#AA44AA;--accent:#FF4488;
+  --accent2:#44BB88;--card:#FFFAFE;--card-border:#FFD0E8;--card-hover:#FFF0F6;
+  --nav-bg:rgba(255,245,250,.92);--overlay:rgba(107,32,128,.85);
+  --radius:18px;--heading:'Cormorant Garamond',cursive;--hw:600;
+  --input-bg:#FFF0F6;--input-border:#FFD0E8;--btn-bg:#FF4488;--btn-text:#FFF;
+}
+[data-theme="fjollet"] body{background:var(--bg)}
+[data-theme="fjollet"] .gallery-item{transform:rotate(calc(var(--r,0)*1deg))}
+/* ── Bedrøvet ── */
+[data-theme="bedroevet"]{
+  --bg:#EAEAF0;--bg2:#DCDCE6;--text:#4A4A60;--text2:#8888A0;--accent:#7878A0;
+  --accent2:#9090B0;--card:#F0F0F5;--card-border:#CCCCD8;--card-hover:#E4E4EE;
+  --nav-bg:rgba(234,234,240,.92);--overlay:rgba(74,74,96,.88);
+  --radius:4px;--heading:'Cormorant Garamond',Georgia,serif;--hw:300;
+  --input-bg:#E4E4EE;--input-border:#C8C8D8;--btn-bg:#7878A0;--btn-text:#FFF;
+}
+/* ── Vred ── */
+[data-theme="vred"]{
+  --bg:#1C1010;--bg2:#2A1818;--text:#F0D0D0;--text2:#C09090;--accent:#E03030;
+  --accent2:#FF5050;--card:#261818;--card-border:#4A2020;--card-hover:#301C1C;
+  --nav-bg:rgba(28,16,16,.94);--overlay:rgba(10,5,5,.92);
+  --radius:0px;--heading:'Cormorant Garamond',Georgia,serif;--hw:600;
+  --input-bg:#2A1818;--input-border:#5A2828;--btn-bg:#C02020;--btn-text:#FFF;
+}
+/* ── Drømmende ── */
+[data-theme="droemmende"]{
+  --bg:#F6F0FF;--bg2:#EBE0F8;--text:#4A3568;--text2:#8A70A8;--accent:#9060D0;
+  --accent2:#B088E0;--card:#FAF5FF;--card-border:#DCC8F0;--card-hover:#F2EAFC;
+  --nav-bg:rgba(246,240,255,.92);--overlay:rgba(74,53,104,.85);
+  --radius:12px;--heading:'Cormorant Garamond',Georgia,serif;--hw:400;
+  --input-bg:#F2EAFC;--input-border:#D4C0E8;--btn-bg:#9060D0;--btn-text:#FFF;
+}
+/* ── Energisk ── */
+[data-theme="energisk"]{
+  --bg:#FFFCE8;--bg2:#FFF5CC;--text:#6B4400;--text2:#AA7722;--accent:#E88000;
+  --accent2:#FF9920;--card:#FFFEF2;--card-border:#FFE8AA;--card-hover:#FFFADD;
+  --nav-bg:rgba(255,252,232,.92);--overlay:rgba(107,68,0,.85);
+  --radius:6px;--heading:'Cormorant Garamond',Georgia,serif;--hw:600;
+  --input-bg:#FFFADD;--input-border:#FFE088;--btn-bg:#E88000;--btn-text:#FFF;
+}
+/* ── Mystisk ── */
+[data-theme="mystisk"]{
+  --bg:#0E1218;--bg2:#161C24;--text:#C0D8D4;--text2:#708880;--accent:#30B8A0;
+  --accent2:#50D8C0;--card:#141C22;--card-border:#243038;--card-hover:#1A2630;
+  --nav-bg:rgba(14,18,24,.94);--overlay:rgba(5,8,10,.92);
+  --radius:4px;--heading:'Cormorant Garamond',Georgia,serif;--hw:400;
+  --input-bg:#1A2630;--input-border:#2A3C48;--btn-bg:#30B8A0;--btn-text:#0E1218;
+}
+
+/* ── Typography ── */
+h1,h2,h3{font-family:var(--heading);font-weight:var(--hw);line-height:1.15}
+.site-title{font-size:clamp(2.4rem,5vw,4rem);letter-spacing:-.02em}
+.section-title{font-size:clamp(1.4rem,3vw,2rem);margin-bottom:.75em}
+
+/* ── Navigation ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--nav-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--card-border);
+  transition:background var(--transition), border-color var(--transition);
+}
+.nav-inner{
+  max-width:1100px;margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;height:56px;
+}
+.nav-brand{font-family:var(--heading);font-size:1.4rem;font-weight:var(--hw);display:flex;align-items:center;gap:8px}
+.nav-brand .emoji{font-size:1.1rem;opacity:.7}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{
+  font-size:.85rem;font-weight:500;color:var(--text2);letter-spacing:.02em;
+  padding:4px 0;position:relative;transition:color .2s;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.nav-links a.active::after{
+  content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;
+  background:var(--accent);border-radius:1px;
+}
+.nav-admin{
+  font-size:.75rem;padding:5px 12px;border-radius:var(--radius);
+  background:var(--accent);color:var(--btn-text);cursor:pointer;border:none;
+  opacity:.8;transition:opacity .2s;
+}
+.nav-admin:hover{opacity:1}
+
+/* ── Main content ── */
+main{max-width:1100px;margin:0 auto;padding:80px 24px 60px}
+
+/* ── Hero ── */
+.hero{padding:48px 0 40px;text-align:left}
+.hero .subtitle{
+  font-size:1rem;color:var(--text2);margin-top:8px;font-weight:300;
+  font-family:var(--heading);font-style:italic;
+}
+
+/* ── Gallery layouts ── */
+.gallery-masonry{columns:3;column-gap:16px}
+.gallery-masonry .gallery-item{break-inside:avoid;margin-bottom:16px}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gallery-grid .gallery-item img{aspect-ratio:1;object-fit:cover;width:100%}
+
+.gallery-featured .feat{margin-bottom:24px}
+.gallery-featured .feat img{width:100%;max-height:500px;object-fit:cover;border-radius:var(--radius)}
+.gallery-featured .rest{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gallery-featured .rest .gallery-item img{aspect-ratio:1;object-fit:cover;width:100%}
+
+.gallery-item{
+  cursor:pointer;position:relative;overflow:hidden;
+  border-radius:var(--radius);background:var(--card);
+  border:1px solid var(--card-border);
+  transition:transform .3s, box-shadow .3s, border-color .3s;
+}
+.gallery-item:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,0,0,.1);
+  border-color:var(--accent);
+}
+.gallery-item img{width:100%;display:block;border-radius:calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0}
+.gallery-item .item-info{padding:10px 12px}
+.gallery-item .item-title{font-family:var(--heading);font-size:.95rem;font-weight:var(--hw)}
+.gallery-item .item-cat{font-size:.7rem;color:var(--text2);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
+
+.gallery-item.hidden-item{opacity:.45;border-style:dashed}
+
+.gallery-empty{
+  text-align:center;padding:80px 20px;color:var(--text2);
+}
+.gallery-empty .empty-icon{font-size:3rem;margin-bottom:12px;opacity:.4}
+.gallery-empty p{font-family:var(--heading);font-size:1.2rem;font-style:italic}
+
+/* ── About ── */
+.about-page{max-width:680px}
+.about-portrait{
+  width:200px;height:200px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--card-border);margin-bottom:24px;
+}
+.about-text{line-height:1.75;font-size:.95rem;color:var(--text);white-space:pre-wrap}
+.about-empty{color:var(--text2);font-style:italic}
+
+/* ── Lightbox ── */
+.lightbox{
+  position:fixed;inset:0;z-index:200;display:none;
+  background:var(--overlay);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:24px;
+  animation:fadeIn .25s;
+}
+.lightbox.open{display:flex}
+.lightbox-inner{
+  max-width:900px;width:100%;max-height:90vh;display:flex;flex-direction:column;
+  align-items:center;gap:16px;position:relative;
+}
+.lightbox-inner img{
+  max-width:100%;max-height:70vh;object-fit:contain;border-radius:var(--radius);
+}
+.lightbox-info{text-align:center}
+.lightbox-title{font-family:var(--heading);font-size:1.4rem;color:#FFF;font-weight:var(--hw)}
+.lightbox-desc{font-size:.85rem;color:rgba(255,255,255,.7);margin-top:6px}
+.lightbox-close{
+  position:absolute;top:-40px;right:0;background:none;border:none;
+  color:#FFF;font-size:1.6rem;cursor:pointer;opacity:.7;padding:8px;
+}
+.lightbox-close:hover{opacity:1}
+.lightbox-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:#FFF;font-size:2rem;cursor:pointer;
+  opacity:.5;padding:12px;transition:opacity .2s;
+}
+.lightbox-nav:hover{opacity:1}
+.lightbox-nav.prev{left:-60px}
+.lightbox-nav.next{right:-60px}
+
+/* ── Login modal ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:300;display:none;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:var(--radius);padding:32px;width:320px;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+}
+.modal h2{font-size:1.5rem;margin-bottom:6px}
+.modal p{font-size:.85rem;color:var(--text2);margin-bottom:20px}
+.modal input{
+  width:100%;padding:10px 14px;border:1px solid var(--input-border);
+  border-radius:var(--radius);background:var(--input-bg);font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.modal input:focus{border-color:var(--accent)}
+.modal .error{color:#D44;font-size:.8rem;margin-top:8px;min-height:1.2em}
+.modal button{
+  width:100%;margin-top:16px;padding:10px;border:none;border-radius:var(--radius);
+  background:var(--btn-bg);color:var(--btn-text);font-weight:500;cursor:pointer;
+  font-size:.9rem;transition:opacity .2s;
+}
+.modal button:hover{opacity:.85}
+
+/* ── Admin panel ── */
+.admin-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:150;
+  background:var(--nav-bg);backdrop-filter:blur(12px);
+  border-top:1px solid var(--card-border);
+  transform:translateY(100%);transition:transform .3s ease;
+}
+.admin-bar.open{transform:translateY(0)}
+.admin-tabs{
+  display:flex;max-width:1100px;margin:0 auto;
+}
+.admin-tab{
+  flex:1;padding:12px;text-align:center;font-size:.8rem;font-weight:500;
+  cursor:pointer;color:var(--text2);border:none;background:none;
+  transition:color .2s, background .2s;letter-spacing:.02em;
+}
+.admin-tab:hover{color:var(--text);background:var(--bg2)}
+.admin-tab.active{color:var(--accent);background:var(--bg2)}
+
+.admin-panel{
+  display:none;position:fixed;bottom:50px;left:0;right:0;z-index:140;
+  max-height:60vh;overflow-y:auto;
+  background:var(--card);border-top:1px solid var(--card-border);
+  box-shadow:0 -8px 30px rgba(0,0,0,.1);
+}
+.admin-panel.open{display:block}
+.admin-content{max-width:800px;margin:0 auto;padding:24px}
+.admin-content h3{font-size:1.2rem;margin-bottom:16px}
+
+/* Admin form elements */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.8rem;font-weight:500;margin-bottom:6px;color:var(--text2)}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;padding:8px 12px;border:1px solid var(--input-border);
+  border-radius:var(--radius);background:var(--input-bg);font-size:.85rem;
+  outline:none;transition:border-color .2s;
+}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+
+.btn{
+  padding:8px 18px;border:none;border-radius:var(--radius);cursor:pointer;
+  font-size:.8rem;font-weight:500;transition:opacity .2s;
+}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--btn-bg);color:var(--btn-text)}
+.btn-ghost{background:transparent;border:1px solid var(--card-border);color:var(--text2)}
+.btn-danger{background:#D44;color:#FFF}
+.btn-sm{padding:5px 10px;font-size:.75rem}
+
+/* Admin art list */
+.art-list-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px;border:1px solid var(--card-border);border-radius:var(--radius);
+  margin-bottom:8px;background:var(--input-bg);
+}
+.art-list-item.is-hidden{opacity:.5}
+.art-list-thumb{width:50px;height:50px;border-radius:4px;object-fit:cover;flex-shrink:0}
+.art-list-info{flex:1;min-width:0}
+.art-list-info .name{font-weight:500;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.art-list-info .meta{font-size:.7rem;color:var(--text2)}
+.art-list-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* Theme picker */
+.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.theme-option{
+  padding:14px 10px;border:2px solid var(--card-border);border-radius:var(--radius);
+  text-align:center;cursor:pointer;transition:border-color .2s, transform .2s;
+  background:var(--input-bg);
+}
+.theme-option:hover{transform:translateY(-2px)}
+.theme-option.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.theme-option .emoji{font-size:1.8rem;display:block;margin-bottom:4px}
+.theme-option .label{font-size:.7rem;font-weight:500}
+
+/* Layout picker */
+.layout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.layout-option{
+  padding:16px;border:2px solid var(--card-border);border-radius:var(--radius);
+  text-align:center;cursor:pointer;transition:border-color .2s;
+  background:var(--input-bg);
+}
+.layout-option.active{border-color:var(--accent)}
+.layout-option .icon{font-size:1.2rem;margin-bottom:6px}
+.layout-option .label{font-size:.75rem;font-weight:500}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .gallery-masonry{columns:2}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-featured .rest{grid-template-columns:repeat(2,1fr)}
+  .hero{padding:32px 0 28px}
+  .theme-grid{grid-template-columns:repeat(4,1fr)}
+  .lightbox-nav.prev{left:0}
+  .lightbox-nav.next{right:0}
+}
+@media(max-width:480px){
+  .gallery-masonry{columns:1;column-gap:0}
+  .gallery-grid{grid-template-columns:1fr}
+  .gallery-featured .rest{grid-template-columns:repeat(2,1fr)}
+  .form-row{flex-direction:column}
+  .theme-grid{grid-template-columns:repeat(2,1fr)}
+  .layout-grid{grid-template-columns:1fr}
+  .nav-links{gap:14px}
+}
+
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.fade-in{animation:fadeIn .4s ease}
+.slide-up{animation:slideUp .5s ease both}
+
+/* ── Misc ── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.toast{
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+  background:var(--text);color:var(--bg-flat,var(--bg));
+  padding:10px 20px;border-radius:var(--radius);font-size:.85rem;
+  z-index:400;animation:slideUp .3s ease;pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand" onclick="go('gallery');return false">
+      <span>Anna</span>
+      <span class="emoji" id="nav-emoji"></span>
+    </a>
+    <div class="nav-links">
+      <a href="#galleri" id="link-gallery" class="active" onclick="go('gallery');return false">Galleri</a>
+      <a href="#om" id="link-about" onclick="go('about');return false">Om mig</a>
+      <a href="#" id="link-login" onclick="toggleLogin();return false" style="font-size:.75rem;opacity:.4">&#9881;</a>
+    </div>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <button class="lightbox-nav prev" onclick="lbNav(-1);event.stopPropagation()">&lsaquo;</button>
+    <img id="lb-img" src="" alt="">
+    <div class="lightbox-info">
+      <div class="lightbox-title" id="lb-title"></div>
+      <div class="lightbox-desc" id="lb-desc"></div>
+    </div>
+    <button class="lightbox-nav next" onclick="lbNav(1);event.stopPropagation()">&rsaquo;</button>
+  </div>
+</div>
+
+<!-- Login modal -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h2>Log ind</h2>
+    <p>Indtast kodeord for at administrere siden</p>
+    <form onsubmit="doLogin(event)">
+      <input type="password" id="login-pw" placeholder="Kodeord" autocomplete="current-password">
+      <div class="error" id="login-error"></div>
+      <button type="submit">Log ind</button>
+    </form>
+  </div>
+</div>
+
+<!-- Admin bar -->
+<div class="admin-bar" id="admin-bar">
+  <div class="admin-tabs">
+    <button class="admin-tab" onclick="adminTab('upload')">Upload</button>
+    <button class="admin-tab" onclick="adminTab('manage')">Galleri</button>
+    <button class="admin-tab" onclick="adminTab('about-edit')">Om mig</button>
+    <button class="admin-tab" onclick="adminTab('settings')">Indstillinger</button>
+    <button class="admin-tab" onclick="doLogout()" style="color:var(--accent)">Log ud</button>
+  </div>
+</div>
+
+<!-- Admin panel -->
+<div class="admin-panel" id="admin-panel"></div>
+
+<script>
+/* ══════════════════════════════════════
+   State
+   ══════════════════════════════════════ */
+const S = {
+  view: 'gallery',
+  admin: false,
+  adminTab: null,
+  data: { about: { text: '', image: '' }, art: [], settings: { layout: 'masonry', theme: 'glad' } },
+  lbIndex: -1,
+};
+
+const THEMES = {
+  glad:       { emoji: '\u{1F60A}', label: 'Glad' },
+  rolig:      { emoji: '\u{1F60C}', label: 'Rolig' },
+  fjollet:    { emoji: '\u{1F92A}', label: 'Fjollet' },
+  bedroevet:  { emoji: '\u{1F622}', label: 'Bedr\u00F8vet' },
+  vred:       { emoji: '\u{1F624}', label: 'Vred' },
+  droemmende: { emoji: '\u{1F319}', label: 'Dr\u00F8mmende' },
+  energisk:   { emoji: '\u26A1',    label: 'Energisk' },
+  mystisk:    { emoji: '\u{1F52E}', label: 'Mystisk' },
+};
+
+const API = 'api.php';
+
+/* ══════════════════════════════════════
+   Helpers
+   ══════════════════════════════════════ */
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+async function api(action, opts = {}) {
+  const url = opts.params ? `${API}?action=${action}&${new URLSearchParams(opts.params)}` : `${API}?action=${action}`;
+  const res = await fetch(url, {
+    method: opts.method || (opts.body ? 'POST' : 'GET'),
+    body: opts.body,
+    headers: opts.json ? { 'Content-Type': 'application/json' } : undefined,
+    credentials: 'same-origin',
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Fejl');
+  return data;
+}
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+/* ══════════════════════════════════════
+   Theme
+   ══════════════════════════════════════ */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const info = THEMES[theme];
+  document.getElementById('nav-emoji').textContent = info ? info.emoji : '';
+  // Fjollet: random rotation per gallery item
+  if (theme === 'fjollet') {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.gallery-item').forEach(el => {
+        el.style.setProperty('--r', (Math.random() * 4 - 2).toFixed(2));
+      });
+    });
+  }
+}
+
+/* ══════════════════════════════════════
+   Navigation
+   ══════════════════════════════════════ */
+function go(view) {
+  S.view = view;
+  render();
+  document.getElementById('link-gallery').classList.toggle('active', view === 'gallery');
+  document.getElementById('link-about').classList.toggle('active', view === 'about');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══════════════════════════════════════
+   Render
+   ══════════════════════════════════════ */
+function render() {
+  const app = document.getElementById('app');
+  if (S.view === 'gallery') app.innerHTML = renderGallery();
+  else if (S.view === 'about') app.innerHTML = renderAbout();
+  applyTheme(S.data.settings.theme);
+  // Pad bottom for admin bar
+  app.style.paddingBottom = S.admin ? '120px' : '60px';
+}
+
+function renderGallery() {
+  const art = S.admin ? S.data.art : S.data.art.filter(a => a.visible);
+  const sorted = [...art].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const layout = S.data.settings.layout;
+
+  let html = '<div class="hero slide-up"><h1 class="site-title">Anna</h1>';
+  html += '<p class="subtitle">Tegninger, malerier &amp; mere</p></div>';
+
+  if (!sorted.length) {
+    html += '<div class="gallery-empty"><div class="empty-icon">' + (THEMES[S.data.settings.theme]?.emoji || '') + '</div>';
+    html += '<p>Endnu ingen kunstv\u00E6rker at vise</p></div>';
+    return html;
+  }
+
+  if (layout === 'featured') {
+    const feat = sorted.find(a => a.featured) || sorted[0];
+    const rest = sorted.filter(a => a.id !== feat.id);
+    html += '<div class="gallery-featured fade-in">';
+    html += '<div class="feat">' + galleryItem(feat) + '</div>';
+    html += '<div class="rest">' + rest.map(a => galleryItem(a)).join('') + '</div>';
+    html += '</div>';
+  } else {
+    const cls = layout === 'grid' ? 'gallery-grid' : 'gallery-masonry';
+    html += `<div class="${cls} fade-in">` + sorted.map(a => galleryItem(a)).join('') + '</div>';
+  }
+  return html;
+}
+
+function galleryItem(a) {
+  const hiddenCls = (!a.visible && S.admin) ? ' hidden-item' : '';
+  return `<div class="gallery-item${hiddenCls}" onclick="openLightbox('${a.id}')">
+    <img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">
+    <div class="item-info">
+      <div class="item-title">${esc(a.title)}</div>
+      <div class="item-cat">${esc(a.category)}</div>
+    </div>
+  </div>`;
+}
+
+function renderAbout() {
+  const about = S.data.about;
+  let html = '<div class="about-page slide-up">';
+  html += '<h2 class="section-title">Om mig</h2>';
+  if (about.image) {
+    html += `<img class="about-portrait" src="${esc(about.image)}" alt="Anna">`;
+  }
+  if (about.text) {
+    html += `<div class="about-text">${esc(about.text)}</div>`;
+  } else {
+    html += '<p class="about-empty">Anna har ikke skrevet noget endnu...</p>';
+  }
+  html += '</div>';
+  return html;
+}
+
+/* ══════════════════════════════════════
+   Lightbox
+   ══════════════════════════════════════ */
+function getVisibleArt() {
+  const art = S.admin ? S.data.art : S.data.art.filter(a => a.visible);
+  return [...art].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+function openLightbox(id) {
+  const art = getVisibleArt();
+  const idx = art.findIndex(a => a.id === id);
+  if (idx < 0) return;
+  S.lbIndex = idx;
+  showLb(art[idx]);
+}
+
+function showLb(item) {
+  document.getElementById('lb-img').src = item.image;
+  document.getElementById('lb-title').textContent = item.title;
+  document.getElementById('lb-desc').textContent = item.description || '';
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== e.currentTarget && !e.target.classList.contains('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  const art = getVisibleArt();
+  S.lbIndex = (S.lbIndex + dir + art.length) % art.length;
+  showLb(art[S.lbIndex]);
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+/* ══════════════════════════════════════
+   Login / Auth
+   ══════════════════════════════════════ */
+function toggleLogin() {
+  if (S.admin) { adminTab(S.adminTab || 'upload'); return; }
+  document.getElementById('login-modal').classList.toggle('open');
+  document.getElementById('login-pw').focus();
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  const pw = document.getElementById('login-pw').value;
+  try {
+    const fd = new FormData(); fd.append('password', pw);
+    await api('login', { body: fd });
+    S.admin = true;
+    document.getElementById('login-modal').classList.remove('open');
+    document.getElementById('login-pw').value = '';
+    document.getElementById('login-error').textContent = '';
+    document.getElementById('admin-bar').classList.add('open');
+    document.getElementById('link-login').style.opacity = '1';
+    // Reload data with hidden items
+    await loadData();
+    render();
+    adminTab('upload');
+    toast('Logget ind');
+  } catch (err) {
+    document.getElementById('login-error').textContent = err.message;
+  }
+}
+
+async function doLogout() {
+  await api('logout');
+  S.admin = false;
+  S.adminTab = null;
+  document.getElementById('admin-bar').classList.remove('open');
+  document.getElementById('admin-panel').classList.remove('open');
+  document.getElementById('link-login').style.opacity = '.4';
+  await loadData();
+  render();
+  toast('Logget ud');
+}
+
+/* ══════════════════════════════════════
+   Admin tabs
+   ══════════════════════════════════════ */
+function adminTab(tab) {
+  S.adminTab = tab;
+  document.querySelectorAll('.admin-tab').forEach((el, i) => {
+    el.classList.toggle('active', ['upload','manage','about-edit','settings'][i] === tab);
+  });
+  const panel = document.getElementById('admin-panel');
+  panel.classList.add('open');
+
+  if (tab === 'upload') panel.innerHTML = renderUploadPanel();
+  else if (tab === 'manage') panel.innerHTML = renderManagePanel();
+  else if (tab === 'about-edit') panel.innerHTML = renderAboutEditPanel();
+  else if (tab === 'settings') panel.innerHTML = renderSettingsPanel();
+}
+
+/* ── Upload ── */
+function renderUploadPanel() {
+  return `<div class="admin-content">
+    <h3>Upload kunstv\u00E6rk</h3>
+    <form onsubmit="doUpload(event)">
+      <div class="form-group">
+        <label>Billede</label>
+        <input type="file" id="upload-file" accept="image/*" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Titel</label>
+          <input type="text" id="upload-title" placeholder="Hvad hedder det?">
+        </div>
+        <div class="form-group">
+          <label>Kategori</label>
+          <select id="upload-cat">
+            <option value="tegning">Tegning</option>
+            <option value="maleri">Maleri</option>
+            <option value="lerfigur">Lerfigur</option>
+            <option value="andet">Andet</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Beskrivelse (valgfri)</label>
+        <textarea id="upload-desc" rows="2" placeholder="Fort\u00E6l lidt om v\u00E6rket..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+  </div>`;
+}
+
+async function doUpload(e) {
+  e.preventDefault();
+  const file = document.getElementById('upload-file').files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('image', file);
+  fd.append('title', document.getElementById('upload-title').value || 'Uden titel');
+  fd.append('description', document.getElementById('upload-desc').value);
+  fd.append('category', document.getElementById('upload-cat').value);
+  try {
+    await api('upload', { body: fd });
+    await loadData();
+    render();
+    adminTab('upload');
+    toast('Uploadet!');
+  } catch (err) { toast('Fejl: ' + err.message); }
+}
+
+/* ── Manage gallery ── */
+function renderManagePanel() {
+  const sorted = [...S.data.art].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  let html = '<div class="admin-content"><h3>Administrer galleri</h3>';
+  if (!sorted.length) {
+    html += '<p style="color:var(--text2);font-style:italic">Ingen kunstv\u00E6rker endnu</p>';
+  }
+  sorted.forEach((a, i) => {
+    const vis = a.visible ? 'Skjul' : 'Vis';
+    const feat = a.featured ? 'Fjern fremh.' : 'Fremh\u00E6v';
+    html += `<div class="art-list-item ${a.visible ? '' : 'is-hidden'}">
+      <img class="art-list-thumb" src="${esc(a.image)}" alt="">
+      <div class="art-list-info">
+        <div class="name">${esc(a.title)}</div>
+        <div class="meta">${esc(a.category)} \u00B7 ${a.createdAt}${a.featured ? ' \u2B50' : ''}${!a.visible ? ' \u00B7 skjult' : ''}</div>
+      </div>
+      <div class="art-list-actions">
+        ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveArt(${i},-1)">\u2191</button>` : ''}
+        ${i < sorted.length - 1 ? `<button class="btn btn-ghost btn-sm" onclick="moveArt(${i},1)">\u2193</button>` : ''}
+        <button class="btn btn-ghost btn-sm" onclick="toggleVis('${a.id}')">${vis}</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleFeat('${a.id}')">${feat}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteArt('${a.id}')">Slet</button>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+async function toggleVis(id) {
+  const item = S.data.art.find(a => a.id === id);
+  if (!item) return;
+  await api('updateArt', { json: true, body: JSON.stringify({ id, visible: !item.visible }) });
+  await loadData(); render(); adminTab('manage');
+}
+
+async function toggleFeat(id) {
+  const item = S.data.art.find(a => a.id === id);
+  if (!item) return;
+  // Unfeature all others first
+  for (const a of S.data.art) {
+    if (a.featured && a.id !== id) {
+      await api('updateArt', { json: true, body: JSON.stringify({ id: a.id, featured: false }) });
+    }
+  }
+  await api('updateArt', { json: true, body: JSON.stringify({ id, featured: !item.featured }) });
+  await loadData(); render(); adminTab('manage');
+}
+
+async function moveArt(fromIdx, dir) {
+  const sorted = [...S.data.art].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const toIdx = fromIdx + dir;
+  if (toIdx < 0 || toIdx >= sorted.length) return;
+  [sorted[fromIdx], sorted[toIdx]] = [sorted[toIdx], sorted[fromIdx]];
+  const order = sorted.map(a => a.id);
+  await api('reorderArt', { json: true, body: JSON.stringify({ order }) });
+  await loadData(); render(); adminTab('manage');
+}
+
+async function deleteArt(id) {
+  if (!confirm('Slet dette kunstv\u00E6rk?')) return;
+  await api('deleteArt', { json: true, body: JSON.stringify({ id }) });
+  await loadData(); render(); adminTab('manage');
+  toast('Slettet');
+}
+
+/* ── About edit ── */
+function renderAboutEditPanel() {
+  const about = S.data.about;
+  return `<div class="admin-content">
+    <h3>Rediger "Om mig"</h3>
+    <form onsubmit="saveAbout(event)">
+      <div class="form-group">
+        <label>Profilbillede</label>
+        <input type="file" id="about-img" accept="image/*">
+        ${about.image ? `<img src="${esc(about.image)}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-top:8px">` : ''}
+      </div>
+      <div class="form-group">
+        <label>Tekst</label>
+        <textarea id="about-text" rows="5" placeholder="Skriv om dig selv...">${esc(about.text)}</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Gem</button>
+    </form>
+  </div>`;
+}
+
+async function saveAbout(e) {
+  e.preventDefault();
+  const fd = new FormData();
+  fd.append('text', document.getElementById('about-text').value);
+  const file = document.getElementById('about-img').files[0];
+  if (file) fd.append('image', file);
+  try {
+    await api('saveAbout', { body: fd });
+    await loadData(); render(); adminTab('about-edit');
+    toast('Gemt!');
+  } catch (err) { toast('Fejl: ' + err.message); }
+}
+
+/* ── Settings ── */
+function renderSettingsPanel() {
+  const { theme, layout } = S.data.settings;
+
+  let html = '<div class="admin-content">';
+  html += '<h3>Indstillinger</h3>';
+
+  // Theme picker
+  html += '<div class="form-group"><label>Hvordan har du det?</label>';
+  html += '<div class="theme-grid">';
+  for (const [key, t] of Object.entries(THEMES)) {
+    html += `<div class="theme-option ${key === theme ? 'active' : ''}" onclick="setTheme('${key}')">
+      <span class="emoji">${t.emoji}</span>
+      <span class="label">${t.label}</span>
+    </div>`;
+  }
+  html += '</div></div>';
+
+  // Layout picker
+  html += '<div class="form-group" style="margin-top:20px"><label>Galleri-layout</label>';
+  html += '<div class="layout-grid">';
+  const layouts = [
+    { key: 'masonry', icon: '\u2587\u2584\u2587\u2582', label: 'Masonry' },
+    { key: 'grid', icon: '\u25A6', label: 'Grid' },
+    { key: 'featured', icon: '\u2B50 + \u25A6', label: 'Fremh\u00E6vet' },
+  ];
+  for (const l of layouts) {
+    html += `<div class="layout-option ${l.key === layout ? 'active' : ''}" onclick="setLayout('${l.key}')">
+      <div class="icon">${l.icon}</div>
+      <div class="label">${l.label}</div>
+    </div>`;
+  }
+  html += '</div></div>';
+
+  html += '</div>';
+  return html;
+}
+
+async function setTheme(theme) {
+  S.data.settings.theme = theme;
+  applyTheme(theme);
+  await api('saveSettings', { json: true, body: JSON.stringify({ theme }) });
+  adminTab('settings');
+}
+
+async function setLayout(layout) {
+  S.data.settings.layout = layout;
+  await api('saveSettings', { json: true, body: JSON.stringify({ layout }) });
+  render();
+  adminTab('settings');
+}
+
+/* ══════════════════════════════════════
+   Init
+   ══════════════════════════════════════ */
+async function loadData() {
+  try { S.data = await api('getData'); } catch (e) { console.error('Load failed:', e); }
+}
+
+async function init() {
+  await loadData();
+  applyTheme(S.data.settings.theme);
+  render();
+  // Check if already logged in (session)
+  try {
+    const auth = await api('checkAuth');
+    if (auth.loggedIn) {
+      S.admin = true;
+      document.getElementById('admin-bar').classList.add('open');
+      document.getElementById('link-login').style.opacity = '1';
+      await loadData(); // reload with hidden items
+      render();
+    }
+  } catch (e) {}
+  // Hash routing
+  const hash = location.hash.replace('#', '');
+  if (hash === 'om') go('about');
+}
+
+init();
+</script>
+</body>
+</html>
