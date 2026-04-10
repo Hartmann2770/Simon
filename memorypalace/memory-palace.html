@@ -1201,6 +1201,7 @@
 (function () {
   const STORAGE_KEY = 'memoryPalaceApp';
   const API_URL = 'https://simonhartmann.dk/memory/api.php';
+  const PHOTO_API_URL = 'https://simonhartmann.dk/memory/photo-api.php';
   const PEG_API_URL = 'https://simonhartmann.dk/memory/peg-api.php';
   let _syncTimer = null;
   let _syncStatus = 'idle'; // idle | syncing | ok | error
@@ -4907,9 +4908,29 @@
       }),
       _compressPhoto(file, 800, 0.75)
     ]);
-    if (photo) loc.photo = photo;
-    if (gps && !loc.coords)   loc.coords = gps;
-    else if (!loc.coords) setTimeout(function() { alert('Foto gemt \u2013 ingen GPS-data fundet i billedet. Du kan taste koordinater ind manuelt.'); }, 100);
+    if (gps && !loc.coords) loc.coords = gps;
+    else if (!gps && !loc.coords) setTimeout(function() { alert('Foto gemt \u2013 ingen GPS-data fundet i billedet. Du kan taste koordinater ind manuelt.'); }, 100);
+    // Upload foto til server
+    if (photo && app.sessionPw) {
+      try {
+        const resp = await fetch(PHOTO_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pw: app.sessionPw, photo: photo, name: loc.name })
+        });
+        const result = await resp.json();
+        if (result.ok && result.url) {
+          loc.photo = result.url + '?t=' + Date.now();
+        } else {
+          alert('Foto-upload fejlede: ' + (result.error || 'ukendt fejl'));
+        }
+      } catch(err) {
+        alert('Foto-upload fejlede: ' + err.message);
+      }
+    } else if (photo) {
+      // Fallback: gem base64 lokalt hvis ikke logget ind
+      loc.photo = photo;
+    }
     saveData();
     renderPalaceDetail();
   };
