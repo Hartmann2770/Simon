@@ -56,6 +56,26 @@ function validateImage($file) {
     return null;
 }
 
+function sanitizeFilename($title) {
+    $name = mb_strtolower($title, 'UTF-8');
+    $name = preg_replace('/[^a-z0-9æøåé -]/u', '', $name);
+    $name = preg_replace('/\s+/', '-', trim($name));
+    $name = preg_replace('/-+/', '-', $name);
+    $name = trim($name, '-');
+    if (!$name) $name = 'kunst';
+    return $name;
+}
+
+function uniqueFilename($dir, $base, $ext) {
+    $filename = $base . '.' . $ext;
+    $counter = 1;
+    while (file_exists($dir . $filename)) {
+        $filename = $base . '-' . $counter . '.' . $ext;
+        $counter++;
+    }
+    return $filename;
+}
+
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
 switch ($action) {
@@ -101,13 +121,14 @@ switch ($action) {
 
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $id  = bin2hex(random_bytes(8));
-        $filename = $id . '.' . $ext;
+        $title = $_POST['title'] ?? 'Uden titel';
+        $filename = uniqueFilename($uploadDir, sanitizeFilename($title), $ext);
         move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $filename);
 
         $data = readData();
         $data['art'][] = [
             'id'          => $id,
-            'title'       => $_POST['title'] ?? 'Uden titel',
+            'title'       => $title,
             'description' => $_POST['description'] ?? '',
             'category'    => $_POST['category'] ?? 'andet',
             'image'       => 'uploads/' . $filename,
@@ -128,6 +149,16 @@ switch ($action) {
 
         foreach ($data['art'] as &$item) {
             if ($item['id'] === $id) {
+                // Omdøb fil hvis titel ændres
+                if (isset($body['title']) && $body['title'] !== $item['title'] && !empty($item['image'])) {
+                    $oldPath = __DIR__ . '/' . $item['image'];
+                    $ext = pathinfo($oldPath, PATHINFO_EXTENSION);
+                    $newFilename = uniqueFilename($uploadDir, sanitizeFilename($body['title']), $ext);
+                    if (file_exists($oldPath)) {
+                        rename($oldPath, $uploadDir . $newFilename);
+                        $item['image'] = 'uploads/' . $newFilename;
+                    }
+                }
                 foreach (['title','description','category'] as $k) {
                     if (isset($body[$k])) $item[$k] = $body[$k];
                 }
