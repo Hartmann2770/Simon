@@ -126,6 +126,11 @@ switch ($action) {
         move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $filename);
 
         $data = readData();
+        // Ryk alle eksisterende items én op så nyt kunst havner først
+        foreach ($data['art'] as &$a) {
+            $a['order'] = ($a['order'] ?? 0) + 1;
+        }
+        unset($a);
         $data['art'][] = [
             'id'          => $id,
             'title'       => $title,
@@ -134,7 +139,7 @@ switch ($action) {
             'image'       => 'uploads/' . $filename,
             'visible'     => true,
             'featured'    => false,
-            'order'       => count($data['art']),
+            'order'       => 0,
             'createdAt'   => date('Y-m-d')
         ];
         writeData($data);

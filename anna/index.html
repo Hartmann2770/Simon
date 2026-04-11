@@ -445,6 +445,7 @@ const S = {
   view: 'gallery',
   admin: false,
   adminTab: null,
+  editingArtId: null,
   data: { about: { text: '', image: '' }, art: [], settings: { layout: 'masonry', theme: 'glad' } },
   lbIndex: -1,
 };
@@ -763,6 +764,7 @@ function renderManagePanel() {
   sorted.forEach((a, i) => {
     const vis = a.visible ? 'Skjul' : 'Vis';
     const feat = a.featured ? 'Fjern fremh.' : 'Fremh\u00E6v';
+    const isEditing = S.editingArtId === a.id;
     html += `<div class="art-list-item ${a.visible ? '' : 'is-hidden'}">
       <img class="art-list-thumb" src="${esc(a.image)}" alt="">
       <div class="art-list-info">
@@ -772,11 +774,29 @@ function renderManagePanel() {
       <div class="art-list-actions">
         ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveArt(${i},-1)">\u2191</button>` : ''}
         ${i < sorted.length - 1 ? `<button class="btn btn-ghost btn-sm" onclick="moveArt(${i},1)">\u2193</button>` : ''}
+        <button class="btn btn-ghost btn-sm" onclick="editArt('${a.id}')">Rediger</button>
         <button class="btn btn-ghost btn-sm" onclick="toggleVis('${a.id}')">${vis}</button>
         <button class="btn btn-ghost btn-sm" onclick="toggleFeat('${a.id}')">${feat}</button>
         <button class="btn btn-danger btn-sm" onclick="deleteArt('${a.id}')">Slet</button>
       </div>
     </div>`;
+    if (isEditing) {
+      html += `<div style="padding:12px 16px;background:var(--bg2);border-radius:8px;margin-bottom:8px;">
+        <div class="form-group"><label>Titel</label>
+          <input type="text" id="edit-art-title" value="${esc(a.title)}">
+        </div>
+        <div class="form-group"><label>Beskrivelse</label>
+          <textarea id="edit-art-desc" rows="2">${esc(a.description)}</textarea>
+        </div>
+        <div class="form-group"><label>Kategori</label>
+          <select id="edit-art-cat">
+            ${['tegning','maleri','lerfigur','andet'].map(c => `<option value="${c}"${c === a.category ? ' selected' : ''}>${c[0].toUpperCase() + c.slice(1)}</option>`).join('')}
+          </select>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveArtEdit('${a.id}')">Gem</button>
+        <button class="btn btn-ghost btn-sm" onclick="cancelArtEdit()">Annuller</button>
+      </div>`;
+    }
   });
   html += '</div>';
   return html;
@@ -809,7 +829,27 @@ async function moveArt(fromIdx, dir) {
   [sorted[fromIdx], sorted[toIdx]] = [sorted[toIdx], sorted[fromIdx]];
   const order = sorted.map(a => a.id);
   await api('reorderArt', { json: true, body: JSON.stringify({ order }) });
+  await loadData(); adminTab('manage');
+}
+
+function editArt(id) {
+  S.editingArtId = id;
+  adminTab('manage');
+}
+
+function cancelArtEdit() {
+  S.editingArtId = null;
+  adminTab('manage');
+}
+
+async function saveArtEdit(id) {
+  const title = document.getElementById('edit-art-title').value || 'Uden titel';
+  const description = document.getElementById('edit-art-desc').value;
+  const category = document.getElementById('edit-art-cat').value;
+  await api('updateArt', { json: true, body: JSON.stringify({ id, title, description, category }) });
+  S.editingArtId = null;
   await loadData(); render(); adminTab('manage');
+  toast('Gemt!');
 }
 
 async function deleteArt(id) {
