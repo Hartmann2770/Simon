@@ -7,6 +7,7 @@ header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit; }
 
 $DATA_FILE = __DIR__ . '/palace_data.json';
+$QUIZ_FILE = __DIR__ . '/quiz_stats.json';
 $PW_HASH_ADMIN    = '808927a4db0b89e1ca292ccfe2a9dcc77ebbc6a96be7c7115a0980f7c3e9e776';
 $PW_HASH_PRACTICE = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
 
@@ -19,6 +20,10 @@ function checkPw($pw, $adminHash, $practiceHash) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     header('Cache-Control: no-store, no-cache, must-revalidate');
+    if (isset($_GET['quiz_stats'])) {
+        echo file_exists($QUIZ_FILE) ? file_get_contents($QUIZ_FILE) : '{}';
+        exit;
+    }
     echo file_exists($DATA_FILE) ? file_get_contents($DATA_FILE) : 'null';
     exit;
 }
@@ -94,6 +99,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         echo json_encode(['ok' => true, 'version' => $data['_version']]);
+        exit;
+    }
+
+    // ── SAVE_QUIZ: Gem quiz-resultater (admin + practice) ──
+    if ($action === 'save_quiz') {
+        if (!isset($payload['results']) || !is_array($payload['results'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Mangler results']);
+            exit;
+        }
+        $stats = file_exists($QUIZ_FILE) ? json_decode(file_get_contents($QUIZ_FILE), true) : [];
+        if (!is_array($stats)) $stats = [];
+
+        foreach ($payload['results'] as $r) {
+            $key = $r['displayText'] ?? '';
+            if (!$key) continue;
+            if (!isset($stats[$key])) {
+                $stats[$key] = ['year' => $r['year'], 'asked' => 0, 'wrong' => 0, 'wrongAnswers' => [], 'lastSeen' => null];
+            }
+            $stats[$key]['asked']++;
+            $stats[$key]['lastSeen'] = date('Y-m-d');
+            if (!$r['correct']) {
+                $stats[$key]['wrong']++;
+                $stats[$key]['lastWrong'] = date('Y-m-d');
+                if ($r['userAnswer']) {
+                    $stats[$key]['wrongAnswers'][] = $r['userAnswer'];
+                    // Hold maks 20 seneste fejlsvar
+                    $stats[$key]['wrongAnswers'] = array_slice($stats[$key]['wrongAnswers'], -20);
+                }
+            }
+        }
+
+        if (file_put_contents($QUIZ_FILE, json_encode($stats, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX) === false) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Skriv fejlede']);
+            exit;
+        }
+        echo json_encode(['ok' => true]);
         exit;
     }
 

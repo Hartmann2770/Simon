@@ -3350,7 +3350,7 @@
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           ${fps.length > 1 ? `<button class="btn-teal" data-action="review-all-in-collection" data-collection-id="${f.id}">Gennemgå alle &#8594;</button>` : ''}
-          ${f._collTag === 'col-history' && fps.length > 0 ? `<button class="btn-ghost" onclick="openHistoryQuiz()" title="Historisk Quiz">&#127919; Quiz</button>` : ''}
+          ${f._collTag === 'col-history' && fps.length > 0 && app.authLevel ? `<button class="btn-ghost" onclick="openHistoryQuiz()" title="Historisk Quiz">&#127919; Quiz</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" data-action="edit-collection" data-collection-id="${f.id}" title="Rediger samling">&#9998;</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-danger btn-sm" data-action="delete-collection" data-collection-id="${f.id}" title="Slet samling">&#128465;</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
@@ -5704,7 +5704,22 @@
               'Alle perioder <span style="opacity:0.6;font-size:12px;">(' + countAll + ' begivenheder)</span>' +
             '</button>' +
           '</div>' +
+          '<div style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">' +
+            '<button class="btn-ghost" onclick="showQuizStats()" style="padding:10px 20px;font-size:14px;">&#128202; Statistik</button>' +
+          '</div>' +
         '</div>';
+    } else if (screen === 'stats') {
+      // Stats screen — populated async by _loadQuizStats
+      // Note: uses esc() for all server data rendered as HTML (same pattern as rest of app)
+      el.innerHTML =
+        '<div>' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+            '<h2 style="margin:0;font-size:20px;">Quiz-statistik</h2>' +
+            '<button onclick="openHistoryQuiz()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>' +
+          '</div>' +
+          '<p style="color:var(--muted);font-size:13px;text-align:center;">Henter statistik...</p>' +
+        '</div>';
+      _loadQuizStats(el);
     } else if (screen === 'question') {
       var q = _hq.deck[_hq.idx];
       var progress = ((_hq.idx) / _hq.deck.length) * 100;
@@ -5785,13 +5800,33 @@
       correct: _hq.score,
       wrong: _hq.wrong.map(function(w) { return { event: w.event, userAnswer: w.userAnswer, correctYear: w.correctYear }; })
     });
-    // Keep max 180 days of history
     var cutoff = Date.now() - 180 * 86400000;
     data.settings.historyQuizHistory = data.settings.historyQuizHistory.filter(function(h) { return h.date > cutoff; });
     saveData();
+    // Gem til server
+    _saveQuizToServer();
+  }
+
+  function _saveQuizToServer() {
+    if (!app.sessionPw) return;
+    var results = _hq.deck.map(function(q, i) {
+      var wrongEntry = _hq.wrong.find(function(w) { return w.event === q.displayText && w.correctYear === q.year; });
+      return {
+        displayText: q.displayText,
+        year: q.year,
+        correct: !wrongEntry,
+        userAnswer: wrongEntry ? wrongEntry.userAnswer : null
+      };
+    });
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pw: app.sessionPw, action: 'save_quiz', results: results })
+    }).catch(function() {});
   }
 
   window.openHistoryQuiz = function() {
+    if (!app.authLevel) return;
     _hq = null;
     _renderHistoryQuiz('start');
     document.getElementById('history-quiz-modal').style.display = 'flex';
@@ -5868,6 +5903,87 @@
     _hq = { deck: wrongDeck, idx: 0, score: 0, wrong: [], answered: false, lastCorrect: false, lastAnswer: '', scope: scope };
     _renderHistoryQuiz('question');
   };
+
+  window.showQuizStats = function() {
+    _renderHistoryQuiz('stats');
+  };
+
+  function _loadQuizStats(el) {
+    fetch(API_URL + '?quiz_stats=1&t=' + Date.now())
+      .then(function(r) { return r.json(); })
+      .then(function(stats) {
+        var entries = [];
+        for (var key in stats) {
+          if (!stats.hasOwnProperty(key)) continue;
+          var s = stats[key];
+          if (s.asked < 1) continue;
+          entries.push({
+            text: key,
+            year: s.year,
+            asked: s.asked,
+            wrong: s.wrong,
+            pct: Math.round((s.wrong / s.asked) * 100),
+            wrongAnswers: s.wrongAnswers || [],
+            lastWrong: s.lastWrong || null
+          });
+        }
+        // Sortér: flest fejl først, derefter fejlprocent
+        entries.sort(function(a, b) { return b.wrong - a.wrong || b.pct - a.pct; });
+
+        var html =
+          '<div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+              '<h2 style="margin:0;font-size:20px;">Quiz-statistik</h2>' +
+              '<button onclick="openHistoryQuiz()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>' +
+            '</div>';
+
+        if (entries.length === 0) {
+          html += '<p style="color:var(--muted);font-size:14px;text-align:center;">Ingen quiz-data endnu. Tag en quiz for at se statistik.</p>';
+        } else {
+          var totalAsked = entries.reduce(function(s, e) { return s + e.asked; }, 0);
+          var totalWrong = entries.reduce(function(s, e) { return s + e.wrong; }, 0);
+          var overallPct = totalAsked > 0 ? Math.round(((totalAsked - totalWrong) / totalAsked) * 100) : 0;
+          html +=
+            '<div style="text-align:center;margin-bottom:20px;padding:12px;background:var(--bg);border-radius:var(--radius);">' +
+              '<span style="font-size:28px;font-weight:700;color:' + (overallPct >= 80 ? '#166534' : overallPct >= 50 ? '#92400e' : '#991b1b') + ';">' + overallPct + '%</span>' +
+              '<span style="color:var(--muted);font-size:13px;margin-left:8px;">samlet rigtige (' + totalAsked + ' svar)</span>' +
+            '</div>';
+
+          // Vis kun spørgsmål med mindst 1 fejl
+          var wrongEntries = entries.filter(function(e) { return e.wrong > 0; });
+          if (wrongEntries.length === 0) {
+            html += '<p style="color:#166534;font-size:14px;text-align:center;">Ingen forkerte svar endnu — flot!</p>';
+          } else {
+            html += '<p style="font-weight:600;font-size:14px;margin-bottom:12px;">Ofte forkerte (' + wrongEntries.length + '):</p>';
+            for (var i = 0; i < wrongEntries.length; i++) {
+              var e = wrongEntries[i];
+              var uniqueWrong = [];
+              for (var j = 0; j < e.wrongAnswers.length; j++) {
+                if (uniqueWrong.indexOf(e.wrongAnswers[j]) === -1) uniqueWrong.push(e.wrongAnswers[j]);
+              }
+              html +=
+                '<div style="padding:10px 0;border-bottom:1px solid var(--border);">' +
+                  '<div style="font-size:14px;color:var(--text);margin-bottom:4px;">' + esc(e.text) + '</div>' +
+                  '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);">' +
+                    '<span>Rigtigt \u00e5r: <strong style="color:#166534;">' + esc(e.year) + '</strong></span>' +
+                    '<span style="color:#991b1b;">' + e.wrong + ' fejl / ' + e.asked + ' fors\u00f8g</span>' +
+                  '</div>' +
+                  (uniqueWrong.length > 0 ? '<div style="font-size:11px;color:var(--muted);margin-top:3px;">Dine g\u00e6t: ' + uniqueWrong.map(function(w) { return esc(w); }).join(', ') + '</div>' : '') +
+                '</div>';
+            }
+          }
+        }
+        html += '</div>';
+        el.innerHTML = html;
+      })
+      .catch(function() {
+        el.innerHTML =
+          '<div style="text-align:center;">' +
+            '<p style="color:#991b1b;font-size:14px;">Kunne ikke hente statistik fra serveren.</p>' +
+            '<button class="btn-ghost" onclick="openHistoryQuiz()" style="margin-top:12px;">Tilbage</button>' +
+          '</div>';
+      });
+  }
 
   // ── LOGIN MODAL ────────────────────────────────────────────────────
   let _loginCallback = null;
