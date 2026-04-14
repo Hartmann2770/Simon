@@ -5636,6 +5636,8 @@
         for (const mem of loc.memories) {
           if (mem.text.startsWith('\uD83E\uDDE0')) continue; // skip mnemonics
           let displayText = mem.text;
+          // 0) Strip leading flag emoji so year-prefix regex can match
+          displayText = displayText.replace(/^[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]\s*/, '');
           // 1) Strip year prefix; for ranges like "1837-1901:" keep start year as context
           const rangeMatch = displayText.match(/^(\d{4})[–\-](\d{4})[:\s]+/);
           const singleMatch = !rangeMatch && displayText.match(/^\d{4}[:\s]+/);
@@ -5656,7 +5658,9 @@
             }
             return full;
           });
-          if (!displayText.trim()) continue;
+          // 3) Remove any remaining bare answer-year from body text
+          displayText = displayText.replace(new RegExp('\\b' + year + '\\b', 'g'), '____');
+          if (!displayText.trim() || displayText.trim() === '____') continue;
           deck.push({ year, displayText: displayText.trim(), info: mem.info || null });
         }
       }
