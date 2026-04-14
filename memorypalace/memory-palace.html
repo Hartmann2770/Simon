@@ -1058,6 +1058,51 @@
       box-sizing: border-box;
     }
     .peg-card-back { transform: rotateY(180deg); }
+
+    /* HISTORY QUIZ */
+    .hq-input {
+      font-family: 'Cinzel', serif;
+      font-size: 36px;
+      text-align: center;
+      width: 140px;
+      padding: 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .hq-input::-webkit-outer-spin-button,
+    .hq-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .hq-input:focus { border-color: var(--accent); }
+    .hq-input.correct { border-color: #22c55e; background: #f0fdf4; color: #166534; }
+    .hq-input.wrong { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+    .hq-event-text {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text);
+      text-align: center;
+      margin: 20px 0 28px;
+    }
+    .hq-progress {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .hq-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .hq-score { display: flex; gap: 12px; justify-content: center; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+    .hq-feedback { text-align: center; font-size: 15px; font-weight: 600; margin-top: 16px; }
+    .hq-feedback.correct { color: #166534; }
+    .hq-feedback.wrong { color: #991b1b; }
+
     #peg-toggle-btn.active {
       opacity: 1;
       filter: drop-shadow(0 0 4px rgba(255,255,255,0.7));
@@ -1170,6 +1215,11 @@
 <!-- PEG DRILL MODAL -->
 <div id="peg-drill-modal" style="display:none;position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;" onclick="if(event.target===this)closePegDrill()">
   <div id="peg-drill-inner" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;max-width:380px;width:92%;box-shadow:var(--shadow-lg);"></div>
+</div>
+
+<!-- HISTORY QUIZ MODAL -->
+<div id="history-quiz-modal" style="display:none;position:fixed;inset:0;z-index:350;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;" onclick="if(event.target===this)closeHistoryQuiz()">
+  <div id="history-quiz-inner" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;max-width:440px;width:92%;box-shadow:var(--shadow-lg);max-height:85vh;overflow-y:auto;"></div>
 </div>
 
 <!-- PEG SIDEBAR -->
@@ -3300,6 +3350,7 @@
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           ${fps.length > 1 ? `<button class="btn-teal" data-action="review-all-in-collection" data-collection-id="${f.id}">Gennemgå alle &#8594;</button>` : ''}
+          ${f._collTag === 'col-history' && fps.length > 0 ? `<button class="btn-ghost" onclick="openHistoryQuiz()" title="Historisk Quiz">&#127919; Quiz</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-ghost btn-sm" data-action="edit-collection" data-collection-id="${f.id}" title="Rediger samling">&#9998;</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-danger btn-sm" data-action="delete-collection" data-collection-id="${f.id}" title="Slet samling">&#128465;</button>` : ''}
           ${app.authLevel === 'admin' ? `<button class="btn-primary" data-action="new-palace-in-collection" data-collection-id="${f.id}">+ Nyt Palads</button>` : ''}
@@ -5561,6 +5612,257 @@
     document.getElementById('peg-drill-modal').style.display = 'flex';
     const sidebar = document.getElementById('peg-sidebar');
     if (sidebar.classList.contains('open')) togglePegSidebar();
+  };
+
+  // ── HISTORISK QUIZ ─────────────────────────────────────────────────
+  let _hq = null;
+  let _hqKeyHandler = null;
+
+  function _hqGetHistoryPalaces() {
+    return data.palaces.filter(p => p._histTag && HISTORY_QUARTERS.some(q => q.tag === p._histTag));
+  }
+
+  function _hqFilterByScope(palaces, scope) {
+    if (scope === '1800') return palaces.filter(p => p._histTag.startsWith('hist-18'));
+    if (scope === '1900') return palaces.filter(p => p._histTag.startsWith('hist-19') || p._histTag.startsWith('hist-20'));
+    return palaces; // 'all'
+  }
+
+  function _buildQuizDeck(palaces) {
+    const deck = [];
+    for (const p of palaces) {
+      for (const loc of p.locations) {
+        const year = loc.name;
+        for (const mem of loc.memories) {
+          if (mem.text.startsWith('\uD83E\uDDE0')) continue; // skip mnemonics
+          let displayText = mem.text;
+          // 1) Strip year prefix; for ranges like "1837-1901:" keep start year as context
+          const rangeMatch = displayText.match(/^(\d{4})[–\-](\d{4})[:\s]+/);
+          const singleMatch = !rangeMatch && displayText.match(/^\d{4}[:\s]+/);
+          if (rangeMatch) {
+            displayText = displayText.substring(rangeMatch[0].length);
+            if (displayText.trim()) displayText = displayText.trim() + ' (fra ' + rangeMatch[1] + ')';
+          } else if (singleMatch) {
+            displayText = displayText.substring(singleMatch[0].length);
+          }
+          // 2) Hide answer year in inline parenthetical ranges like (1950–1953)
+          displayText = displayText.replace(/\(([^)]*?)(\d{4})[–\-](\d{4})([^)]*?)\)/g, function(full, pre, startYr, endYr, post) {
+            if (endYr === year) {
+              var prefix = pre.trim() ? pre : 'fra ';
+              return '(' + prefix + startYr + post + ')';
+            } else if (startYr === year) {
+              var prefix = pre.trim() ? pre : 'til ';
+              return '(' + prefix + endYr + post + ')';
+            }
+            return full;
+          });
+          if (!displayText.trim()) continue;
+          deck.push({ year, displayText: displayText.trim(), info: mem.info || null });
+        }
+      }
+    }
+    return deck;
+  }
+
+  function _shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function _renderHistoryQuiz(screen) {
+    const el = document.getElementById('history-quiz-inner');
+    if (screen === 'start') {
+      const all = _hqGetHistoryPalaces();
+      const c19 = _hqFilterByScope(all, '1800');
+      const c20 = _hqFilterByScope(all, '1900');
+      const count19 = _buildQuizDeck(c19).length;
+      const count20 = _buildQuizDeck(c20).length;
+      const countAll = count19 + count20;
+      el.innerHTML =
+        '<div style="text-align:center;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+            '<h2 style="margin:0;font-size:20px;">Historisk Quiz</h2>' +
+            '<button onclick="closeHistoryQuiz()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>' +
+          '</div>' +
+          '<p style="color:var(--muted);font-size:14px;margin-bottom:24px;">Du f\u00e5r 10 tilf\u00e6ldige begivenheder.<br>Indtast det korrekte \u00e5rstal.</p>' +
+          '<p style="color:var(--muted);font-size:13px;margin-bottom:12px;">V\u00e6lg periode:</p>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;">' +
+            '<button class="btn-primary" onclick="startHistoryQuiz(\'1800\')" style="padding:12px 20px;font-size:15px;">' +
+              '1800-tallet <span style="opacity:0.6;font-size:12px;">(' + count19 + ' begivenheder)</span>' +
+            '</button>' +
+            '<button class="btn-primary" onclick="startHistoryQuiz(\'1900\')" style="padding:12px 20px;font-size:15px;">' +
+              '1900-tallet <span style="opacity:0.6;font-size:12px;">(' + count20 + ' begivenheder)</span>' +
+            '</button>' +
+            '<button class="btn-ghost" onclick="startHistoryQuiz(\'all\')" style="padding:12px 20px;font-size:15px;">' +
+              'Alle perioder <span style="opacity:0.6;font-size:12px;">(' + countAll + ' begivenheder)</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+    } else if (screen === 'question') {
+      var q = _hq.deck[_hq.idx];
+      var progress = ((_hq.idx) / _hq.deck.length) * 100;
+      var answeredSoFar = _hq.answered ? _hq.idx + 1 : _hq.idx;
+      var wrongSoFar = answeredSoFar - _hq.score;
+      var feedbackHtml = '';
+      if (_hq.answered) {
+        feedbackHtml = _hq.lastCorrect
+          ? '<div class="hq-feedback correct">&#10003; Rigtigt!</div>' +
+            '<div style="text-align:center;margin-top:20px;"><button class="btn-primary" onclick="nextQuizQuestion()" style="padding:10px 28px;">N\u00e6ste &#8594;</button></div>'
+          : '<div class="hq-feedback wrong">&#10007; Forkert &mdash; det korrekte \u00e5r er ' + esc(q.year) + '</div>' +
+            '<div style="text-align:center;margin-top:20px;"><button class="btn-primary" onclick="nextQuizQuestion()" style="padding:10px 28px;">N\u00e6ste &#8594;</button></div>';
+      } else {
+        feedbackHtml = '<div style="text-align:center;margin-top:20px;"><button class="btn-primary" onclick="submitQuizAnswer()" style="padding:10px 28px;">Svar</button></div>';
+      }
+      el.innerHTML =
+        '<div>' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
+            '<span style="font-size:14px;color:var(--muted);">' + (_hq.idx + 1) + ' / ' + _hq.deck.length + '</span>' +
+            '<div class="hq-score">' +
+              '<span style="color:#166534;">' + _hq.score + ' &#10003;</span>' +
+              '<span style="color:#991b1b;">' + wrongSoFar + ' &#10007;</span>' +
+            '</div>' +
+            '<button onclick="closeHistoryQuiz()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>' +
+          '</div>' +
+          '<div class="hq-progress"><div class="hq-progress-bar" style="width:' + progress + '%"></div></div>' +
+          '<div class="hq-event-text">' + esc(q.displayText) + '</div>' +
+          '<div style="text-align:center;">' +
+            '<input type="text" id="hq-answer" class="hq-input' + (_hq.answered ? (_hq.lastCorrect ? ' correct' : ' wrong') : '') + '" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="&#8212;" autocomplete="off"' + (_hq.answered ? ' disabled value="' + esc(_hq.lastAnswer || '') + '"' : '') + '>' +
+          '</div>' +
+          feedbackHtml +
+        '</div>';
+      if (!_hq.answered) {
+        var inp = document.getElementById('hq-answer');
+        if (inp) setTimeout(function() { inp.focus(); }, 50);
+      }
+    } else if (screen === 'result') {
+      var pct = Math.round((_hq.score / _hq.deck.length) * 100);
+      var pctColor = pct >= 80 ? '#166534' : pct >= 50 ? '#92400e' : '#991b1b';
+      var wrongHtml = '';
+      if (_hq.wrong.length > 0) {
+        wrongHtml = '<div style="text-align:left;margin-top:20px;">' +
+          '<p style="font-weight:600;font-size:14px;margin-bottom:10px;color:var(--text);">Forkerte svar:</p>' +
+          _hq.wrong.map(function(w) {
+            return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">' +
+              '<div style="color:var(--text);margin-bottom:3px;">' + esc(w.event) + '</div>' +
+              '<div style="color:var(--muted);">Dit svar: <strong style="color:#991b1b;">' + esc(w.userAnswer || '\u2014') + '</strong> &middot; Rigtigt: <strong style="color:#166534;">' + esc(w.correctYear) + '</strong></div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
+      }
+      var retryBtn = _hq.wrong.length > 0
+        ? '<button class="btn-primary" onclick="retryWrong()" style="padding:10px 20px;">Pr\u00f8v forkerte igen</button>'
+        : '';
+      el.innerHTML =
+        '<div style="text-align:center;">' +
+          '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;">' +
+            '<button onclick="closeHistoryQuiz()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>' +
+          '</div>' +
+          '<h2 style="margin:0 0 8px;font-size:20px;">Resultat</h2>' +
+          '<div style="font-size:48px;font-weight:700;color:' + pctColor + ';margin:12px 0;">' + pct + '%</div>' +
+          '<p style="color:var(--muted);font-size:15px;">' + _hq.score + ' af ' + _hq.deck.length + ' rigtige</p>' +
+          wrongHtml +
+          '<div style="display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap;">' +
+            retryBtn +
+            '<button class="btn-ghost" onclick="openHistoryQuiz()" style="padding:10px 20px;">Ny quiz</button>' +
+          '</div>' +
+        '</div>';
+    }
+  }
+
+  function _saveQuizSession() {
+    if (!data.settings.historyQuizHistory) data.settings.historyQuizHistory = [];
+    data.settings.historyQuizHistory.push({
+      date: Date.now(),
+      scope: _hq.scope,
+      total: _hq.deck.length,
+      correct: _hq.score,
+      wrong: _hq.wrong.map(function(w) { return { event: w.event, userAnswer: w.userAnswer, correctYear: w.correctYear }; })
+    });
+    // Keep max 180 days of history
+    var cutoff = Date.now() - 180 * 86400000;
+    data.settings.historyQuizHistory = data.settings.historyQuizHistory.filter(function(h) { return h.date > cutoff; });
+    saveData();
+  }
+
+  window.openHistoryQuiz = function() {
+    _hq = null;
+    _renderHistoryQuiz('start');
+    document.getElementById('history-quiz-modal').style.display = 'flex';
+  };
+
+  window.closeHistoryQuiz = function() {
+    document.getElementById('history-quiz-modal').style.display = 'none';
+    if (_hqKeyHandler) { document.removeEventListener('keydown', _hqKeyHandler); _hqKeyHandler = null; }
+    _hq = null;
+  };
+
+  window.startHistoryQuiz = function(scope) {
+    var all = _hqGetHistoryPalaces();
+    var filtered = _hqFilterByScope(all, scope);
+    var deck = _buildQuizDeck(filtered);
+    _shuffleArray(deck);
+    var sliced = deck.slice(0, 10);
+    if (sliced.length === 0) { closeHistoryQuiz(); return; }
+    _hq = { deck: sliced, idx: 0, score: 0, wrong: [], answered: false, lastCorrect: false, lastAnswer: '', scope: scope };
+    // Keyboard handler
+    if (_hqKeyHandler) document.removeEventListener('keydown', _hqKeyHandler);
+    _hqKeyHandler = function(e) {
+      if (!_hq) return;
+      if (e.key === 'Escape') { closeHistoryQuiz(); return; }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (_hq.answered) nextQuizQuestion();
+        else submitQuizAnswer();
+      }
+    };
+    document.addEventListener('keydown', _hqKeyHandler);
+    _renderHistoryQuiz('question');
+  };
+
+  window.submitQuizAnswer = function() {
+    if (!_hq || _hq.answered) return;
+    var inp = document.getElementById('hq-answer');
+    if (!inp) return;
+    var userAnswer = inp.value.trim();
+    var q = _hq.deck[_hq.idx];
+    var isCorrect = userAnswer === q.year;
+    _hq.answered = true;
+    _hq.lastCorrect = isCorrect;
+    _hq.lastAnswer = userAnswer;
+    if (isCorrect) {
+      _hq.score++;
+    } else {
+      _hq.wrong.push({ event: q.displayText, userAnswer: userAnswer, correctYear: q.year });
+    }
+    _renderHistoryQuiz('question');
+  };
+
+  window.nextQuizQuestion = function() {
+    if (!_hq) return;
+    _hq.idx++;
+    _hq.answered = false;
+    _hq.lastCorrect = false;
+    _hq.lastAnswer = '';
+    if (_hq.idx >= _hq.deck.length) {
+      _saveQuizSession();
+      _renderHistoryQuiz('result');
+    } else {
+      _renderHistoryQuiz('question');
+    }
+  };
+
+  window.retryWrong = function() {
+    if (!_hq || _hq.wrong.length === 0) { openHistoryQuiz(); return; }
+    var wrongDeck = _hq.wrong.map(function(w) {
+      return { year: w.correctYear, displayText: w.event, info: null };
+    });
+    _shuffleArray(wrongDeck);
+    var scope = _hq.scope;
+    _hq = { deck: wrongDeck, idx: 0, score: 0, wrong: [], answered: false, lastCorrect: false, lastAnswer: '', scope: scope };
+    _renderHistoryQuiz('question');
   };
 
   // ── LOGIN MODAL ────────────────────────────────────────────────────
