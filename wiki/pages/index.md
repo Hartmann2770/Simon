@@ -15,21 +15,26 @@ A research wiki on learning and adjacent fields. This index catalogs every page 
 
 - [Activity System Model (Engeström's Triangle)](concepts/activity-system-model.md) — Engeström's triangular diagram representing the structural components of a collective activity system
 - [Activity Theory](concepts/activity-theory.md) — Philosophical and psychological framework rooted in Soviet cultural-historical psychology for analysing human practice
+- [Augmented Reality in Education](concepts/augmented-reality-in-education.md) — Use of AR overlays to situate digital content in real-world environments for learning
 - [Communities of Practice](concepts/communities-of-practice.md) — Groups defined by shared domain, mutual engagement, and shared practice repertoire; the primary sites of situated learning
 - [Contradictions (as Driver of Learning and Development)](concepts/contradictions.md) — Historically accumulated tensions within and between activity systems that drive collective learning and change
 - [Desirable Difficulties](concepts/desirable-difficulties.md) — Learning conditions that slow apparent acquisition but enhance long-term retention and transfer
 - [Expansive Learning](concepts/expansive-learning.md) — Collective construction and implementation of a qualitatively new object and form of activity
 - [Forgetting (Forgetting Curve)](concepts/forgetting.md) — Decline over time in the ability to retrieve previously learned information, modelled by the forgetting curve
 - [Generative Learning](concepts/generative-learning.md) — Active construction of meaning by making connections between new information and prior knowledge
+- [Immersive Learning](concepts/immersive-learning.md) — Learning experiences designed to create strong presence, engagement, and environmental embedding through XR technologies
 - [Interleaving](concepts/interleaving.md) — Practice arrangement mixing different problem types or subjects rather than blocking by category
 - [Legitimate Peripheral Participation](concepts/legitimate-peripheral-participation.md) — Learning mechanism by which newcomers gain membership in a community of practice by beginning at the margins and moving toward fuller participation
 - [Mediation (in Activity Theory)](concepts/mediation.md) — Principle that human action is always carried out through tools, signs, or other mediating artefacts
 - [Metacognition](concepts/metacognition.md) — Knowledge about and regulation of one's own cognitive processes
 - [Retrieval Practice](concepts/retrieval-practice.md) — Deliberate act of recalling information from memory to strengthen long-term retention
+- [Simulation-Based Education](concepts/simulation-based-education.md) — Instructional approaches using realistic scenarios or replicas for safe skills practice and deliberate feedback
 - [Situated Learning](concepts/situated-learning.md) — Thesis that learning is inseparable from the social and material context in which it occurs; learning is changing participation in practice communities
 - [Social Learning Systems](concepts/social-learning-systems.md) — Configurations of interconnected communities of practice that collectively constitute the learning capacity of an organization or society
 - [Spaced Repetition / Spacing Effect](concepts/spaced-repetition.md) — Finding that spreading learning across time intervals enhances long-term retention
+- [Spatial Presence](concepts/spatial-presence.md) — The subjective sense of being there in a mediated environment; a key mechanism in VR learning effects
 - [Testing Effect](concepts/testing-effect.md) — Finding that retrieving information on a test improves retention more than restudying
+- [Virtual Reality in Education](concepts/virtual-reality-in-education.md) — Use of immersive VR environments, typically via HMDs, to support learning across domains
 - [Value Creation in Networks](concepts/value-creation-in-networks.md) — The multiple forms of value (immediate, potential, applied, realized, reframing) that communities of practice generate across different time horizons
 - [Zone of Proximal Development](concepts/zone-of-proximal-development.md) — Space between what a learner can do independently and what they can achieve with guidance
 
@@ -85,6 +90,22 @@ A research wiki on learning and adjacent fields. This index catalogs every page 
 - [Telecentres: One-Stop Learning Hubs in Rural Bangladesh (Akther & Georgesen 2011)](sources/akther-georgesen-2011-telecentres.md) — Empirical application of CoP and LPP to digital literacy acquisition in rural Bangladesh
 - [Transformation or Transformism: Engeström's Version of Activity Theory?](sources/avis-2009-transformation-or-transformism.md) — Avis's critical review questioning whether Engeström's expansive learning genuinely enables transformation
 - [Using Activity Theory to Understand Systemic Tensions in a Technology-Rich Astronomy Course](sources/barab-et-al-2002-activity-theory-astronomy.md) — Barab et al.'s case study applying activity-system analysis to a university course redesign
+- [Augmented Reality as Multimedia: The Case for Situated Vocabulary Learning](sources/santos-et-al-ar-vocabulary.md) — Santos et al.'s design study showing AR's effectiveness for context-embedded vocabulary learning
+- [Augmented Reality: An Overview and Five Directions for AR in Education](sources/yuen-yaoyuneyong-johnson-2011.md) — Yuen et al.'s influential 2011 taxonomy of five directions for AR in education
+- [Benefits of Augmented Reality in Educational Environments: A Systematic Literature Review](sources/diegmann-schmidt-kraepelin-ar-benefits.md) — Diegmann and Schmidt-Kraepelin's synthesis of 25 studies on AR benefits in education
+- [Experiences in Virtual Reality: A Window to Autobiographical Memory](sources/schone-wessels-gruber-2019.md) — Schone et al.'s study linking spatial presence in VR to autobiographical memory quality
+- [How Spatial Presence in VR Affects Memory Retention and Motivation on Second Language Learning](sources/cho-spatial-presence-vr.md) — Cho's study showing spatial presence mediates VR's effects on vocabulary retention and motivation
+- [Immersive Experiences in Education](sources/bonasio-immersive-experiences.md) — Bonasio's practitioner analysis arguing immersive technologies require pedagogical design to improve outcomes
+- [Learning in Virtual Reality: Effects on Performance, Emotion and Engagement](sources/allcoat-muhlenen-2018.md) — Allcoat and von Muhlenen's experiment finding VR boosts engagement but not necessarily test performance
+- [A Review of Augmented Reality in Educational Applications](sources/majeed-ali-2020.md) — Majeed and Ali's 2020 review of AR types, outcomes, and adoption barriers across disciplines
+- [A Review of the Use of Virtual Reality Head-Mounted Displays in Education and Training](sources/jensen-konradsen-2017.md) — Jensen and Konradsen's quality-assessed review of 21 HMD VR studies in education
+- [Report: XR Medical Device Training](sources/maddox-xr-medical-training.md) — Maddox's industry report arguing XR compresses training time for medical device familiarisation
+- [Systematic Review and Meta-Analysis of Augmented Reality in Educational Settings](sources/garzon-pavon-baldiris-2019.md) — Garzon et al.'s meta-analysis of 61 studies finding moderate-to-large positive effects of AR on learning
+- [The Effectiveness of Virtual Reality-Based Simulation in Health Professions Education Relating to Mental Illness](sources/wan-lam-2019.md) — Wan and Lam's review showing VR simulation improves empathy and knowledge in mental health education
+- [Understanding the Power of Augmented Reality for Learning](sources/carmichael-biddle-mould-ar-learning.md) — Carmichael et al.'s theoretical paper grounding AR's value in mental models, dual coding, and spatial cognition
+- [Utilization of a Voice-Based Virtual Reality Advanced Cardiac Life Support Team Leader Refresher](sources/katz-et-al-2020.md) — Katz et al.'s prospective study of VR ACLS refresher training demonstrating knowledge gains
+- [Virtual Memory Palaces: Immersion Aids Recall](sources/krokos-plaisant-varshney-2019.md) — Krokos et al.'s experiment showing HMD VR produces better recall in a memory palace task than desktop VR
+- [XR for Teaching and Learning: Year 2 of the EDUCAUSE/HP Campus of the Future Project](sources/pomerantz-xr-teaching-learning.md) — Pomerantz's institutional survey documenting XR adoption patterns and barriers in higher education
 - [Our World as a Learning System (Snyder & Wenger 2010)](sources/snyder-wenger-2010-world-as-learning-system.md) — Extension of CoP framework to global social learning systems and complex societal challenges
 - [Promoting and Assessing Value Creation in Communities and Networks (Wenger, Trayner & De Laat 2011)](sources/wenger-trayner-laat-2011-value-creation.md) — Five-cycle framework for evaluating and justifying investment in learning communities
 - [Situated Learning: Legitimate Peripheral Participation (Lave & Wenger 1991)](sources/lave-wenger-1991.md) — Foundational text introducing situated learning and legitimate peripheral participation
