@@ -42,6 +42,8 @@ Wittrock (1974) provides a complementary theoretical basis: effortful generation
 - [Spaced Repetition](spaced-repetition.md) — spacing is the oldest and most studied desirable difficulty
 - [Interleaving](interleaving.md) — interleaving is a desirable difficulty that works through discrimination learning
 - [Retrieval Practice](retrieval-practice.md) — testing is the most potent desirable difficulty for most learning goals
+- [Transfer of Learning](transfer-of-learning.md) — desirable difficulties reliably improve transfer, not just retention; varied and interleaved practice builds the flexible representations that support application in new contexts
+- [Deliberate Practice](deliberate-practice.md) — related but distinct framework; deliberate practice focuses on feedback-rich, expert-guided practice targeting specific weaknesses, while desirable difficulties focuses on scheduling and conditions of practice
 - [Forgetting](forgetting.md) — desirable difficulties exploit partial forgetting to maximise consolidation
 - [Metacognition](metacognition.md) — the desirable-difficulties paradox requires metacognitive awareness to exploit
 - [Generative Learning](generative-learning.md) — generation of answers is both a desirable difficulty and a form of generative processing

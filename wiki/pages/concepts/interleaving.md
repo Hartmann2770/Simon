@@ -32,6 +32,7 @@ Interleaving (interleaved practice) is a study or practice arrangement in which 
 ## Connections
 
 - [Desirable Difficulties](desirable-difficulties.md) — interleaving is a paradigm case of conditions that impair performance during training but improve long-term retention
+- [Transfer of Learning](transfer-of-learning.md) — interleaving specifically promotes transfer to novel problem types by forcing learners to identify problem categories, replicating the conditions of real-world application
 - [Spaced Repetition](spaced-repetition.md) — interleaving and spacing are complementary; interleaved practice typically embeds spacing
 - [Retrieval Practice](retrieval-practice.md) — interleaved practice requires repeated retrieval of category-membership decisions
 

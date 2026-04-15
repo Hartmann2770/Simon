@@ -46,6 +46,7 @@ The theoretical grounding in [Sweller (2011)](../sources/sweller-2011-cognitive-
 ## Connections
 
 - [Cognitive Load Theory](cognitive-load-theory.md) — the theoretical foundation; CTML is an applied and extended version of CLT for media contexts
+- [Dual Coding Theory](dual-coding-theory.md) — Paivio's dual coding theory is the foundational cognitive basis for the multimedia principle; Mayer's CTML translates dual coding into testable instructional design guidelines
 - [Generative Learning](generative-learning.md) — Mayer explicitly incorporates generative processing as the third stage of his model (select, organise, integrate)
 - [Direct Instruction and Explicit Teaching](direct-instruction.md) — well-designed multimedia instruction is a form of explicit teaching through mediated channels
 - [Desirable Difficulties](desirable-difficulties.md) — coherence/redundancy reductions are distinct from desirable difficulties; CLT targets extraneous load, not productive difficulty

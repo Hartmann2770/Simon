@@ -47,7 +47,9 @@ Cognitive load theory (CLT), developed by John Sweller from the late 1980s, is a
 
 ## Connections
 
+- [Schema Theory](schema-theory.md) — CLT is built on schema theory; schema formation is the explicit goal of CLT-compliant instruction and the mechanism through which working memory constraints are overcome
 - [Multimedia Learning Principles](multimedia-learning-principles.md) — Mayer's CTML directly operationalises CLT for media design
+- [Dual Coding Theory](dual-coding-theory.md) — dual coding theory's two-channel architecture underpins CLT's modality and split-attention effects
 - [Desirable Difficulties](desirable-difficulties.md) — both theories address how cognitive effort relates to learning; CLT aims to reduce extraneous effort while desirable difficulties argues for maintaining productive effort
 - [Direct Instruction and Explicit Teaching](direct-instruction.md) — CLT provides the cognitive-science rationale for direct instruction over unguided discovery
 - [Generative Learning](generative-learning.md) — germane load is related to the generative processing that produces deeper learning

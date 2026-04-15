@@ -47,6 +47,7 @@ Augmented reality (AR) in education refers to the overlay of computer-generated 
 - [Virtual Reality in Education](virtual-reality-in-education.md) — VR as the more immersive end of the reality-virtuality continuum
 - [Immersive Learning](immersive-learning.md) — AR as a technology for immersive experiences without full environmental replacement
 - [Spatial Presence](spatial-presence.md) — spatial grounding in AR supports spatial cognition and memory
+- [Dual Coding Theory](dual-coding-theory.md) — Carmichael et al. identify dual coding as one of four cognitive theories underpinning AR's educational value; AR's co-location of verbal labels and visual objects is an environmental instantiation of dual coding principles
 - [Generative Learning](generative-learning.md) — AR's multimedia overlays align with dual-coding and generative learning principles
 - [Retrieval Practice](retrieval-practice.md) — context-dependent encoding in situated AR supports retrieval cue richness
 - [Situated Learning](situated-learning.md) — AR overlays learning in real-world contexts, aligning with situated cognition

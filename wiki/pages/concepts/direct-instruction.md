@@ -40,6 +40,7 @@ Direct instruction (also called explicit teaching) refers to a family of teachin
 ## Connections
 
 - [Cognitive Load Theory](cognitive-load-theory.md) — CLT is the primary cognitive-science rationale for direct instruction; worked examples and guidance manage intrinsic and extraneous load
+- [Schema Theory](schema-theory.md) — direct instruction is the instructional implementation of schema formation principles: worked examples provide pre-formed schemas, guided practice consolidates them, and review strengthens retrieval pathways
 - [Desirable Difficulties](desirable-difficulties.md) — direct instruction and desirable difficulties are complementary: direct instruction establishes schemas; desirable difficulties consolidate them through effortful retrieval
 - [Retrieval Practice](retrieval-practice.md) — Rosenshine's daily review and frequent questioning directly implement retrieval practice
 - [Spaced Repetition](spaced-repetition.md) — weekly and monthly review in Rosenshine's model is a form of distributed practice

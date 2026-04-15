@@ -43,6 +43,7 @@ The foundational evidence is the set of five apprenticeship cases in [Lave and W
 - [Zone of Proximal Development](../concepts/zone-of-proximal-development.md) — Vygotsky's concept of learning through guided participation resonates with LPP; see [Lev Vygotsky](../entities/lev-vygotsky.md)
 - [Mediation](../concepts/mediation.md) — the mediating role of artifacts in practice connects to how tools shape situated cognition
 - [Expansive Learning](../concepts/expansive-learning.md) — Engeström's extension of sociocultural learning theory into collective transformation; see [Yrjö Engeström](../entities/yrjo-engestrom.md)
+- [Transfer of Learning](../concepts/transfer-of-learning.md) — situated learning theory is the primary theoretical challenge to transfer as traditionally conceived; it argues that knowledge is context-constituted and does not move across contexts without re-negotiation
 
 ## Applications
 

@@ -40,6 +40,8 @@ Retrieval practice is the deliberate act of attempting to recall information fro
 - [Testing Effect](testing-effect.md) — the empirical outcome of retrieval practice
 - [Spaced Repetition](spaced-repetition.md) — spacing retrieval attempts over time maximises benefit
 - [Desirable Difficulties](desirable-difficulties.md) — effortful retrieval is the paradigm case of a desirable difficulty
+- [Schema Theory](schema-theory.md) — retrieval practice strengthens and integrates schemas, not merely individual memory traces; this explains why retrieval practice benefits transfer as well as retention
+- [Transfer of Learning](transfer-of-learning.md) — retrieval practice improves performance on transfer tasks beyond the practised items, challenging the characterisation of testing as a rote-memorisation tool
 - [Generative Learning](generative-learning.md) — retrieval practice is one form of generative processing
 - [Metacognition](metacognition.md) — retrieval practice improves metacognitive calibration; restudying creates overconfidence
 - [Forgetting](forgetting.md) — some forgetting before retrieval amplifies the benefit (spacing rationale)

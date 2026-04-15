@@ -39,6 +39,8 @@ Simulation-based education (SBE) refers to instructional approaches that use rea
 
 - [Virtual Reality in Education](virtual-reality-in-education.md) — VR as the most capable contemporary SBE platform
 - [Immersive Learning](immersive-learning.md) — SBE as a high-fidelity immersive learning form
+- [Deliberate Practice](deliberate-practice.md) — SBE is the primary controlled environment for implementing deliberate practice; mastery learning in simulation directly operationalises Ericsson's framework
+- [Transfer of Learning](transfer-of-learning.md) — the ultimate goal of SBE is transfer to real performance; evidence for this transfer is variable and depends heavily on simulation design and debriefing quality
 - [Spaced Repetition](../concepts/spaced-repetition.md) — SBE combined with spaced scheduling (as in CPR skill retention studies) enhances long-term competency
 - [Retrieval Practice](../concepts/retrieval-practice.md) — simulation scenarios can function as retrieval events, testing procedural memory under realistic conditions
 - [Desirable Difficulties](../concepts/desirable-difficulties.md) — variability in simulation scenarios may function as a desirable difficulty, enhancing transfer
