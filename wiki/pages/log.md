@@ -61,3 +61,42 @@ Chronological record of all wiki operations.
   - santos-et-al-ar-vocabulary.md (14 unique sources; duplicates and off-topic items excluded)
 - Concept pages created: virtual-reality-in-education, augmented-reality-in-education, immersive-learning, simulation-based-education, spatial-presence
 - No entity pages created (no single author cited in 3+ sources in this cluster)
+
+## [2026-04-15] ingest | Cognitive Load Theory + Learning Design (batch)
+- 21 source summaries created in pages/sources/:
+  - sweller-2011-cognitive-load-theory.md
+  - mayer-moreno-cognitive-load-multimedia.md
+  - mayer-2010-science-of-learning-medical-education.md
+  - rosenshine-2012-principles-of-instruction.md
+  - rosenshine-principles-of-instruction-original.md
+  - hattie-timperley-2007-power-of-feedback.md
+  - hattie-donoghue-2016-learning-strategies.md
+  - neelen-kirschner-2020-evidence-informed-learning-design.md
+  - oakley-rogowsky-sejnowski-2021-uncommon-sense-teaching.md
+  - noushad-khurshid-2019-instructional-design-health.md
+  - emory-cognitive-load-instructional-message-design.md
+  - conole-7cs-learning-design.md
+  - shackleton-jones-2019-how-people-learn.md
+  - forneris-et-al-2022-competency-based-nursing.md
+  - camara-holistic-framework-education.md
+  - sugrue-blooms-taxonomy-alternative.md
+  - elearningcoach-2020-alternatives-blooms.md
+  - mager-abcd-learning-objectives.md
+  - neelen-kirschner-2021-learning-objectives-goal.md
+  - lodge-loble-2026-ai-cognitive-offloading.md
+  - hardman-2024-accelerating-excellence.md
+- 7 concept pages created:
+  - cognitive-load-theory.md
+  - multimedia-learning-principles.md
+  - direct-instruction.md
+  - learning-objectives.md
+  - feedback-hatties-model.md
+  - evidence-based-learning-strategies.md
+  - learning-design-frameworks.md
+- 4 entity pages created:
+  - john-sweller.md
+  - richard-mayer.md
+  - john-hattie.md
+  - barak-rosenshine.md
+- Skipped (insufficient content/duplicate): items 88, 91, 108, 119, 183
+- Deduplicated: items 164/165 (identical Hattie & Timperley); items 91/92 (same URL, merged into conole-7cs-learning-design)
