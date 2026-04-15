@@ -15,23 +15,30 @@ A research wiki on learning and adjacent fields. This index catalogs every page 
 
 - [Activity System Model (Engeström's Triangle)](concepts/activity-system-model.md) — Engeström's triangular diagram representing the structural components of a collective activity system
 - [Activity Theory](concepts/activity-theory.md) — Philosophical and psychological framework rooted in Soviet cultural-historical psychology for analysing human practice
+- [Communities of Practice](concepts/communities-of-practice.md) — Groups defined by shared domain, mutual engagement, and shared practice repertoire; the primary sites of situated learning
 - [Contradictions (as Driver of Learning and Development)](concepts/contradictions.md) — Historically accumulated tensions within and between activity systems that drive collective learning and change
 - [Desirable Difficulties](concepts/desirable-difficulties.md) — Learning conditions that slow apparent acquisition but enhance long-term retention and transfer
 - [Expansive Learning](concepts/expansive-learning.md) — Collective construction and implementation of a qualitatively new object and form of activity
 - [Forgetting (Forgetting Curve)](concepts/forgetting.md) — Decline over time in the ability to retrieve previously learned information, modelled by the forgetting curve
 - [Generative Learning](concepts/generative-learning.md) — Active construction of meaning by making connections between new information and prior knowledge
 - [Interleaving](concepts/interleaving.md) — Practice arrangement mixing different problem types or subjects rather than blocking by category
+- [Legitimate Peripheral Participation](concepts/legitimate-peripheral-participation.md) — Learning mechanism by which newcomers gain membership in a community of practice by beginning at the margins and moving toward fuller participation
 - [Mediation (in Activity Theory)](concepts/mediation.md) — Principle that human action is always carried out through tools, signs, or other mediating artefacts
 - [Metacognition](concepts/metacognition.md) — Knowledge about and regulation of one's own cognitive processes
 - [Retrieval Practice](concepts/retrieval-practice.md) — Deliberate act of recalling information from memory to strengthen long-term retention
+- [Situated Learning](concepts/situated-learning.md) — Thesis that learning is inseparable from the social and material context in which it occurs; learning is changing participation in practice communities
+- [Social Learning Systems](concepts/social-learning-systems.md) — Configurations of interconnected communities of practice that collectively constitute the learning capacity of an organization or society
 - [Spaced Repetition / Spacing Effect](concepts/spaced-repetition.md) — Finding that spreading learning across time intervals enhances long-term retention
 - [Testing Effect](concepts/testing-effect.md) — Finding that retrieving information on a test improves retention more than restudying
+- [Value Creation in Networks](concepts/value-creation-in-networks.md) — The multiple forms of value (immediate, potential, applied, realized, reframing) that communities of practice generate across different time horizons
 - [Zone of Proximal Development](concepts/zone-of-proximal-development.md) — Space between what a learner can do independently and what they can achieve with guidance
 
 ## Entities
 
 - [Aleksei Leont'ev](entities/aleksei-leontev.md) — Soviet psychologist who formalised activity theory's three-level hierarchy of activity, action, and operation
+- [Etienne Wenger](entities/etienne-wenger.md) — Principal architect of communities of practice theory and social learning systems
 - [Henry Roediger III](entities/henry-roediger-iii.md) — Cognitive psychologist and leading researcher on the testing effect and memory
+- [Jean Lave](entities/jean-lave.md) — Social anthropologist who developed situated learning theory and legitimate peripheral participation with Wenger
 - [Jeffrey Karpicke](entities/jeffrey-karpicke.md) — Cognitive psychologist at Purdue University specialising in retrieval-based learning
 - [Lev Vygotsky](entities/lev-vygotsky.md) — Soviet psychologist and founder of cultural-historical psychology; originator of the ZPD
 - [Robert Bjork](entities/robert-bjork.md) — UCLA psychologist who coined "desirable difficulties" and developed the New Theory of Disuse
@@ -41,6 +48,10 @@ A research wiki on learning and adjacent fields. This index catalogs every page 
 ## Sources
 
 - [Activity Theory and Individual and Social Transformation](sources/engestrom-1999-individual-social-transformation.md) — Engeström's chapter situating activity theory as a framework for analysing individual and collective change
+- [Communities of Practice: A Brief Introduction (Wenger 2006)](sources/wenger-2006-cop-brief-introduction.md) — Wenger's accessible overview defining CoPs by domain, community, and practice
+- [Communities of Practice: Learning, Meaning, and Identity (Wenger 1998)](sources/wenger-1998-communities-of-practice.md) — Wenger's definitive theoretical monograph on CoPs, participation/reification, and identity
+- [Communities of Practice and Social Learning Systems (Wenger 2000)](sources/wenger-2000-cop-social-learning-systems.md) — Most-cited journal article on CoPs; introduces modes of belonging and social learning systems
+- [Communities of Practice and Social Learning Systems: the Career of a Concept (Wenger 2010)](sources/wenger-2010-career-of-a-concept.md) — Critical reflection on two decades of CoP concept adoption and misapplication
 - [Activity Theory and Social Practice: Cultural-Historical Approaches](sources/chaiklin-hedegaard-jensen-1999.md) — Edited volume surveying cultural-historical activity theory approaches across social practice research
 - [Activity Theory: Basic Concepts and Applications](sources/kaptelinin-kuutti-bannon-1995-activity-theory-basics.md) — Introduction to activity theory concepts and their application in HCI, by Kaptelinin, Kuutti, and Bannon
 - [Activity, Consciousness, and Personality](sources/leontev-1978-activity-consciousness-personality.md) — Leont'ev's foundational English-language text presenting the three-level model of activity theory
@@ -71,8 +82,13 @@ A research wiki on learning and adjacent fields. This index catalogs every page 
 - [The Power of Testing Memory: Basic Research and Implications for Educational Practice](sources/roediger-karpicke-2006a.md) — Roediger & Karpicke's broad review linking memory testing research to classroom practice
 - [The Role of Episodic Context in Retrieval Practice Effects](sources/whiffen-karpicke-2017.md) — Whiffen & Karpicke's investigation of how episodic context modulates retrieval practice benefits
 - [The 'Testing' Phenomenon: Not Gone but Nearly Forgotten](sources/glover-testing-phenomenon.md) — Glover's early paper reviving interest in the testing phenomenon in educational psychology
+- [Telecentres: One-Stop Learning Hubs in Rural Bangladesh (Akther & Georgesen 2011)](sources/akther-georgesen-2011-telecentres.md) — Empirical application of CoP and LPP to digital literacy acquisition in rural Bangladesh
 - [Transformation or Transformism: Engeström's Version of Activity Theory?](sources/avis-2009-transformation-or-transformism.md) — Avis's critical review questioning whether Engeström's expansive learning genuinely enables transformation
 - [Using Activity Theory to Understand Systemic Tensions in a Technology-Rich Astronomy Course](sources/barab-et-al-2002-activity-theory-astronomy.md) — Barab et al.'s case study applying activity-system analysis to a university course redesign
+- [Our World as a Learning System (Snyder & Wenger 2010)](sources/snyder-wenger-2010-world-as-learning-system.md) — Extension of CoP framework to global social learning systems and complex societal challenges
+- [Promoting and Assessing Value Creation in Communities and Networks (Wenger, Trayner & De Laat 2011)](sources/wenger-trayner-laat-2011-value-creation.md) — Five-cycle framework for evaluating and justifying investment in learning communities
+- [Situated Learning: Legitimate Peripheral Participation (Lave & Wenger 1991)](sources/lave-wenger-1991.md) — Foundational text introducing situated learning and legitimate peripheral participation
+- [Social Learning Theory (Bandura 1977)](sources/bandura-1977-social-learning-theory.md) — Bandura's foundational account of observational, vicarious learning and self-efficacy
 
 ## Synthesis
 
