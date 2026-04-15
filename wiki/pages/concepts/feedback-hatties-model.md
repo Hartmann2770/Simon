@@ -54,6 +54,7 @@ Feedback is most powerful when:
 - [Direct Instruction and Explicit Teaching](direct-instruction.md) — Rosenshine's checking for understanding and guided practice are feedback mechanisms at the task level
 - [Evidence-Based Learning Strategies](evidence-based-learning-strategies.md) — feedback is one of the highest-effect strategies in Hattie's overall synthesis
 - [Retrieval Practice](retrieval-practice.md) — feedback on retrieval practice answers is most effective at the process level (explaining why an answer was wrong)
+- [How Cognitive Load Relates to Feedback](../synthesis/cognitive-load-and-feedback.md)
 
 ## Applications
 

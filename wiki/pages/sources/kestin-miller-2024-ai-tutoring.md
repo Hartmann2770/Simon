@@ -33,5 +33,3 @@ Highly significant experimental evidence for AI tutoring as a learning intervent
 - [AI in Education](../concepts/ai-in-education.md)
 
 ## Entities
-
-- [Philippa Hardman](../entities/philippa-hardman.md)

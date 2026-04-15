@@ -35,7 +35,7 @@ Desirable difficulties is a term coined by Robert Bjork in a 1994 book chapter t
 
 The central mechanism is articulated in [Bjork & Bjork (1992)](../sources/bjork-bjork-1992.md): because storage strength only increases and never decreases, and because retrieval is most consolidating when retrieval strength is low, conditions that introduce difficulty (delay, interference, lack of cues) paradoxically produce the strongest long-term traces.
 
-Wittrock (1974) ([Generative Learning](../sources/wittrock-1974.md)) provides a complementary theoretical basis: effortful generation of meaning produces deeper encoding than passive reception.
+Wittrock (1974) provides a complementary theoretical basis: effortful generation of meaning produces deeper encoding than passive reception ([Generative Learning](generative-learning.md); [Wittrock, 1974](../sources/wittrock-1974.md)).
 
 ## Connections
 
@@ -45,6 +45,7 @@ Wittrock (1974) ([Generative Learning](../sources/wittrock-1974.md)) provides a 
 - [Forgetting](forgetting.md) — desirable difficulties exploit partial forgetting to maximise consolidation
 - [Metacognition](metacognition.md) — the desirable-difficulties paradox requires metacognitive awareness to exploit
 - [Generative Learning](generative-learning.md) — generation of answers is both a desirable difficulty and a form of generative processing
+- [How Cognitive Load Relates to Feedback](../synthesis/cognitive-load-and-feedback.md)
 
 ## Applications
 

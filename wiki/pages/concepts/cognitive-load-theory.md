@@ -53,6 +53,7 @@ Cognitive load theory (CLT), developed by John Sweller from the late 1980s, is a
 - [Generative Learning](generative-learning.md) — germane load is related to the generative processing that produces deeper learning
 - [Retrieval Practice](retrieval-practice.md) — retrieval practice produces desirable difficulties that, from a CLT perspective, build stronger schemas
 - [Metacognition](metacognition.md) — learner ability to monitor cognitive load is a metacognitive skill with implications for self-regulated learning
+- [How Cognitive Load Relates to Feedback](../synthesis/cognitive-load-and-feedback.md)
 
 ## Applications
 

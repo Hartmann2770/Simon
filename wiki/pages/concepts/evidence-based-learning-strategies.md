@@ -19,7 +19,7 @@ Evidence-based learning strategies are study and instructional methods whose eff
 - **Practice testing / retrieval practice** — the single most broadly effective strategy, working across ages, subjects, and retention intervals
 - **Distributed practice / spaced repetition** — consistently superior to massed practice for long-term retention
 
-Two receive *moderate* utility:
+Three receive *moderate* utility:
 - Elaborative interrogation, self-explanation, interleaved practice
 
 Low-utility strategies despite widespread student use: highlighting, rereading, keyword mnemonics.

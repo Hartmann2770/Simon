@@ -193,3 +193,13 @@ Chronological record of all wiki operations.
 ## [2026-04-15] query | How does cognitive load relate to feedback?
 - Consulted: pages/concepts/cognitive-load-theory.md, pages/concepts/feedback-hatties-model.md, pages/concepts/desirable-difficulties.md, pages/concepts/evidence-based-learning-strategies.md
 - Answer filed: pages/synthesis/cognitive-load-and-feedback.md
+
+## [2026-04-15] lint | Full wiki health check
+- Checked all 38 concepts, 17 entities, 126 sources, 1 synthesis
+- Orphans: 18 source pages and 1 synthesis page not linked from any content page (only from index/log)
+- Contradictions: 1 factual error found (evidence-based-learning-strategies.md), 1 apparent tension (VR evidence) properly contextualized
+- Missing cross-references: 5 identified across concept pages
+- Missing concept pages: "collaborative-learning" isolated from concept network; "transfer of learning", "schema theory", "deliberate practice" mentioned 7-30 times without pages
+- Broken link: desirable-difficulties.md line 38 — [Generative Learning] points to ../sources/wittrock-1974.md instead of ../concepts/generative-learning.md
+- Knowledge gaps: embodied cognition, problem-based learning, dual coding not covered despite relevance
+- Incorrect entity: kestin-miller-2024-ai-tutoring.md lists Philippa Hardman as entity (she is not a co-author)
