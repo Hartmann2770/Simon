@@ -10,7 +10,7 @@ tags: [index, meta]
 # Wiki Index
 
 A research wiki on learning and adjacent fields. This index catalogs every page in the wiki.
-**Totals: 126 sources, 38 concepts, 17 entities, 0 synthesis.**
+**Totals: 126 sources, 38 concepts, 17 entities, 1 synthesis.**
 
 ## Concepts
 
@@ -204,4 +204,4 @@ A research wiki on learning and adjacent fields. This index catalogs every page 
 
 ## Synthesis
 
-_No synthesis pages yet. Ask questions to generate._
+- [How Cognitive Load Relates to Feedback](synthesis/cognitive-load-and-feedback.md) — phase-matched feedback model resolving the tension between CLT and desirable difficulties

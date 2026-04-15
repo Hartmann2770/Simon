@@ -189,3 +189,7 @@ Chronological record of all wiki operations.
 ## [2026-04-15] meta | Full index rebuild
 - Complete index rebuild after all ingest batches
 - Total: 126 sources, 38 concepts, 17 entities, 0 synthesis
+
+## [2026-04-15] query | How does cognitive load relate to feedback?
+- Consulted: pages/concepts/cognitive-load-theory.md, pages/concepts/feedback-hatties-model.md, pages/concepts/desirable-difficulties.md, pages/concepts/evidence-based-learning-strategies.md
+- Answer filed: pages/synthesis/cognitive-load-and-feedback.md
