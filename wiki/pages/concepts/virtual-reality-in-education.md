@@ -49,6 +49,8 @@ Virtual reality (VR) in education refers to the use of computer-generated, three
 - [Augmented Reality in Education](augmented-reality-in-education.md) — AR as the complementary "lighter" immersive technology
 - [Retrieval Practice](retrieval-practice.md) — VR memory palace research connects spatial memory to retrieval
 - [Metacognition](../concepts/metacognition.md) — VR's engagement benefits may mask poor metacognitive monitoring of actual learning
+- [Intrinsic and Extrinsic Motivation](intrinsic-extrinsic-motivation.md) — VR's engagement and motivational advantages relate to intrinsic motivation theory
+- [Self-Determination Theory](self-determination-theory.md) — VR supports autonomy and competence, two core SDT needs
 
 ## Applications
 

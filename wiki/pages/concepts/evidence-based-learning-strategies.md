@@ -3,7 +3,7 @@ title: Evidence-Based Learning Strategies
 type: concept
 created: 2026-04-15
 updated: 2026-04-15
-sources: [dunlosky-et-al-2013, hattie-donoghue-2016-learning-strategies, neelen-kirschner-2020-evidence-informed-learning-design, rosenshine-2012-principles-of-instruction, oakley-rogowsky-sejnowski-2021-uncommon-sense-teaching]
+sources: [dunlosky-et-al-2013, hattie-donoghue-2016-learning-strategies, neelen-kirschner-2020-evidence-informed-learning-design, rosenshine-2012-principles-of-instruction, oakley-rogowsky-sejnowski-2021-uncommon-sense-teaching, dehaene-how-we-learn]
 tags: [learning-strategies, evidence-based, retrieval-practice, spaced-repetition, interleaving, metacognition, hattie, dunlosky]
 ---
 
@@ -45,6 +45,8 @@ Low-utility strategies despite widespread student use: highlighting, rereading, 
 The evidence base is substantial and convergent. Retrieval practice and spaced practice are among the most replicated findings in cognitive psychology, supported by decades of laboratory and classroom research ([Dunlosky et al., 2013](../sources/dunlosky-et-al-2013.md)). Hattie's synthesis of 228 meta-analyses provides the largest comparative effect-size database for learning strategies.
 
 The evidence also consistently shows that students and teachers are poor judges of which strategies work: the most popular strategies (highlighting, rereading) are among the least effective; the most effective strategies (testing, spacing) are among the least commonly used.
+
+[Dehaene](../sources/dehaene-how-we-learn.md) grounds these findings in neuroscience, identifying four pillars of learning — attention, active engagement, error feedback, and consolidation — that directly explain why high-utility strategies like retrieval practice and spacing work at the level of neural architecture.
 
 ## Connections
 

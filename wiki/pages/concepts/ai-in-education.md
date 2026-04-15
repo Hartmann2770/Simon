@@ -3,7 +3,7 @@ title: "AI in Education"
 type: concept
 created: 2026-04-15
 updated: 2026-04-15
-sources: [kestin-miller-2024-ai-tutoring, hardman-2023-ai-education-revolution, hardman-2023-structured-prompting, hardman-2024-accelerating-excellence, lira-rogers-2025-coach-not-crutch, suriano-plebe-2025-chatgpt-critical-thinking, bozkurt-xiao-2024-manifesto-generative-ai, olga-2023-generative-ai-education, sengar-hasan-2024-generative-ai-review, hirabayashi-jain-2024-harvard-ai-survey, lodge-loble-2026-ai-cognitive-offloading, duolingo-2023-duolingo-max]
+sources: [kestin-miller-2024-ai-tutoring, hardman-2023-ai-education-revolution, hardman-2023-structured-prompting, hardman-2024-accelerating-excellence, lira-rogers-2025-coach-not-crutch, suriano-plebe-2025-chatgpt-critical-thinking, bozkurt-xiao-2024-manifesto-generative-ai, olga-2023-generative-ai-education, sengar-hasan-2024-generative-ai-review, hirabayashi-jain-2024-harvard-ai-survey, lodge-loble-2026-ai-cognitive-offloading, duolingo-2023-duolingo-max, munz-2024-ai-future-learning, nitta-2023-ai-replace-teachers]
 tags: [AI, generative-ai, LLM, tutoring, instructional-design, ChatGPT, education, learning]
 ---
 
@@ -70,6 +70,9 @@ Bozkurt et al. (2024) and Lodge/Loble (2026) provide essential critical counterw
 - [Bozkurt et al. (2024)](../sources/bozkurt-xiao-2024-manifesto-generative-ai.md): Critical-pedagogical manifesto on AI and teaching.
 - [Hirabayashi and Jain (2024)](../sources/hirabayashi-jain-2024-harvard-ai-survey.md): Empirical data on how undergraduates actually use AI.
 - [Duolingo (2023)](../sources/duolingo-2023-duolingo-max.md): Commercial case study of LLM augmentation of spaced repetition.
+- [Munz (2024)](../sources/munz-2024-ai-future-learning.md): Analysis of AI's future role in learning and education.
+- [Nitta (2023)](../sources/nitta-2023-ai-replace-teachers.md): Examination of whether AI can or should replace teachers.
+- [Olga (2023)](../sources/olga-2023-generative-ai-education.md): Review of generative AI applications in education.
 
 ## Connections
 
@@ -78,6 +81,7 @@ Bozkurt et al. (2024) and Lodge/Loble (2026) provide essential critical counterw
 - [Retrieval Practice](retrieval-practice.md) — AI can scaffold retrieval without replacing it
 - [Feedback: Hattie's Model](feedback-hatties-model.md) — AI enables scalable, personalized feedback
 - [Learning Design Frameworks](learning-design-frameworks.md) — AI tools need evidence-based design frameworks
+- [Metacognition](metacognition.md) — cognitive offloading to AI may bypass metacognitive monitoring
 
 ## Applications
 

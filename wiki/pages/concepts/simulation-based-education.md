@@ -3,7 +3,7 @@ title: Simulation-Based Education
 type: concept
 created: 2026-04-15
 updated: 2026-04-15
-sources: [wan-lam-2019, katz-et-al-2020, maddox-xr-medical-training, jensen-konradsen-2017]
+sources: [wan-lam-2019, katz-et-al-2020, maddox-xr-medical-training, jensen-konradsen-2017, cheng-nadkarni-2018-resuscitation-education]
 tags: [simulation, education, health-professions, skills-training, deliberate-practice, fidelity]
 ---
 
@@ -32,6 +32,8 @@ Simulation-based education (SBE) refers to instructional approaches that use rea
 **XR in medical device training**: [Maddox](../sources/maddox-xr-medical-training.md) argues that XR-based simulation compresses training time and improves competency assessment outcomes for medical device familiarisation.
 
 **HMD studies in training**: [Jensen & Konradsen (2017)](../sources/jensen-konradsen-2017.md) reviewed 21 studies using VR HMDs in education and training. Training domains (surgery, aviation, military) showed clearer skill-based outcomes than general academic domains, suggesting SBE applications may be where VR's evidence base is strongest.
+
+**Mastery learning and spaced practice in healthcare simulation**: [Cheng & Nadkarni (2018)](../sources/cheng-nadkarni-2018-resuscitation-education.md) provide the strongest evidence base for mastery learning and spaced practice as core design principles in healthcare simulation, demonstrating that simulation-based resuscitation education benefits substantially from deliberate spacing of practice and mastery-based progression criteria.
 
 ## Connections
 

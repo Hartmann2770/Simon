@@ -43,6 +43,7 @@ Generative learning is the process by which learners actively construct meaning 
 - [Desirable Difficulties](desirable-difficulties.md) — effortful generation is a desirable difficulty
 - [Metacognition](metacognition.md) — generative processing requires monitoring of one's own comprehension
 - [Testing Effect](testing-effect.md) — the testing effect may partly depend on the generative processing induced by retrieval
+- [Collaborative Learning](collaborative-learning.md) — verbalization in collaborative settings is a form of generative processing; explaining to peers forces active meaning construction
 
 ## Applications
 

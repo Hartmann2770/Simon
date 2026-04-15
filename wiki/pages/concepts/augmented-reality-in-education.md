@@ -49,6 +49,7 @@ Augmented reality (AR) in education refers to the overlay of computer-generated 
 - [Spatial Presence](spatial-presence.md) — spatial grounding in AR supports spatial cognition and memory
 - [Generative Learning](generative-learning.md) — AR's multimedia overlays align with dual-coding and generative learning principles
 - [Retrieval Practice](retrieval-practice.md) — context-dependent encoding in situated AR supports retrieval cue richness
+- [Situated Learning](situated-learning.md) — AR overlays learning in real-world contexts, aligning with situated cognition
 
 ## Applications
 

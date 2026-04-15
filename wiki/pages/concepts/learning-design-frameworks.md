@@ -60,6 +60,9 @@ Learning design frameworks are evaluated primarily through practitioner adoption
 - [Multimedia Learning Principles](multimedia-learning-principles.md) — multimedia design is one dimension addressed by technology-enhanced learning frameworks like 7Cs
 - [Feedback (Hattie's Model)](feedback-hatties-model.md) — assessment and feedback design is a component of all comprehensive frameworks
 - [Evidence-Based Learning Strategies](evidence-based-learning-strategies.md) — evidence-informed frameworks are designed to operationalise the high-utility strategies
+- [Activity Theory](activity-theory.md) — provides systemic analysis for design contexts
+- [Situated Learning](situated-learning.md) — foundational design theory for authentic contexts
+- [Constructionism](constructionism.md) — Papert's design philosophy for learning-by-making
 
 ## Applications
 

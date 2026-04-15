@@ -38,10 +38,11 @@ Engeström subsequently extended the concept to the collective level: the ZPD of
 - [Activity Theory](activity-theory.md) — ZPD is embedded in the cultural-historical framework
 - [Mediation](mediation.md) — mediating artifacts and social interactions constitute the scaffolding structure of the ZPD
 - [Expansive Learning](expansive-learning.md) — reconceptualizes the ZPD for collective activity systems
+- [Collaborative Learning](collaborative-learning.md) — structured peer interaction operationalizes the ZPD without requiring a teacher
 
 ## Applications
 
 - **Instructional design**: Design tasks that are challenging enough to require assistance but achievable with support — neither too easy (no development) nor too hard (breakdown without learning). Dynamic assessment and formative feedback are practical implementations.
-- **Peer learning and collaborative learning**: Structured peer interaction can create ZPDs even without teacher involvement. The key is that partners operate at genuinely different levels or bring complementary resources.
+- **Peer learning and [collaborative learning](collaborative-learning.md)**: Structured peer interaction can create ZPDs even without teacher involvement. The key is that partners operate at genuinely different levels or bring complementary resources.
 - **Scaffolding**: The pedagogical practice of providing temporary support calibrated to what a learner cannot yet do independently — a direct operationalization of the ZPD construct.
 - **Organizational development**: Engeström's Change Laboratory is designed to work in the collective ZPD of an organization, providing "mirror data" and analytical models that facilitate movement beyond current practice.
