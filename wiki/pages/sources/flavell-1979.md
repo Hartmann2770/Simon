@@ -34,4 +34,4 @@ The founding paper of the metacognition research programme. Flavell's tripartite
 
 ## Entities
 
-- [Henry Roediger III](../entities/henry-roediger-iii.md)
+- No entity pages for Flavell yet.
