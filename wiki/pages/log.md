@@ -11,6 +11,16 @@ tags: [log, meta]
 
 Chronological record of all wiki operations.
 
+## [2026-04-15] lint-fix | Fix all lint issues
+- Fixed factual error in evidence-based-learning-strategies.md
+- Fixed broken link in desirable-difficulties.md
+- Removed incorrect entity from kestin-miller-2024-ai-tutoring.md
+- Linked synthesis page from 3 concept pages
+- Added 7 missing cross-references across concept pages
+- Linked 5 orphan sources to concept pages
+- Created 4 new concept pages: transfer-of-learning, schema-theory, deliberate-practice, dual-coding-theory
+- Updated 9 existing concept pages with new cross-references
+
 ## [2026-04-15] init | Wiki scaffolded
 - Created directory structure
 - Created CLAUDE.md schema
