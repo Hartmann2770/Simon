@@ -1102,6 +1102,28 @@
     .hq-feedback { text-align: center; font-size: 15px; font-weight: 600; margin-top: 16px; }
     .hq-feedback.correct { color: #166534; }
     .hq-feedback.wrong { color: #991b1b; }
+    .hq-range-wrap { position: relative; width: 100%; height: 40px; margin: 8px 0 4px; }
+    .hq-range-track { position: absolute; top: 50%; left: 0; right: 0; height: 6px; transform: translateY(-50%); background: var(--border); border-radius: 3px; }
+    .hq-range-fill { position: absolute; top: 50%; height: 6px; transform: translateY(-50%); background: var(--accent); border-radius: 3px; pointer-events: none; }
+    .hq-range-wrap input[type=range] {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      -webkit-appearance: none; appearance: none; background: none; pointer-events: none; margin: 0;
+    }
+    .hq-range-wrap input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      pointer-events: auto; cursor: grab; position: relative; z-index: 2;
+    }
+    .hq-range-wrap input[type=range]::-moz-range-thumb {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); border: 3px solid var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      pointer-events: auto; cursor: grab;
+    }
+    .hq-range-labels { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 2px; }
+    .hq-range-selected { text-align: center; font-size: 15px; font-weight: 600; color: var(--text); margin: 4px 0; }
+    .hq-range-count { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+    .hq-size-btns { display: flex; gap: 10px; justify-content: center; }
+    .hq-size-btns button { flex: 1; padding: 12px 8px; font-size: 15px; }
 
     #peg-toggle-btn.active {
       opacity: 1;
@@ -5622,10 +5644,24 @@
     return data.palaces.filter(p => p._histTag && HISTORY_QUARTERS.some(q => q.tag === p._histTag));
   }
 
-  function _hqFilterByScope(palaces, scope) {
-    if (scope === '1800') return palaces.filter(p => p._histTag.startsWith('hist-18'));
-    if (scope === '1900') return palaces.filter(p => p._histTag.startsWith('hist-19') || p._histTag.startsWith('hist-20'));
-    return palaces; // 'all'
+  function _hqFilterByYearRange(palaces, fromYear, toYear) {
+    var result = [];
+    for (var i = 0; i < palaces.length; i++) {
+      var p = palaces[i];
+      var filteredLocs = [];
+      for (var j = 0; j < p.locations.length; j++) {
+        var yr = parseInt(p.locations[j].name, 10);
+        if (!isNaN(yr) && yr >= fromYear && yr <= toYear) filteredLocs.push(p.locations[j]);
+      }
+      if (filteredLocs.length > 0) result.push(Object.assign({}, p, { locations: filteredLocs }));
+    }
+    return result;
+  }
+
+  function _hqCountForRange(fromYear, toYear) {
+    var all = _hqGetHistoryPalaces();
+    var filtered = _hqFilterByYearRange(all, fromYear, toYear);
+    return _buildQuizDeck(filtered).length;
   }
 
   function _buildQuizDeck(palaces) {
@@ -5680,34 +5716,60 @@
     const el = document.getElementById('history-quiz-inner');
     if (screen === 'start') {
       const all = _hqGetHistoryPalaces();
-      const c19 = _hqFilterByScope(all, '1800');
-      const c20 = _hqFilterByScope(all, '1900');
-      const count19 = _buildQuizDeck(c19).length;
-      const count20 = _buildQuizDeck(c20).length;
-      const countAll = count19 + count20;
+      var minY = 9999, maxY = 0;
+      for (var i = 0; i < all.length; i++) {
+        for (var j = 0; j < all[i].locations.length; j++) {
+          var yr = parseInt(all[i].locations[j].name, 10);
+          if (!isNaN(yr)) { if (yr < minY) minY = yr; if (yr > maxY) maxY = yr; }
+        }
+      }
+      var totalCount = _hqCountForRange(minY, maxY);
       el.innerHTML =
         '<div style="text-align:center;">' +
           '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
             '<h2 style="margin:0;font-size:20px;">Historisk Quiz</h2>' +
             '<button onclick="closeHistoryQuiz()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;">&#10005;</button>' +
           '</div>' +
-          '<p style="color:var(--muted);font-size:14px;margin-bottom:24px;">Du f\u00e5r 10 tilf\u00e6ldige begivenheder.<br>Indtast det korrekte \u00e5rstal.</p>' +
-          '<p style="color:var(--muted);font-size:13px;margin-bottom:12px;">V\u00e6lg periode:</p>' +
-          '<div style="display:flex;flex-direction:column;gap:10px;">' +
-            '<button class="btn-primary" onclick="startHistoryQuiz(\'1800\')" style="padding:12px 20px;font-size:15px;">' +
-              '1800-tallet <span style="opacity:0.6;font-size:12px;">(' + count19 + ' begivenheder)</span>' +
-            '</button>' +
-            '<button class="btn-primary" onclick="startHistoryQuiz(\'1900\')" style="padding:12px 20px;font-size:15px;">' +
-              '1900-tallet <span style="opacity:0.6;font-size:12px;">(' + count20 + ' begivenheder)</span>' +
-            '</button>' +
-            '<button class="btn-ghost" onclick="startHistoryQuiz(\'all\')" style="padding:12px 20px;font-size:15px;">' +
-              'Alle perioder <span style="opacity:0.6;font-size:12px;">(' + countAll + ' begivenheder)</span>' +
-            '</button>' +
+          '<p style="color:var(--muted);font-size:14px;margin-bottom:20px;">V\u00e6lg periode og antal sp\u00f8rgsm\u00e5l.</p>' +
+          '<div class="hq-range-labels"><span>' + minY + '</span><span>' + maxY + '</span></div>' +
+          '<div class="hq-range-wrap">' +
+            '<div class="hq-range-track"></div>' +
+            '<div class="hq-range-fill" id="hq-range-fill"></div>' +
+            '<input type="range" id="hq-range-lo" min="' + minY + '" max="' + maxY + '" value="' + minY + '" step="1">' +
+            '<input type="range" id="hq-range-hi" min="' + minY + '" max="' + maxY + '" value="' + maxY + '" step="1">' +
+          '</div>' +
+          '<div class="hq-range-selected" id="hq-range-label">' + minY + ' \u2013 ' + maxY + '</div>' +
+          '<div class="hq-range-count" id="hq-range-count">(' + totalCount + ' begivenheder)</div>' +
+          '<div class="hq-size-btns">' +
+            '<button class="btn-primary" onclick="startHistoryQuiz(10)">10</button>' +
+            '<button class="btn-primary" onclick="startHistoryQuiz(25)">25</button>' +
+            '<button class="btn-primary" onclick="startHistoryQuiz(50)">50</button>' +
           '</div>' +
           '<div style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">' +
             '<button class="btn-ghost" onclick="showQuizStats()" style="padding:10px 20px;font-size:14px;">&#128202; Statistik</button>' +
           '</div>' +
         '</div>';
+      var lo = document.getElementById('hq-range-lo');
+      var hi = document.getElementById('hq-range-hi');
+      var fill = document.getElementById('hq-range-fill');
+      var lbl = document.getElementById('hq-range-label');
+      var cnt = document.getElementById('hq-range-count');
+      function updateSlider() {
+        var loVal = parseInt(lo.value, 10);
+        var hiVal = parseInt(hi.value, 10);
+        if (loVal > hiVal) { lo.value = hiVal; loVal = hiVal; }
+        if (hiVal < loVal) { hi.value = loVal; hiVal = loVal; }
+        var range = maxY - minY;
+        var loP = range > 0 ? ((loVal - minY) / range) * 100 : 0;
+        var hiP = range > 0 ? ((hiVal - minY) / range) * 100 : 100;
+        fill.style.left = loP + '%';
+        fill.style.width = (hiP - loP) + '%';
+        lbl.textContent = loVal + ' \u2013 ' + hiVal;
+        cnt.textContent = '(' + _hqCountForRange(loVal, hiVal) + ' begivenheder)';
+      }
+      lo.addEventListener('input', updateSlider);
+      hi.addEventListener('input', updateSlider);
+      updateSlider();
     } else if (screen === 'stats') {
       // Stats screen — populated async by _loadQuizStats
       // Note: uses esc() for all server data rendered as HTML (same pattern as rest of app)
@@ -5839,14 +5901,18 @@
     _hq = null;
   };
 
-  window.startHistoryQuiz = function(scope) {
+  window.startHistoryQuiz = function(count) {
+    var lo = document.getElementById('hq-range-lo');
+    var hi = document.getElementById('hq-range-hi');
+    var fromYear = lo ? parseInt(lo.value, 10) : 1800;
+    var toYear = hi ? parseInt(hi.value, 10) : 2000;
     var all = _hqGetHistoryPalaces();
-    var filtered = _hqFilterByScope(all, scope);
+    var filtered = _hqFilterByYearRange(all, fromYear, toYear);
     var deck = _buildQuizDeck(filtered);
     _shuffleArray(deck);
-    var sliced = deck.slice(0, 10);
+    var sliced = deck.slice(0, count);
     if (sliced.length === 0) { closeHistoryQuiz(); return; }
-    _hq = { deck: sliced, idx: 0, score: 0, wrong: [], answered: false, lastCorrect: false, lastAnswer: '', scope: scope };
+    _hq = { deck: sliced, idx: 0, score: 0, wrong: [], answered: false, lastCorrect: false, lastAnswer: '', scope: fromYear + '\u2013' + toYear };
     // Keyboard handler
     if (_hqKeyHandler) document.removeEventListener('keydown', _hqKeyHandler);
     _hqKeyHandler = function(e) {
