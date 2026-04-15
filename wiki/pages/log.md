@@ -179,3 +179,13 @@ Chronological record of all wiki operations.
   - philippa-hardman.md
   - peter-paul-verbeek.md
 - Skipped (low value, no content, or not academic): 24 items including Zotero guide, NoteGPT tool, JavaScript tutorial, cognitive bias infographics, Moodle course page, 25 ChatGPT prompts blog posts, social media post (Rethinking AI), Coursera workflow page, 3 anonymous no-title items, Copilot Lab prompt library, NotebookLM tool page, Motivation Matters (no author/abstract), learning theory website (no abstract), "What is education?" website (no abstract), Cognitive Bias Codex, "Why Minimal Guidance" (no abstract), Communities of Practice duplicate without abstract, Mastering Prompt Engineering (no abstract), Hattie glossary/Vimeo/blog posts (content covered by existing Hattie entity page), Resonate (no author/abstract), XRHealth investment news
+
+## [2026-04-15] ingest | Remaining sources — motivation, AI, technology philosophy, misc (batch)
+- 47 source summaries created
+- 7 concept pages created: intrinsic-extrinsic-motivation, self-determination-theory, constructionism, ai-in-education, collaborative-learning, postphenomenology-technology-mediation, space-and-place-in-learning
+- 4 entity pages created: seymour-papert, ryan-and-deci, philippa-hardman, peter-paul-verbeek
+- 24 items skipped (no content, duplicates, or non-academic)
+
+## [2026-04-15] meta | Full index rebuild
+- Complete index rebuild after all ingest batches
+- Total: 126 sources, 38 concepts, 17 entities, 0 synthesis
