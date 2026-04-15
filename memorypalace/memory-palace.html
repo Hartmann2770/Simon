@@ -1059,6 +1059,86 @@
     }
     .peg-card-back { transform: rotateY(180deg); }
 
+    /* COUNTRY SYMBOLS SIDEBAR */
+    #country-sidebar {
+      position: fixed;
+      top: 60px;
+      right: 0;
+      bottom: 0;
+      width: 360px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 150;
+    }
+    #country-sidebar.open { transform: translateX(0); }
+    #country-sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--accent-light);
+      flex-shrink: 0;
+    }
+    #country-sidebar-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .country-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--text);
+    }
+    .country-row:hover { background: var(--surface-raised); }
+    .country-name { font-weight: 600; min-width: 110px; }
+    .country-symbol { color: var(--muted); flex: 1; }
+    .country-edit-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 6px;
+    }
+    .country-edit-row input {
+      flex: 1;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 12px;
+      padding: 5px 8px;
+      font-family: inherit;
+    }
+    .country-edit-row input:focus { border-color: var(--accent); outline: none; }
+    @media (max-width: 480px) {
+      #country-sidebar {
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 55vh !important;
+        transform: translateY(100%) !important;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+      }
+      #country-sidebar.open { transform: translateY(0) !important; }
+    }
+
     /* HISTORY QUIZ */
     .hq-input {
       font-family: 'Cinzel', serif;
@@ -1125,7 +1205,7 @@
     .hq-size-btns { display: flex; gap: 10px; justify-content: center; }
     .hq-size-btns button { flex: 1; padding: 12px 8px; font-size: 15px; }
 
-    #peg-toggle-btn.active {
+    #peg-toggle-btn.active, #country-toggle-btn.active {
       opacity: 1;
       filter: drop-shadow(0 0 4px rgba(255,255,255,0.7));
     }
@@ -1168,6 +1248,7 @@
   
   <div style="display:flex;align-items:center;gap:6px">
     <span id="sync-indicator" style="font-size:12px;min-width:14px;text-align:center;color:rgba(255,255,255,0.85);"></span>
+    <button class="bar-icon-btn" id="country-toggle-btn" onclick="toggleCountrySidebar()" title="Landesymboler">&#127758;</button>
     <button class="bar-icon-btn" id="peg-toggle-btn" onclick="togglePegSidebar()" title="Peg-liste">&#128220;</button>
     <span id="auth-level-badge" style="display:none;font-size:10px;color:#fff;padding:2px 7px;border-radius:8px;font-family:sans-serif;letter-spacing:0.02em;"></span>
     <button class="bar-icon-btn" id="settings-btn" onclick="openSettingsModal()" title="Indstillinger" style="display:none;">&#9881;</button>
@@ -1259,6 +1340,17 @@
   <div id="peg-leitner-bar" style="border-top:1px solid var(--border);padding:8px 8px 6px;flex-shrink:0;"></div>
 </div>
 
+<div id="country-sidebar">
+  <div id="country-sidebar-header">
+    <span>&#127758; Landesymboler</span>
+    <div style="display:flex;gap:6px;">
+      <button id="country-edit-btn" onclick="toggleCountryEdit()" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:12px;padding:2px 8px;cursor:pointer;display:none;">Rediger</button>
+      <button onclick="toggleCountrySidebar()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;">&#10005;</button>
+    </div>
+  </div>
+  <div id="country-sidebar-list"></div>
+  <div id="country-add-bar" style="border-top:1px solid var(--border);padding:8px 12px;flex-shrink:0;display:none;"></div>
+</div>
 
 <main id="app-root">
   <section id="view-dashboard" class="view"></section>
@@ -5262,6 +5354,8 @@
     const isOpen   = sidebar.classList.toggle('open');
     btn.classList.toggle('active', isOpen);
     document.body.classList.toggle('peg-sidebar-open', isOpen);
+    var countrySidebar = document.getElementById('country-sidebar');
+    if (isOpen && countrySidebar.classList.contains('open')) toggleCountrySidebar();
     if (isOpen) renderPegList();
   };
 
@@ -5634,6 +5728,142 @@
     document.getElementById('peg-drill-modal').style.display = 'flex';
     const sidebar = document.getElementById('peg-sidebar');
     if (sidebar.classList.contains('open')) togglePegSidebar();
+  };
+
+  // ── LANDESYMBOLER SIDEBAR ──────────────────────────────────────────
+  const DEFAULT_COUNTRY_SYMBOLS = [
+    ['Armenien', '♟️ Armé (Risk-brik)'],
+    ['Balkan', '🧨 Krudttønde'],
+    ['Belgien', '🍫 Chokolade'],
+    ['Cuba', '🚬 Cigar'],
+    ['Danmark', '🇩🇰 Dannebrog'],
+    ['Egypten', '🔺 Pyramide'],
+    ['Finland', '🧖 Sauna'],
+    ['Frankrig', '🥖 Baguette'],
+    ['Grækenland', '🧀 Fetaost'],
+    ['Holland', '🏗️ Vindmølle'],
+    ['Indien', '🧘 Gandhi i løst klæde'],
+    ['Irland', '☘️ Trekløver'],
+    ['Italien', '🍕 Pizza'],
+    ['Japan', '⚔️ Samurai'],
+    ['Kina', '🐉 Drage'],
+    ['Korea', '🎮 Faker der spiller LOL'],
+    ['Norge', '🪖 Vikingehjelm'],
+    ['Palæstina', '🫒 Oliventræ'],
+    ['Portugal', '🇵🇹 Portugisisk flag'],
+    ['Rusland', '🐻 Bjørn'],
+    ['Spanien', '🐂 Tyr'],
+    ['Storbritannien', '📞 Rød telefonboks'],
+    ['Sverige', '🏡 Rød ødegård'],
+    ['Sydafrika', '💎 Diamant'],
+    ['Tyrkiet/Osmanner', '🎩 Fez + knurbart'],
+    ['Tyskland', '🪖 Pikkelhue'],
+    ['USA', '🍔 Burger'],
+    ['Østrig-Ungarn', '🟤 Mozartkugle'],
+  ];
+
+  let countryEditMode = false;
+
+  function _ensureCountrySymbols() {
+    if (!data.settings.countrySymbols || data.settings.countrySymbols.length === 0) {
+      data.settings.countrySymbols = DEFAULT_COUNTRY_SYMBOLS.map(function(pair) { return [pair[0], pair[1]]; });
+      saveData();
+    }
+  }
+
+  function renderCountryList() {
+    _ensureCountrySymbols();
+    var list = document.getElementById('country-sidebar-list');
+    var btn = document.getElementById('country-edit-btn');
+    var addBar = document.getElementById('country-add-bar');
+    btn.style.display = app.authLevel === 'admin' ? '' : 'none';
+
+    if (countryEditMode && app.authenticated) {
+      // Edit mode — inputs for each country/symbol pair, all escaped with esc()
+      var rows = data.settings.countrySymbols.map(function(pair, i) {
+        return '<div class="country-edit-row">'
+          + '<input value="' + esc(pair[0]) + '" data-country-idx="' + i + '" data-field="name" placeholder="Land..." style="min-width:90px;max-width:120px;flex:0 0 auto;">'
+          + '<input value="' + esc(pair[1]) + '" data-country-idx="' + i + '" data-field="symbol" placeholder="Symbol..." onkeydown="if(event.key===\'Enter\')saveCountryList()">'
+          + '<button onclick="removeCountryRow(' + i + ')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;padding:2px 4px;" title="Fjern">&#10005;</button>'
+          + '</div>';
+      }).join('');
+      rows += '<div style="padding:8px 6px;display:flex;gap:6px;flex-wrap:wrap;">'
+        + '<button class="btn-primary btn-sm" onclick="saveCountryList()">Gem</button>'
+        + '<button class="btn-ghost btn-sm" onclick="cancelCountryEdit()">Annuller</button>'
+        + '</div>';
+      list.innerHTML = rows;
+      addBar.style.display = 'flex';
+      addBar.innerHTML = '<input id="new-country-name" placeholder="Nyt land..." style="flex:0 0 100px;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:12px;padding:5px 8px;font-family:inherit;">'
+        + '<input id="new-country-symbol" placeholder="Symbol..." style="flex:1;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:12px;padding:5px 8px;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addCountryRow()">'
+        + '<button class="btn-ghost btn-sm" onclick="addCountryRow()">+</button>';
+      btn.textContent = 'Annuller';
+    } else {
+      // Read mode — display list, all escaped with esc()
+      list.innerHTML = data.settings.countrySymbols.map(function(pair) {
+        return '<div class="country-row"><span class="country-name">' + esc(pair[0]) + '</span><span class="country-symbol">' + esc(pair[1]) + '</span></div>';
+      }).join('');
+      addBar.style.display = 'none';
+      addBar.innerHTML = '';
+      btn.textContent = 'Rediger';
+      countryEditMode = false;
+    }
+  }
+
+  window.toggleCountrySidebar = function() {
+    var sidebar = document.getElementById('country-sidebar');
+    var btn = document.getElementById('country-toggle-btn');
+    var isOpen = sidebar.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+    var pegSidebar = document.getElementById('peg-sidebar');
+    if (isOpen && pegSidebar.classList.contains('open')) togglePegSidebar();
+    if (isOpen) renderCountryList();
+  };
+
+  window.toggleCountryEdit = function() {
+    if (app.authLevel !== 'admin') { showLoginModal(function() { toggleCountryEdit(); }); return; }
+    countryEditMode = !countryEditMode;
+    renderCountryList();
+  };
+
+  window.saveCountryList = function() {
+    var rows = document.querySelectorAll('.country-edit-row');
+    var updated = [];
+    rows.forEach(function(row) {
+      var nameInput = row.querySelector('[data-field="name"]');
+      var symbolInput = row.querySelector('[data-field="symbol"]');
+      if (nameInput && symbolInput) {
+        var n = nameInput.value.trim();
+        var s = symbolInput.value.trim();
+        if (n) updated.push([n, s]);
+      }
+    });
+    data.settings.countrySymbols = updated;
+    _userEdited = true;
+    saveData();
+    countryEditMode = false;
+    renderCountryList();
+  };
+
+  window.cancelCountryEdit = function() {
+    countryEditMode = false;
+    renderCountryList();
+  };
+
+  window.addCountryRow = function() {
+    var nameEl = document.getElementById('new-country-name');
+    var symbolEl = document.getElementById('new-country-symbol');
+    var n = nameEl.value.trim();
+    var s = symbolEl.value.trim();
+    if (!n) return;
+    data.settings.countrySymbols.push([n, s]);
+    _userEdited = true;
+    saveData();
+    renderCountryList();
+  };
+
+  window.removeCountryRow = function(idx) {
+    data.settings.countrySymbols.splice(idx, 1);
+    renderCountryList();
   };
 
   // ── HISTORISK QUIZ ─────────────────────────────────────────────────
