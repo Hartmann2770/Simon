@@ -100,3 +100,18 @@ Chronological record of all wiki operations.
   - barak-rosenshine.md
 - Skipped (insufficient content/duplicate): items 88, 91, 108, 119, 183
 - Deduplicated: items 164/165 (identical Hattie & Timperley); items 91/92 (same URL, merged into conole-7cs-learning-design)
+
+## [2026-04-15] ingest | Communities of Practice (batch)
+- 9 source summaries created
+- 5 concept pages created: communities-of-practice, situated-learning, legitimate-peripheral-participation, social-learning-systems, value-creation-in-networks
+- 2 entity pages created: etienne-wenger, jean-lave
+
+## [2026-04-15] ingest | VR/AR/XR in Education (batch)
+- 16 source summaries created
+- 5 concept pages created: virtual-reality-in-education, augmented-reality-in-education, immersive-learning, simulation-based-education, spatial-presence
+- 0 entity pages created
+
+## [2026-04-15] ingest | Cognitive Load Theory and Learning Design (batch)
+- 21 source summaries created
+- 7 concept pages created: cognitive-load-theory, multimedia-learning-principles, direct-instruction, learning-objectives, feedback-hatties-model, evidence-based-learning-strategies, learning-design-frameworks
+- 4 entity pages created: john-sweller, richard-mayer, john-hattie, barak-rosenshine
