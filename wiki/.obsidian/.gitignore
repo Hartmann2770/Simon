@@ -1,0 +1,5 @@
+# Track settings, ignore workspace state
+workspace.json
+workspace-mobile.json
+plugins/
+themes/
