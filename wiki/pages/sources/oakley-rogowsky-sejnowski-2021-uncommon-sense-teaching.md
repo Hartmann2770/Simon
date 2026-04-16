@@ -1,5 +1,6 @@
 ---
 title: "Uncommon Sense Teaching: Practical Insights in Brain Science to Help Students Learn"
+aliases: ["Uncommon Sense Teaching"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

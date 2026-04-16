@@ -1,5 +1,6 @@
 ---
 title: "Investigating the Testing Effect: Retrieval as a Characteristic of Effective Study Strategies"
+aliases: ["Investigating the Testing Effect"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, retrieval-practice, study-strategies, free-recall, practi
 ## Citation
 
 Bae, C. L., Therriault, D. J., & Redifer, J. L. (2019). Investigating the testing effect: Retrieval as a characteristic of effective study strategies. *Learning and Instruction, 60*, 206–214. https://doi.org/10.1016/j.learninstruc.2017.12.008
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/ERHKUCWK/attachment/VFDS2V23/reader)
 
 ## Key Findings
 

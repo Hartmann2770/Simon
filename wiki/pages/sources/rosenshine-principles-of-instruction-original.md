@@ -1,5 +1,6 @@
 ---
 title: "Principles of Instruction (original IEA/UNESCO pamphlet)"
+aliases: ["Principles of Instruction (original IEA/UNESCO pamphlet)"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

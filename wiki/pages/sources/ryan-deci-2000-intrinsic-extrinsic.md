@@ -1,5 +1,6 @@
 ---
 title: "Intrinsic and Extrinsic Motivations: Classic Definitions and New Directions"
+aliases: ["Intrinsic and Extrinsic Motivations"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [motivation, intrinsic-motivation, extrinsic-motivation, self-determinatio
 
 ## Citation
 
-Ryan, R. M., & Deci, E. L. (2000). Intrinsic and extrinsic motivations: Classic definitions and new directions. *Contemporary Educational Psychology*, 25(1), 54–67.
+Ryan, R. M., & Deci, E. L. (2000). Intrinsic and extrinsic motivations: Classic definitions and new directions. *Contemporary Educational Psychology*, 25(1), 54–67. https://doi.org/10.1006/ceps.1999.1020
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/8RNX9TDX/attachment/PIFMZ8I9/reader)
 
 ## Key Findings
 

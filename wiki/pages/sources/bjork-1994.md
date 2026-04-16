@@ -1,5 +1,6 @@
 ---
 title: "Memory and Metamemory Considerations in the Training of Human Beings"
+aliases: ["Memory and Metamemory Considerations in the Training of"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [desirable-difficulties, metacognition, training, spaced-repetition, forge
 ## Citation
 
 Bjork, R. A. (1994). Memory and metamemory considerations in the training of human beings. In J. Metcalfe & A. P. Shimamura (Eds.), *Metacognition: Knowing About Knowing* (pp. 185–206). MIT Press. https://doi.org/10.7551/mitpress/4561.003.0011
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/9A3FKICZ/attachment/6UFF9BRI/reader)
 
 ## Key Findings
 

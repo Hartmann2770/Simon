@@ -1,5 +1,6 @@
 ---
 title: "A New Theory of Disuse and an Old Theory of Stimulus Fluctuation"
+aliases: ["A New Theory of Disuse and an Old Theory of Stimulus"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [forgetting, disuse, storage-strength, retrieval-strength, desirable-diffi
 ## Citation
 
 Bjork, R. A., & Bjork, E. L. (1992). A new theory of disuse and an old theory of stimulus fluctuation. In A. F. Healy, S. M. Kosslyn, & R. M. Shiffrin (Eds.), *Essays in Honor of William K. Estes, Vol. 1: From Learning Theory to Connectionist Theory* (pp. 1935–1967). Erlbaum.
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/EK4VGUQN/attachment/7NTCBTK2/reader)
 
 ## Key Findings
 

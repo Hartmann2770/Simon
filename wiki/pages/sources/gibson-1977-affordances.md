@@ -1,5 +1,6 @@
 ---
 title: "The Theory of Affordances"
+aliases: ["The Theory of Affordances"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [affordances, perception, ecology, action, design, gibson]
 ## Citation
 
 Gibson, J. J. (1977). The theory of affordances. In R. Shaw & J. Bransford (Eds.), *Perceiving, Acting, and Knowing: Toward an Ecological Psychology* (pp. 67–82). Lawrence Erlbaum.
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/HVR2APCG/attachment/MM8IA3PA/reader)
 
 ## Key Findings
 

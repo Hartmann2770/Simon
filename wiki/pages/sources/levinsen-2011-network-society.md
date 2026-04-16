@@ -1,5 +1,6 @@
 ---
 title: "Udfordringer i netværkssamfundet – digitale kompetencer og it i nye undervisningsmiljøer"
+aliases: ["Udfordringer i netværkssamfundet – digitale kompetencer og"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [digital-competencies, network-society, constructivism, instructional-desi
 
 ## Citation
 
-Levinsen, K. T. (2011). Udfordringer i netværkssamfundet – digitale kompetencer og it i nye undervisningsmiljøer [Challenges in the network society – digital competencies and IT in new learning environments]. *Dansk Universitetspædagogisk Tidsskrift*, (11), 20–25.
+Levinsen, K. T. (2011). Udfordringer i netværkssamfundet – digitale kompetencer og it i nye undervisningsmiljøer [Challenges in the network society – digital competencies and IT in new learning environments]. *Dansk Universitetspædagogisk Tidsskrift*, (11), 20–25. http://ojs.statsbiblioteket.dk/index.php/dut/article/view/5551
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/5PKXW79Q/attachment/C9B9JUQT/reader)
 
 ## Key Findings
 

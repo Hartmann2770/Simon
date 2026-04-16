@@ -1,5 +1,6 @@
 ---
 title: "Optimally Interacting Minds"
+aliases: ["Optimally Interacting Minds"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [collaborative-cognition, collective-intelligence, perception, decision-ma
 
 ## Citation
 
-Bahrami, B., Olsen, K., Latham, P. E., Roepstorff, A., Rees, G., & Frith, C. D. (2010). Optimally interacting minds. *Science*, 329(5995), 1081–1085.
+Bahrami, B., Olsen, K., Latham, P. E., Roepstorff, A., Rees, G., & Frith, C. D. (2010). Optimally interacting minds. *Science*, 329(5995), 1081–1085. https://doi.org/10.1126/science.1185718
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/KX72NEFZ/attachment/DGXHIKVH/reader)
 
 ## Key Findings
 

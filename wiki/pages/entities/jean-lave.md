@@ -1,5 +1,6 @@
 ---
 title: Jean Lave
+aliases: ["Jean Lave"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

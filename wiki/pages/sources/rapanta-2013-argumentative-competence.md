@@ -1,5 +1,6 @@
 ---
 title: "What Is Meant by Argumentative Competence? An Integrative Review of Methods of Analysis and Assessment in Education"
+aliases: ["What Is Meant by Argumentative Competence? An Integrative"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [argumentation, competence, assessment, collaborative-learning, reasoning,
 
 ## Citation
 
-Rapanta, C., Garcia-Mila, M., & Gilabert, S. (2013). What is meant by argumentative competence? An integrative review of methods of analysis and assessment in education. *Review of Educational Research*, 83(4), 483–520.
+Rapanta, C., Garcia-Mila, M., & Gilabert, S. (2013). What is meant by argumentative competence? An integrative review of methods of analysis and assessment in education. *Review of Educational Research*, 83(4), 483–520. https://doi.org/10.3102/0034654313487606
 
 ## Key Findings
 

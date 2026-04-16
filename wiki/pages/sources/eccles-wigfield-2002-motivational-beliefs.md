@@ -1,5 +1,6 @@
 ---
 title: "Motivational Beliefs, Values, and Goals"
+aliases: ["Motivational Beliefs, Values, and Goals"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [motivation, expectancy-value, goals, achievement, eccles, wigfield, belie
 
 ## Citation
 
-Eccles, J. S., & Wigfield, A. (2002). Motivational beliefs, values, and goals. *Annual Review of Psychology*, 53, 109–132.
+Eccles, J. S., & Wigfield, A. (2002). Motivational beliefs, values, and goals. *Annual Review of Psychology*, 53, 109–132. https://doi.org/10.1146/annurev.psych.53.100901.135153
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/8I37X6RA/attachment/92PG6X6Y/reader)
 
 ## Key Findings
 

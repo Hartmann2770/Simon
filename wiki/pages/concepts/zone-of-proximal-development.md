@@ -1,5 +1,6 @@
 ---
 title: Zone of Proximal Development
+aliases: ["Zone of Proximal Development"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

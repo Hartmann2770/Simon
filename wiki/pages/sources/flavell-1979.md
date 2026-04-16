@@ -1,5 +1,6 @@
 ---
 title: "Metacognition and Cognitive Monitoring: A New Area of Cognitive-Developmental Inquiry"
+aliases: ["Metacognition and Cognitive Monitoring"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [metacognition, cognitive-development, cognitive-monitoring, self-regulati
 ## Citation
 
 Flavell, J. H. (1979). Metacognition and cognitive monitoring: A new area of cognitive-developmental inquiry. *American Psychologist, 34*(10), 906–911. https://doi.org/10.1037/0003-066X.34.10.906
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/FG5TY694/attachment/9S49PMRV/reader)
 
 ## Key Findings
 

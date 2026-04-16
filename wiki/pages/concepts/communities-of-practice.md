@@ -1,5 +1,6 @@
 ---
 title: Communities of Practice
+aliases: ["Communities of Practice"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

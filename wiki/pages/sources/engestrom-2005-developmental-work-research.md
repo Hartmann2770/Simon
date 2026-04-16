@@ -1,5 +1,6 @@
 ---
 title: "Developmental Work Research: Expanding Activity Theory in Practice"
+aliases: ["Developmental Work Research"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

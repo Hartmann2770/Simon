@@ -1,9 +1,10 @@
 ---
 title: "Philippa Hardman"
+aliases: ["Philippa Hardman"]
 type: entity
 created: 2026-04-15
-updated: 2026-04-15
-sources: [hardman-2023-ai-education-revolution, hardman-2023-structured-prompting, hardman-2024-accelerating-excellence]
+updated: 2026-04-16
+sources: [hardman-2023-ai-education-revolution, hardman-2023-structured-prompting, hardman-2024-accelerating-excellence, hardman-2026-cognitive-offloading-paradox]
 tags: [hardman, AI, instructional-design, DOMS, learning-science, edtech]
 ---
 
@@ -31,8 +32,13 @@ Hardman has developed and advocated for structured prompting frameworks (notably
 
 In her TEDx talk (2023), Hardman provides a historical framing: previous edtech "revolutions" (MOOCs, interactive whiteboards) failed to transform education because they replicated existing models rather than reconceiving them. Generative AI is qualitatively different — it enables genuine personalization at scale — but only if deployed in service of evidence-based learning design.
 
+### The Cognitive Offloading Paradox (2026)
+
+Hardman's most recent synthesis (2026) addresses the central AI-in-education design challenge: when does offloading cognitive work to AI help vs. harm learning? Drawing on Wang and Zhang (2026), she articulates the "offloading paradox" — partial AI use is counterproductive, but committed strategic offloading enhances learning — and translates it into six actionable design principles for learning designers. The key framework distinguishes tasks to *offload* (summarisation, data organisation) from tasks to *protect* (problem formulation, original argument, error correction).
+
 ## Sources
 
 - [Hardman (2023) — TEDx](../sources/hardman-2023-ai-education-revolution.md): Historical framing of the AI education opportunity and risks.
 - [Hardman (2023) — Structured Prompting](../sources/hardman-2023-structured-prompting.md): CRAFT framework and prompt engineering as a pedagogical skill.
 - [Hardman (2024) — Accelerating Excellence](../sources/hardman-2024-accelerating-excellence.md): Initial research findings on AI's impact on instructional design speed and quality.
+- [Hardman (2026) — Cognitive Offloading Paradox](../sources/hardman-2026-cognitive-offloading-paradox.md): Six design principles for AI-supported learning; offload/protect taxonomy.

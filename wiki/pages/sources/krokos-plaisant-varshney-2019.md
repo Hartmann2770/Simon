@@ -1,5 +1,6 @@
 ---
 title: "Virtual Memory Palaces: Immersion Aids Recall"
+aliases: ["Virtual Memory Palaces"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [virtual-reality, memory-palace, spatial-memory, recall, immersion, head-m
 ## Citation
 
 Krokos, Eric, Catherine Plaisant, and Amitabh Varshney. "Virtual Memory Palaces: Immersion Aids Recall." *Virtual Reality* 23 (2019): 1–15. https://doi.org/10.1007/s10055-018-0346-3
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/E4P2XFQV/attachment/U23TWGFR/reader)
 
 ## Key Findings
 

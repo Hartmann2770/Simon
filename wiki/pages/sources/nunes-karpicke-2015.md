@@ -1,5 +1,6 @@
 ---
 title: "Retrieval-Based Learning: Research at the Interface between Cognitive Science and Education"
+aliases: ["Retrieval-Based Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [retrieval-practice, testing-effect, cognitive-science, education]
 ## Citation
 
 Nunes, L. D., & Karpicke, J. D. (2015). Retrieval-based learning: Research at the interface between cognitive science and education. In R. A. Scott & S. M. Kosslyn (Eds.), *Emerging Trends in the Social and Behavioral Sciences* (pp. 1–16). Wiley. https://doi.org/10.1002/9781118900772.etrds0289
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/SNWQWA28/attachment/G62YVG6I/reader)
 
 ## Key Findings
 

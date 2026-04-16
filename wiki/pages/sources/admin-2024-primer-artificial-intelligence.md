@@ -1,5 +1,6 @@
 ---
 title: "A Primer on Artificial Intelligence"
+aliases: ["A Primer on Artificial Intelligence"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

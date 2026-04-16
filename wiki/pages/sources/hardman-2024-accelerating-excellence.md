@@ -1,5 +1,6 @@
 ---
 title: "Accelerating Excellence? Initial Findings on AI and Learning Design"
+aliases: ["Accelerating Excellence? Initial Findings on AI and"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

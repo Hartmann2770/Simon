@@ -1,5 +1,6 @@
 ---
 title: "Learning as a Generative Process"
+aliases: ["Learning as a Generative Process"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [generative-learning, active-learning, transfer, cognitive-model, construc
 ## Citation
 
 Wittrock, M. C. (1974). Learning as a generative process. *Educational Psychologist, 11*(2), 87–95. https://doi.org/10.1080/00461527409529129
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/FN9EZB7U/attachment/BREUFCFA/reader)
 
 ## Key Findings
 

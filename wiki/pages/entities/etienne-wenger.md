@@ -1,5 +1,6 @@
 ---
 title: Etienne Wenger
+aliases: ["Etienne Wenger"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

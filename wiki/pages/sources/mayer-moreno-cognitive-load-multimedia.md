@@ -1,5 +1,6 @@
 ---
 title: "Nine Ways to Reduce Cognitive Load in Multimedia Learning"
+aliases: ["Nine Ways to Reduce Cognitive Load in Multimedia Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

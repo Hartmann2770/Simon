@@ -1,5 +1,6 @@
 ---
 title: "Dr. Philippa Hardman — The AI Education Revolution is Coming — or is it?"
+aliases: ["Dr. Philippa Hardman — The AI Education Revolution is"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

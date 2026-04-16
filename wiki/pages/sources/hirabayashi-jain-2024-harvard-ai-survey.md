@@ -1,5 +1,6 @@
 ---
 title: "Harvard Undergraduate Survey on Generative AI"
+aliases: ["Harvard Undergraduate Survey on Generative AI"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [generative-ai, student-survey, higher-education, Harvard, AI-use, academi
 
 ## Citation
 
-Hirabayashi, K., & Jain, N. (2024). Harvard undergraduate survey on generative AI. Preprint/report.
+Hirabayashi, K., & Jain, N. (2024). Harvard undergraduate survey on generative AI. Preprint/report. http://arxiv.org/abs/2406.00833
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/DPVBX2UQ/attachment/CYF2W9Z3/reader)
 
 ## Key Findings
 

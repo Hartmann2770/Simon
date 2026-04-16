@@ -1,5 +1,6 @@
 ---
 title: "Repeated Retrieval During Learning Is the Key to Long-Term Retention"
+aliases: ["Repeated Retrieval During Learning Is the Key to Long-Term"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [retrieval-practice, testing-effect, long-term-retention, spaced-repetitio
 ## Citation
 
 Karpicke, J. D., & Roediger, H. L. (2007). Repeated retrieval during learning is the key to long-term retention. *Journal of Memory and Language, 57*(2), 151–162. https://doi.org/10.1016/j.jml.2006.09.004
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/ES45PIGG/attachment/UWXYR8L7/reader)
 
 ## Key Findings
 

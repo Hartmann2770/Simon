@@ -1,5 +1,6 @@
 ---
 title: "Re-space-ing Place: 'Place' and 'Space' Ten Years On"
+aliases: ["Re-space-ing Place"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [space, place, CSCW, HCI, dourish, social-meaning, collaborative-systems]
 
 ## Citation
 
-Dourish, P. (2006). Re-space-ing place: "Place" and "space" ten years on. In *CSCW '06: Proceedings of the 2006 ACM Conference on Computer Supported Cooperative Work* (pp. 299–308). ACM Press.
+Dourish, P. (2006). Re-space-ing place: "Place" and "space" ten years on. In *CSCW '06: Proceedings of the 2006 ACM Conference on Computer Supported Cooperative Work* (pp. 299–308). ACM Press. https://doi.org/10.1145/1180875.1180921
 
 ## Key Findings
 

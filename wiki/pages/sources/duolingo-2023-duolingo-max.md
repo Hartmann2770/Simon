@@ -1,5 +1,6 @@
 ---
 title: "Introducing Duolingo Max, a Learning Experience Powered by GPT-4"
+aliases: ["Introducing Duolingo Max, a Learning Experience Powered by"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

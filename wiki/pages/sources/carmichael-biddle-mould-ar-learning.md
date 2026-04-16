@@ -1,5 +1,6 @@
 ---
 title: "Understanding the Power of Augmented Reality for Learning"
+aliases: ["Understanding the Power of Augmented Reality for Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

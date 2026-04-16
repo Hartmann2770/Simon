@@ -1,5 +1,6 @@
 ---
 title: "Re-place-ing Space: The Roles of Place and Space in Collaborative Systems"
+aliases: ["Re-place-ing Space"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [space, place, collaborative-systems, CSCW, social-meaning, harrison, dour
 
 ## Citation
 
-Harrison, S., & Dourish, P. (1996). Re-place-ing space: The roles of place and space in collaborative systems. In *Proceedings of the 1996 ACM Conference on Computer Supported Cooperative Work (CSCW '96)* (pp. 67–76). ACM Press.
+Harrison, S., & Dourish, P. (1996). Re-place-ing space: The roles of place and space in collaborative systems. In *Proceedings of the 1996 ACM Conference on Computer Supported Cooperative Work (CSCW '96)* (pp. 67–76). ACM Press. https://doi.org/10.1145/240080.240193
 
 ## Key Findings
 

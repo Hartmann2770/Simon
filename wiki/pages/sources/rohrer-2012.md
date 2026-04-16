@@ -1,5 +1,6 @@
 ---
 title: "Interleaving Helps Students Distinguish among Similar Concepts"
+aliases: ["Interleaving Helps Students Distinguish among Similar"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [interleaving, blocking, discrimination-learning, mathematics, desirable-d
 ## Citation
 
 Rohrer, D. (2012). Interleaving helps students distinguish among similar concepts. *Educational Psychology Review, 24*(3), 355–367. https://doi.org/10.1007/s10648-012-9201-3
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/64D2NMSP/attachment/H4N5P5XR/reader)
 
 ## Key Findings
 

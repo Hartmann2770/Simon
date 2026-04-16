@@ -1,5 +1,6 @@
 ---
 title: "Evidence-Informed Learning Design: Creating Training to Improve Performance"
+aliases: ["Evidence-Informed Learning Design"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

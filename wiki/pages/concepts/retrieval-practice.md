@@ -1,10 +1,26 @@
 ---
 title: Retrieval Practice
+aliases: ["Retrieval Practice"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15
-sources: [roediger-karpicke-2006a, roediger-karpicke-2006b, roediger-butler-2011, roediger-putnam-smith-2011, karpicke-roediger-2007, nunes-karpicke-2015, whiffen-karpicke-2017, bae-therriault-redifer-2019, dunlosky-et-al-2013, binks-2018]
-tags: [retrieval-practice, testing-effect, memory, active-learning, study-strategies]
+sources:
+  - roediger-karpicke-2006a
+  - roediger-karpicke-2006b
+  - roediger-butler-2011
+  - roediger-putnam-smith-2011
+  - karpicke-roediger-2007
+  - nunes-karpicke-2015
+  - whiffen-karpicke-2017
+  - bae-therriault-redifer-2019
+  - dunlosky-et-al-2013
+  - binks-2018
+tags:
+  - retrieval-practice
+  - testing-effect
+  - memory
+  - active-learning
+  - study-strategies
 ---
 
 ## Definition

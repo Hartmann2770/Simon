@@ -1,5 +1,6 @@
 ---
 title: "How We Learn: Why Brains Learn Better Than Any Machine — and How to Harness That Gift"
+aliases: ["How We Learn"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

@@ -1,5 +1,6 @@
 ---
 title: Aleksei Leont'ev
+aliases: ["Aleksei Leont'ev"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

@@ -1,5 +1,6 @@
 ---
 title: "Seymour Papert"
+aliases: ["Seymour Papert"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

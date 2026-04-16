@@ -1,5 +1,6 @@
 ---
 title: "Activity Theory and Social Practice: Cultural-Historical Approaches"
+aliases: ["Activity Theory and Social Practice"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

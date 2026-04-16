@@ -1,5 +1,6 @@
 ---
 title: "What Things Do: Philosophical Reflections on Technology, Agency, and Design"
+aliases: ["What Things Do"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

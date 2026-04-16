@@ -1,5 +1,6 @@
 ---
 title: "Coach Not Crutch: AI Assistance Can Enhance Rather Than Hinder Skill Development"
+aliases: ["Coach Not Crutch"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [AI, skill-development, writing, cognitive-offloading, crutch-effect, lira
 
 ## Citation
 
-Lira, R., & Rogers, T. (2025). Coach not crutch: AI assistance can enhance rather than hinder skill development. Preprint.
+Lira, R., & Rogers, T. (2025). Coach not crutch: AI assistance can enhance rather than hinder skill development. Preprint. https://doi.org/10.48550/arXiv.2502.02880
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/643CCN4D/attachment/QGQPY7H5/reader)
 
 ## Key Findings
 

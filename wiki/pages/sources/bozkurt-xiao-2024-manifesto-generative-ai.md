@@ -1,5 +1,6 @@
 ---
 title: "The Manifesto for Teaching and Learning in a Time of Generative AI: A Critical Collective"
+aliases: ["The Manifesto for Teaching and Learning in a Time of"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [generative-ai, manifesto, teaching, learning, critical-pedagogy, bozkurt,
 
 ## Citation
 
-Bozkurt, A., Xiao, J., et al. (2024). The manifesto for teaching and learning in a time of generative AI: A critical collective. *Open Praxis*.
+Bozkurt, A., Xiao, J., et al. (2024). The manifesto for teaching and learning in a time of generative AI: A critical collective. *Open Praxis*. https://doi.org/10.55982/openpraxis.16.4.777
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/BXHI9FKN/attachment/2MWLNMTX/reader)
 
 ## Key Findings
 

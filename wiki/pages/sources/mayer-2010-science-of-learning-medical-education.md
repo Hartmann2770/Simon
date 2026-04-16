@@ -1,5 +1,6 @@
 ---
 title: "Applying the Science of Learning to Medical Education"
+aliases: ["Applying the Science of Learning to Medical Education"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [multimedia-learning, medical-education, instructional-design, mayer, cogn
 ## Citation
 
 Mayer, R. E. (2010). Applying the science of learning to medical education. *Medical Education, 44*(6), 543–549. https://doi.org/10.1111/j.1365-2923.2010.03624.x
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/KUALNFYI/attachment/86V5N957/reader)
 
 ## Key Findings
 

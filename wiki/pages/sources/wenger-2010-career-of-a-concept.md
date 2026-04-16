@@ -1,5 +1,6 @@
 ---
 title: "Communities of Practice and Social Learning Systems: the Career of a Concept"
+aliases: ["Communities of Practice and Social Learning Systems"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [communities-of-practice, social-learning-systems, conceptual-history, ide
 
 ## Citation
 
-Wenger, Etienne. "Communities of Practice and Social Learning Systems: the Career of a Concept." In *Social Learning Systems and Communities of Practice*, edited by Chris Blackmore. London: Springer, 2010. ISBN: 978-1-84996-132-5.
+Wenger, Etienne. "Communities of Practice and Social Learning Systems: the Career of a Concept." In *Social Learning Systems and Communities of Practice*, edited by Chris Blackmore. London: Springer, 2010. ISBN: 978-1-84996-132-5. http://www.springerlink.com/index/10.1007/978-1-84996-133-2_11
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: Simulation-Based Education
+aliases: ["Simulation-Based Education"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

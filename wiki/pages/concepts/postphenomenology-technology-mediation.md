@@ -1,5 +1,6 @@
 ---
 title: "Postphenomenology and Technology Mediation"
+aliases: ["Postphenomenology and Technology Mediation"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

@@ -1,5 +1,6 @@
 ---
 title: "Activity Theory: Basic Concepts and Applications"
+aliases: ["Activity Theory"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

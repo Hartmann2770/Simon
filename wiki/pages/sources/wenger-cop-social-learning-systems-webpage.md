@@ -1,5 +1,6 @@
 ---
 title: "Communities of Practice and Social Learning Systems"
+aliases: ["Communities of Practice and Social Learning Systems"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

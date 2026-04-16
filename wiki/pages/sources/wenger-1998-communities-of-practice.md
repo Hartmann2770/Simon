@@ -1,5 +1,6 @@
 ---
 title: "Communities of Practice: Learning, Meaning, and Identity"
+aliases: ["Communities of Practice"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

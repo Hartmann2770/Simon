@@ -1,5 +1,6 @@
 ---
 title: "Artificial Intelligence and the Future of Learning"
+aliases: ["Artificial Intelligence and the Future of Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

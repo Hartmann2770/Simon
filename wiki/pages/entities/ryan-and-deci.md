@@ -1,5 +1,6 @@
 ---
 title: "Ryan and Deci"
+aliases: ["Ryan and Deci"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

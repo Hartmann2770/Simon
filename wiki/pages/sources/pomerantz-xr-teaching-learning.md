@@ -1,5 +1,6 @@
 ---
 title: "XR for Teaching and Learning: Year 2 of the EDUCAUSE/HP Campus of the Future Project"
+aliases: ["XR for Teaching and Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

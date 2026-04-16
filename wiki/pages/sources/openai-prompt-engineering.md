@@ -1,5 +1,6 @@
 ---
 title: "Prompt Engineering — By OpenAI"
+aliases: ["Prompt Engineering — By OpenAI"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

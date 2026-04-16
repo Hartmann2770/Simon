@@ -1,5 +1,6 @@
 ---
 title: "What's the Big Idea? Toward a Pedagogy of Idea Power"
+aliases: ["What's the Big Idea? Toward a Pedagogy of Idea Power"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [constructionism, papert, powerful-ideas, pedagogy, learning, IBM]
 
 ## Citation
 
-Papert, S. (2000). What's the big idea? Toward a pedagogy of idea power. *IBM Systems Journal*, 39(3&4), 720–729.
+Papert, S. (2000). What's the big idea? Toward a pedagogy of idea power. *IBM Systems Journal*, 39(3&4), 720–729. https://doi.org/10.1147/sj.393.0720
 
 ## Key Findings
 

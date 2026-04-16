@@ -1,5 +1,6 @@
 ---
 title: "Testing Enhances Learning: A Review of the Literature"
+aliases: ["Testing Enhances Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, retrieval-practice, nursing-education, professional-pract
 ## Citation
 
 Binks, S. (2018). Testing enhances learning: A review of the literature. *Journal of Professional Nursing, 34*(3), 205–210. https://doi.org/10.1016/j.profnurs.2017.08.008
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/RM5NBIDX/attachment/LV9QT5LZ/reader)
 
 ## Key Findings
 

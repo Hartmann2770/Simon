@@ -1,5 +1,6 @@
 ---
 title: "Testing Improves Performance as Well as Assesses Learning: A Review of the Testing Effect with Implications for Models of Learning"
+aliases: ["Testing Improves Performance as Well as Assesses Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, animal-learning, learning-theory, acquisition, retrieval-
 ## Citation
 
 Polack, C. W., & Miller, R. R. (2022). Testing improves performance as well as assesses learning: A review of the testing effect with implications for models of learning. *Journal of Experimental Psychology: Animal Learning and Cognition, 48*(3), 222–241. https://doi.org/10.1037/xan0000323
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/T377SUMX/attachment/BREHXIZY/reader)
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: "Benefits of Augmented Reality in Educational Environments: A Systematic Literature Review"
+aliases: ["Benefits of Augmented Reality in Educational Environments"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

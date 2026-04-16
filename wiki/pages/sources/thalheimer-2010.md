@@ -1,5 +1,6 @@
 ---
 title: "How Much Do People Forget?"
+aliases: ["How Much Do People Forget"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [forgetting, retention, spaced-repetition, ebbinghaus, training]
 ## Citation
 
 Thalheimer, W. (2010). How much do people forget? (31 pp.). Work-Learning Research.
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/SK58GZKP/attachment/Y3LWQD3H/reader)
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: "Utilization of a Voice-Based Virtual Reality Advanced Cardiac Life Support Team Leader Refresher: Prospective Observational Study"
+aliases: ["Utilization of a Voice-Based Virtual Reality Advanced"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

@@ -1,5 +1,6 @@
 ---
 title: "Facilitating Student Learning: An Instructional Design Perspective for Health Professions Educators"
+aliases: ["Facilitating Student Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [instructional-design, health-professions, cognitive-load, memory, noushad
 ## Citation
 
 Noushad, B., & Khurshid, F. (2019). Facilitating student learning: An instructional design perspective for health professions educators. *Research and Development in Medical Education, 8*(2), 65–70. https://doi.org/10.15171/rdme.2019.014
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/BNZP9MRV/attachment/EI3DURDN/reader)
 
 ## Key Findings
 

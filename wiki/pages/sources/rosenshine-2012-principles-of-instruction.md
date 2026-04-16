@@ -1,5 +1,6 @@
 ---
 title: "Principles of Instruction: Research-Based Strategies That All Teachers Should Know"
+aliases: ["Principles of Instruction"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [direct-instruction, explicit-teaching, rosenshine, principles-of-instruct
 ## Citation
 
 Rosenshine, B. (2012). Principles of instruction: Research-based strategies that all teachers should know. *American Educator, 36*(1), 12–19, 39. https://eric.ed.gov/?id=EJ971753
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/FDXYGC3U/attachment/C9VQPPXD/reader)
 
 ## Key Findings
 

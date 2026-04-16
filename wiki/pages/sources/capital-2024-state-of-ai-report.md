@@ -1,5 +1,6 @@
 ---
 title: "State of AI Report 2024"
+aliases: ["State of AI Report 2024"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

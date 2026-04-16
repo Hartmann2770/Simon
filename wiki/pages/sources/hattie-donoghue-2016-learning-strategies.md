@@ -1,5 +1,6 @@
 ---
 title: "Learning Strategies: A Synthesis and Conceptual Model"
+aliases: ["Learning Strategies"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [learning-strategies, hattie, surface-learning, deep-learning, transfer, m
 ## Citation
 
 Hattie, J. A. C., & Donoghue, G. M. (2016). Learning strategies: A synthesis and conceptual model. *npj Science of Learning, 1*, 16013. https://doi.org/10.1038/npjscilearn.2016.13
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/DWYQJNH9/attachment/8DSG8GGL/reader)
 
 ## Key Findings
 

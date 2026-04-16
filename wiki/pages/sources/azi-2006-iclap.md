@@ -1,5 +1,6 @@
 ---
 title: "Interactive Child Learning Aid Project (i-CLAP): Design and Development of an Indigenous Instructional Multimedia Prototype"
+aliases: ["Interactive Child Learning Aid Project (i-CLAP)"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [multimedia, instructional-design, indigenous-education, e-learning, Niger
 
 ## Citation
 
-Azi, J. R. (2006). Interactive child learning aid project (i-CLAP): Design and development of an indigenous instructional multimedia prototype for enhancing learning. Unpublished project/article.
+Azi, J. R. (2006). Interactive child learning aid project (i-CLAP): Design and development of an indigenous instructional multimedia prototype for enhancing learning. Unpublished project/article. http://ijedict.dec.uwi.edu/viewarticle.php?id=175&layout=html
 
 ## Key Findings
 

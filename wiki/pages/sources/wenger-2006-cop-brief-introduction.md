@@ -1,5 +1,6 @@
 ---
 title: "Communities of Practice: A Brief Introduction"
+aliases: ["Communities of Practice"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [communities-of-practice, situated-learning, domain-community-practice, in
 
 ## Citation
 
-Wenger, Etienne. "Communities of Practice: A Brief Introduction." 2006. Reproduced for use in "South Australia Teaching for Effective Learning Resource."
+Wenger, Etienne. "Communities of Practice: A Brief Introduction." 2006. Reproduced for use in "South Australia Teaching for Effective Learning Resource.". http://www.baboosi.com.au/learningdvd/indepth/1/1_3/M/1_3M3a%20Communities%20of%20practice%20-%20a%20brief%20introduction.pdf
 
 ## Key Findings
 

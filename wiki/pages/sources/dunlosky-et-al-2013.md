@@ -1,5 +1,6 @@
 ---
 title: "Improving Students' Learning With Effective Learning Techniques: Promising Directions From Cognitive and Educational Psychology"
+aliases: ["Improving Students' Learning With Effective Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

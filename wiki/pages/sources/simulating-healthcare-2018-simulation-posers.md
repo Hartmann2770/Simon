@@ -1,5 +1,6 @@
 ---
 title: "Beware of Simulation Posers! Common Myths in Healthcare Simulation"
+aliases: ["Beware of Simulation Posers! Common Myths in Healthcare"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

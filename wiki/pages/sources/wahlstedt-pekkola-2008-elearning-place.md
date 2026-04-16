@@ -1,5 +1,6 @@
 ---
 title: "From E-learning Space to E-learning Place"
+aliases: ["From E-learning Space to E-learning Place"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [e-learning, space, place, online-learning, learning-environment, wahlsted
 
 ## Citation
 
-Wahlstedt, A., Pekkola, S., & Niemelä, M. (2008). From e-learning space to e-learning place. *British Journal of Educational Technology*, 39(6), 1020–1030.
+Wahlstedt, A., Pekkola, S., & Niemelä, M. (2008). From e-learning space to e-learning place. *British Journal of Educational Technology*, 39(6), 1020–1030. https://doi.org/10.1111/j.1467-8535.2008.00821_1.x
 
 ## Key Findings
 

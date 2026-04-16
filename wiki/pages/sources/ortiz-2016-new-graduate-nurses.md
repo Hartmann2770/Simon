@@ -1,5 +1,6 @@
 ---
 title: "New Graduate Nurses' Experiences About Lack of Professional Confidence"
+aliases: ["New Graduate Nurses' Experiences About Lack of Professional"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [nursing-education, new-graduates, confidence, professional-identity, tran
 
 ## Citation
 
-Ortiz, J. (2016). New graduate nurses' experiences about lack of professional confidence. *Nurse Education in Practice*, 19, 19–24.
+Ortiz, J. (2016). New graduate nurses' experiences about lack of professional confidence. *Nurse Education in Practice*, 19, 19–24. https://doi.org/10.1016/j.nepr.2016.04.001
 
 ## Key Findings
 

@@ -1,9 +1,10 @@
 ---
 title: "AI in Education"
+aliases: ["AI in Education"]
 type: concept
 created: 2026-04-15
-updated: 2026-04-15
-sources: [kestin-miller-2024-ai-tutoring, hardman-2023-ai-education-revolution, hardman-2023-structured-prompting, hardman-2024-accelerating-excellence, lira-rogers-2025-coach-not-crutch, suriano-plebe-2025-chatgpt-critical-thinking, bozkurt-xiao-2024-manifesto-generative-ai, olga-2023-generative-ai-education, sengar-hasan-2024-generative-ai-review, hirabayashi-jain-2024-harvard-ai-survey, lodge-loble-2026-ai-cognitive-offloading, duolingo-2023-duolingo-max, munz-2024-ai-future-learning, nitta-2023-ai-replace-teachers]
+updated: 2026-04-16
+sources: [kestin-miller-2024-ai-tutoring, hardman-2023-ai-education-revolution, hardman-2023-structured-prompting, hardman-2024-accelerating-excellence, lira-rogers-2025-coach-not-crutch, suriano-plebe-2025-chatgpt-critical-thinking, bozkurt-xiao-2024-manifesto-generative-ai, olga-2023-generative-ai-education, sengar-hasan-2024-generative-ai-review, hirabayashi-jain-2024-harvard-ai-survey, lodge-loble-2026-ai-cognitive-offloading, duolingo-2023-duolingo-max, munz-2024-ai-future-learning, nitta-2023-ai-replace-teachers, wang-zhang-2026-pedagogical-partnerships-genai, hardman-2026-cognitive-offloading-paradox]
 tags: [AI, generative-ai, LLM, tutoring, instructional-design, ChatGPT, education, learning]
 ---
 
@@ -59,6 +60,8 @@ Bozkurt et al. (2024) and Lodge/Loble (2026) provide essential critical counterw
 - Assessment must be redesigned to be meaningful in AI-abundant environments
 - Teaching's human, relational, and ethical dimensions cannot be automated
 
+However, Wang and Zhang (2026) complicate this picture with the **offloading paradox**: strategic offloading of entire task categories to AI can *enhance* transformative learning when paired with critical vigilance. Partial, scattered AI use produces the worst outcomes — worse than no AI at all. Hardman (2026) translates this into a practical design framework: offload routine processing (summarisation, data organisation) while protecting germane processing (argument construction, error correction, problem formulation). See [Cognitive Offloading](cognitive-offloading.md) for full analysis.
+
 ## Evidence
 
 - [Kestin and Miller (2024)](../sources/kestin-miller-2024-ai-tutoring.md): RCT showing AI tutoring significantly outperforms active learning classroom instruction.
@@ -73,6 +76,8 @@ Bozkurt et al. (2024) and Lodge/Loble (2026) provide essential critical counterw
 - [Munz (2024)](../sources/munz-2024-ai-future-learning.md): Analysis of AI's future role in learning and education.
 - [Nitta (2023)](../sources/nitta-2023-ai-replace-teachers.md): Examination of whether AI can or should replace teachers.
 - [Olga (2023)](../sources/olga-2023-generative-ai-education.md): Review of generative AI applications in education.
+- [Wang and Zhang (2026)](../sources/wang-zhang-2026-pedagogical-partnerships-genai.md): The offloading paradox — strategic AI offloading enhances transformative learning.
+- [Hardman (2026)](../sources/hardman-2026-cognitive-offloading-paradox.md): Six design principles for AI-supported learning based on the offloading paradox.
 
 ## Connections
 
@@ -82,6 +87,7 @@ Bozkurt et al. (2024) and Lodge/Loble (2026) provide essential critical counterw
 - [Feedback: Hattie's Model](feedback-hatties-model.md) — AI enables scalable, personalized feedback
 - [Learning Design Frameworks](learning-design-frameworks.md) — AI tools need evidence-based design frameworks
 - [Metacognition](metacognition.md) — cognitive offloading to AI may bypass metacognitive monitoring
+- [Cognitive Offloading](cognitive-offloading.md) — the central design challenge for AI learning tools: what to offload vs. protect
 
 ## Applications
 

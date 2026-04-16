@@ -1,5 +1,6 @@
 ---
 title: "Mind in Society: The Development of Higher Psychological Processes"
+aliases: ["Mind in Society"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [vygotsky, zone-of-proximal-development, mediation, cultural-historical, d
 ## Citation
 
 Vygotskii, L. S., and Michael Cole. *Mind in Society: The Development of Higher Psychological Processes*. Cambridge: Harvard University Press, 1978. ISBN 0-674-57628-4.
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/QACWGAIJ/attachment/DGAZXFF8/reader)
 
 ## Key Findings
 

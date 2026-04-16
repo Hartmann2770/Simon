@@ -1,5 +1,6 @@
 ---
 title: "Using Activity Theory to Understand the Systemic Tensions Characterizing a Technology-Rich Introductory Astronomy Course"
+aliases: ["Using Activity Theory to Understand the Systemic Tensions"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [activity-theory, activity-system-model, contradictions, technology-enhanc
 
 ## Citation
 
-Barab, Sasha A., Michael Barnett, Lisa Yamagata-Lynch, Kurt Squire, and Thomas Keating. "Using Activity Theory to Understand the Systemic Tensions Characterizing a Technology-Rich Introductory Astronomy Course." *Mind, Culture, and Activity* 9, no. 2 (May 2002): 76–107. DOI: 10.1207/S15327884MCA0902_02.
+Barab, Sasha A., Michael Barnett, Lisa Yamagata-Lynch, Kurt Squire, and Thomas Keating. "Using Activity Theory to Understand the Systemic Tensions Characterizing a Technology-Rich Introductory Astronomy Course." *Mind, Culture, and Activity* 9, no. 2 (May 2002): 76–107. DOI: 10.1207/S15327884MCA0902_02. https://doi.org/10.1207/S15327884MCA0902_02
 
 ## Key Findings
 

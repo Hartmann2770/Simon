@@ -1,5 +1,6 @@
 ---
 title: "Personalized Training Schedules for Retention and Sustainment of Cardiopulmonary Resuscitation Skills"
+aliases: ["Personalized Training Schedules for Retention and"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

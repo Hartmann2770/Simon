@@ -1,5 +1,6 @@
 ---
 title: "Alternatives to Bloom's Taxonomy for Workplace Learning"
+aliases: ["Alternatives to Bloom's Taxonomy for Workplace Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

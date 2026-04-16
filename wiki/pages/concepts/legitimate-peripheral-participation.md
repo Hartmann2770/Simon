@@ -1,5 +1,6 @@
 ---
 title: Legitimate Peripheral Participation
+aliases: ["Legitimate Peripheral Participation"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

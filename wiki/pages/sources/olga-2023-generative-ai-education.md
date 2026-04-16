@@ -1,5 +1,6 @@
 ---
 title: "Generative AI: Implications and Applications for Education"
+aliases: ["Generative AI"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [generative-ai, education, ChatGPT, implications, applications, higher-edu
 
 ## Citation
 
-Olga, T. (2023). Generative AI: Implications and applications for education. Preprint/report.
+Olga, T. (2023). Generative AI: Implications and applications for education. Preprint/report. https://doi.org/10.48550/ARXIV.2305.07605
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/BF6RATB4/attachment/2YGGACT3/reader)
 
 ## Key Findings
 

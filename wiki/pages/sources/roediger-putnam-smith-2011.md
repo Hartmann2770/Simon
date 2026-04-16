@@ -1,5 +1,6 @@
 ---
 title: "Ten Benefits of Testing and Their Applications to Educational Practice"
+aliases: ["Ten Benefits of Testing and Their Applications to"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, retrieval-practice, educational-practice, feedback, metac
 ## Citation
 
 Roediger, H. L., Putnam, A. L., & Smith, M. A. (2011). Ten benefits of testing and their applications to educational practice. *Psychology of Learning and Motivation, 55*, 1–36. https://doi.org/10.1016/B978-0-12-387691-1.00001-6
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/5UFAV73J/attachment/MLKTRDMZ/reader)
 
 ## Key Findings
 

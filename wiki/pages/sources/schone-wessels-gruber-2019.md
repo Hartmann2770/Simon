@@ -1,5 +1,6 @@
 ---
 title: "Experiences in Virtual Reality: A Window to Autobiographical Memory"
+aliases: ["Experiences in Virtual Reality"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [virtual-reality, autobiographical-memory, spatial-presence, memory-encodi
 ## Citation
 
 Schöne, Benjamin, Marlene Wessels, and Thomas Gruber. "Experiences in Virtual Reality: A Window to Autobiographical Memory." *Current Psychology* 38 (2019): 715–719. https://doi.org/10.1007/s12144-017-9648-y
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/39X6UCS7/attachment/3C7TBE7E/reader)
 
 ## Key Findings
 

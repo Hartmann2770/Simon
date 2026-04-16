@@ -1,5 +1,6 @@
 ---
 title: "Will AI Replace Teachers? — Venture to Flourish Podcast with Merlyn Mind Founder"
+aliases: ["Will AI Replace Teachers? — Venture to Flourish Podcast"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [AI, teachers, classroom, human-role, edtech, podcast]
 
 ## Citation
 
-Nitta, C. (2023). Will AI replace teachers? With Merlyn Mind founder, Satya Nitta. *Venture to Flourish* [podcast]. Google Podcasts.
+Nitta, C. (2023). Will AI replace teachers? With Merlyn Mind founder, Satya Nitta. *Venture to Flourish* [podcast]. Google Podcasts. https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5zaW1wbGVjYXN0LmNvbS9iMVNIRVNIMg/episode/YmFiMmE5OGUtNDI3ZS00NDM1LThmYzAtMTdiOWViODIwODZh
 
 ## Key Findings
 

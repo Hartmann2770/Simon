@@ -1,5 +1,6 @@
 ---
 title: "Student Interaction with ChatGPT Can Promote Complex Critical Thinking Skills"
+aliases: ["Student Interaction with ChatGPT Can Promote Complex"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [ChatGPT, critical-thinking, AI, higher-order-thinking, student-learning, 
 
 ## Citation
 
-Suriano, R., & Plebe, A. (2025). Student interaction with ChatGPT can promote complex critical thinking skills. *Learning and Instruction*.
+Suriano, R., & Plebe, A. (2025). Student interaction with ChatGPT can promote complex critical thinking skills. *Learning and Instruction*. https://doi.org/10.1016/j.learninstruc.2024.102011
 
 ## Key Findings
 

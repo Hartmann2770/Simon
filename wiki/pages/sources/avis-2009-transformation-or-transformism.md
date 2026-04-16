@@ -1,5 +1,6 @@
 ---
 title: "Transformation or Transformism: Engeström's Version of Activity Theory?"
+aliases: ["Transformation or Transformism"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [activity-theory, engestrom, critique, expansive-learning, transformism, v
 
 ## Citation
 
-Avis, James. "Transformation or Transformism: Engeström's Version of Activity Theory?" *Educational Review* 61, no. 2 (May 2009): 151–165. DOI: 10.1080/00131910902844754.
+Avis, James. "Transformation or Transformism: Engeström's Version of Activity Theory?" *Educational Review* 61, no. 2 (May 2009): 151–165. DOI: 10.1080/00131910902844754. https://doi.org/10.1080/00131910902844754
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: "Peter-Paul Verbeek"
+aliases: ["Peter-Paul Verbeek"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

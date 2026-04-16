@@ -1,5 +1,6 @@
 ---
 title: "Social Learning Theory"
+aliases: ["Social Learning Theory"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [social-learning, bandura, observational-learning, self-efficacy, modeling
 ## Citation
 
 Bandura, Albert. *Social Learning Theory*. Englewood Cliffs, NJ: Prentice-Hall, 1977. ISBN: 978-0-13-816751-6.
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/J78F7NBQ/attachment/W6V43QUT/reader)
 
 ## Key Findings
 

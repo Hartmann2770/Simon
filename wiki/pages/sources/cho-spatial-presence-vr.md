@@ -1,5 +1,6 @@
 ---
 title: "How Spatial Presence in VR Affects Memory Retention and Motivation on Second Language Learning: A Comparison of Desktop and Immersive VR-Based Learning"
+aliases: ["How Spatial Presence in VR Affects Memory Retention and"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

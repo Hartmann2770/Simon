@@ -1,5 +1,6 @@
 ---
 title: "Piaget's Constructivism, Papert's Constructionism: What's the Difference?"
+aliases: ["Piaget's Constructivism, Papert's Constructionism"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [constructivism, constructionism, papert, piaget, learning, comparison]
 
 ## Citation
 
-Ackermann, E. (2001). Piaget's constructivism, Papert's constructionism: What's the difference? *Future of Learning Group Publication*, 5(3), 438.
+Ackermann, E. (2001). Piaget's constructivism, Papert's constructionism: What's the difference? *Future of Learning Group Publication*, 5(3), 438. http://learning.media.mit.edu/content/publications/EA.Piaget%20_%20Papert.pdf
 
 ## Key Findings
 

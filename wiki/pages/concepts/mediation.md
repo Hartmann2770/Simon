@@ -1,5 +1,6 @@
 ---
 title: "Mediation (in Activity Theory)"
+aliases: ["Mediation (in Activity Theory)"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

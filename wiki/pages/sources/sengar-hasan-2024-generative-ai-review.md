@@ -1,5 +1,6 @@
 ---
 title: "Generative Artificial Intelligence: A Systematic Review and Applications"
+aliases: ["Generative Artificial Intelligence"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [generative-ai, systematic-review, large-language-models, applications, ed
 
 ## Citation
 
-Sengar, S., & Hasan, M. (2024). Generative artificial intelligence: A systematic review and applications. Preprint.
+Sengar, S., & Hasan, M. (2024). Generative artificial intelligence: A systematic review and applications. Preprint. http://arxiv.org/abs/2405.11029
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/3VN7Z5WS/attachment/D6RVVJRL/reader)
 
 ## Key Findings
 

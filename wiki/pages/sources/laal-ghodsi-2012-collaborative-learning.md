@@ -1,5 +1,6 @@
 ---
 title: "Benefits of Collaborative Learning"
+aliases: ["Benefits of Collaborative Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [collaborative-learning, cooperation, benefits, active-learning, peer-lear
 
 ## Citation
 
-Laal, M., & Ghodsi, S. M. (2012). Benefits of collaborative learning. *Procedia — Social and Behavioral Sciences*, 31, 486–490.
+Laal, M., & Ghodsi, S. M. (2012). Benefits of collaborative learning. *Procedia — Social and Behavioral Sciences*, 31, 486–490. https://doi.org/10.1016/j.sbspro.2011.12.091
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/6EGH4KSM/attachment/CSE9ZN26/reader)
 
 ## Key Findings
 

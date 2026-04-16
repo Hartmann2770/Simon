@@ -1,5 +1,6 @@
 ---
 title: Value Creation in Networks
+aliases: ["Value Creation in Networks"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

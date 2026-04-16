@@ -1,5 +1,6 @@
 ---
 title: "Participation, Learning, and Identity: Dialectical Perspectives"
+aliases: ["Participation, Learning, and Identity"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

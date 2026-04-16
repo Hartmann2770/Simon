@@ -1,5 +1,6 @@
 ---
 title: Dual Coding Theory
+aliases: ["Dual Coding Theory"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

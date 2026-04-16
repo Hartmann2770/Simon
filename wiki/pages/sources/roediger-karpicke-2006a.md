@@ -1,5 +1,6 @@
 ---
 title: "The Power of Testing Memory: Basic Research and Implications for Educational Practice"
+aliases: ["The Power of Testing Memory"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, retrieval-practice, educational-practice, memory]
 ## Citation
 
 Roediger, H. L., & Karpicke, J. D. (2006). The power of testing memory: Basic research and implications for educational practice. *Perspectives on Psychological Science, 1*(3), 181–210. https://doi.org/10.1111/j.1745-6916.2006.00012.x
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/NMGVFHWX/attachment/6ZL8GVVR/reader)
 
 ## Key Findings
 

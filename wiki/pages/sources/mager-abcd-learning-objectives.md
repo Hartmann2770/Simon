@@ -1,5 +1,6 @@
 ---
 title: "Writing Instructional Objectives (ABCD Model)"
+aliases: ["Writing Instructional Objectives (ABCD Model)"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

@@ -1,5 +1,6 @@
 ---
 title: "Artificial Intelligence, Cognitive Offloading and Implications for Education"
+aliases: ["Artificial Intelligence, Cognitive Offloading and"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [artificial-intelligence, cognitive-offloading, cognitive-load, education,
 ## Citation
 
 Lodge, J. M., & Loble, L. (2026). *Artificial intelligence, cognitive offloading and implications for education*. University of Technology Sydney. https://doi.org/10.71741/4PYXMBNJAQ.31302475
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/9Q6PXCK3/attachment/8C52SFQX/reader)
 
 ## Key Findings
 
@@ -30,5 +33,7 @@ Highly timely analysis connecting CLT and desirable difficulties to the emerging
 
 ## Concepts
 
+- [Cognitive Offloading](../concepts/cognitive-offloading.md)
 - [Cognitive Load Theory](../concepts/cognitive-load-theory.md)
 - [Desirable Difficulties](../concepts/desirable-difficulties.md)
+- [AI in Education](../concepts/ai-in-education.md)

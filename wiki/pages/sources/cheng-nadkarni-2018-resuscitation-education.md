@@ -1,5 +1,6 @@
 ---
 title: "Resuscitation Education Science: Educational Strategies to Improve Outcomes"
+aliases: ["Resuscitation Education Science"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [resuscitation, CPR, simulation, mastery-learning, deliberate-practice, he
 
 ## Citation
 
-Cheng, A., Nadkarni, V., et al. (2018). Resuscitation education science: Educational strategies to improve outcomes from cardiac arrest. *Circulation*, 138(6), e82–e122.
+Cheng, A., Nadkarni, V., et al. (2018). Resuscitation education science: Educational strategies to improve outcomes from cardiac arrest. *Circulation*, 138(6), e82–e122. https://doi.org/10.1161/CIR.0000000000000583
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/4VGKIDLM/attachment/YIRZMPN5/reader)
 
 ## Key Findings
 

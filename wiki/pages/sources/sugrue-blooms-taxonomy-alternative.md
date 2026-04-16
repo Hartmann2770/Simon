@@ -1,5 +1,6 @@
 ---
 title: "A Learning Science Alternative to Bloom's Taxonomy"
+aliases: ["A Learning Science Alternative to Bloom's Taxonomy"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

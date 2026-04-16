@@ -1,5 +1,6 @@
 ---
 title: Activity System Model (Engeström's Triangle)
+aliases: ["Activity System Model (Engeström's Triangle)"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

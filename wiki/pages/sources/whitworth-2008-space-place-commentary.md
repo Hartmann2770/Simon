@@ -1,5 +1,6 @@
 ---
 title: "The Organisation of Space and Place: A Commentary on Wahlstedt et al."
+aliases: ["The Organisation of Space and Place"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [space, place, e-learning, commentary, organisation, whitworth]
 
 ## Citation
 
-Whitworth, A. (2008). The organisation of space and place: A commentary on Wahlstedt et al. *British Journal of Educational Technology*, 39(6), 1031–1032.
+Whitworth, A. (2008). The organisation of space and place: A commentary on Wahlstedt et al. *British Journal of Educational Technology*, 39(6), 1031–1032. https://doi.org/10.1111/j.1467-8535.2008.00821_2.x
 
 ## Key Findings
 

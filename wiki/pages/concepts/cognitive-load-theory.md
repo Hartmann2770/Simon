@@ -1,5 +1,6 @@
 ---
 title: Cognitive Load Theory
+aliases: ["Cognitive Load Theory"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

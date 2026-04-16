@@ -1,5 +1,6 @@
 ---
 title: "Rethinking the Use of Tests: A Meta-Analysis of Practice Testing"
+aliases: ["Rethinking the Use of Tests"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, meta-analysis, practice-testing, retrieval-practice, mode
 ## Citation
 
 Sundararajan, N., Adesope, O., & Trevisan, D. (2017). Rethinking the use of tests: A meta-analysis of practice testing. *Review of Educational Research, 87*. https://doi.org/10.3102/0034654316689306
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/Q36387NB/attachment/UTTKJPWZ/reader)
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: "A Review of the Use of Virtual Reality Head-Mounted Displays in Education and Training"
+aliases: ["A Review of the Use of Virtual Reality Head-Mounted"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [virtual-reality, head-mounted-displays, education, training, review]
 ## Citation
 
 Jensen, Lasse X., and Flemming Konradsen. "A Review of the Use of Virtual Reality Head-Mounted Displays in Education and Training." *Education and Information Technologies* 23, no. 4 (2017): 1515–1529. https://www.researchgate.net/publication/321290560
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/7ZLJSF7C/attachment/2DRH5IRB/reader)
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: "Expansive Learning at Work: Toward an Activity Theoretical Reconceptualization"
+aliases: ["Expansive Learning at Work"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [expansive-learning, activity-theory, workplace-learning, engestrom, zone-
 
 ## Citation
 
-Engeström, Yrjö. "Expansive Learning at Work: Toward an Activity Theoretical Reconceptualization." *Journal of Education and Work* 14, no. 1 (February 2001): 133–156. DOI: 10.1080/13639080020028747.
+Engeström, Yrjö. "Expansive Learning at Work: Toward an Activity Theoretical Reconceptualization." *Journal of Education and Work* 14, no. 1 (February 2001): 133–156. DOI: 10.1080/13639080020028747. https://doi.org/10.1080/13639080020028747
 
 ## Key Findings
 

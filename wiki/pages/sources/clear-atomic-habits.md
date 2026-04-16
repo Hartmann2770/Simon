@@ -1,5 +1,6 @@
 ---
 title: "Atomic Habits: An Easy and Proven Way to Build Good Habits and Break Bad Ones"
+aliases: ["Atomic Habits"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

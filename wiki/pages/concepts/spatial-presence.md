@@ -1,5 +1,6 @@
 ---
 title: Spatial Presence
+aliases: ["Spatial Presence"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

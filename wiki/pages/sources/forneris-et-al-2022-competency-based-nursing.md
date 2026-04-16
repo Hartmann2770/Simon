@@ -1,5 +1,6 @@
 ---
 title: "Accelerating to Practice: Defining a Competency-Based Curriculum Framework for Nursing Education Part 1"
+aliases: ["Accelerating to Practice"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [competency-based, nursing-education, curriculum-framework, learning-objec
 ## Citation
 
 Forneris, S. G., Tagliareni, M. E., & Allen, B. (2022). Accelerating to practice: Defining a competency-based curriculum framework for nursing education Part 1. *Nursing Education Perspectives, 43*(6), 337–341. https://doi.org/10.1097/01.NEP.0000000000000954
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/X7ZUEGL5/attachment/KHZB3ZUK/reader)
 
 ## Key Findings
 

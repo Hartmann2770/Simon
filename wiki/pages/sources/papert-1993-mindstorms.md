@@ -1,5 +1,6 @@
 ---
 title: "Mindstorms: Children, Computers, And Powerful Ideas"
+aliases: ["Mindstorms"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [constructionism, papert, computers, children, learning, programming, idea
 ## Citation
 
 Papert, S. (1993). *Mindstorms: Children, Computers, And Powerful Ideas*. Basic Books.
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/JX84T9GB/attachment/3RJ24NKJ/reader)
 
 ## Key Findings
 

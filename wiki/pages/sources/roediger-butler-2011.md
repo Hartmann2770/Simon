@@ -1,5 +1,6 @@
 ---
 title: "The Critical Role of Retrieval Practice in Long-Term Retention"
+aliases: ["The Critical Role of Retrieval Practice in Long-Term"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [retrieval-practice, long-term-retention, testing-effect, feedback]
 ## Citation
 
 Roediger, H. L., & Butler, A. C. (2011). The critical role of retrieval practice in long-term retention. *Trends in Cognitive Sciences, 15*(1), 20–27. https://doi.org/10.1016/j.tics.2010.09.003
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/5UFAV73J/attachment/MLKTRDMZ/reader)
 
 ## Key Findings
 

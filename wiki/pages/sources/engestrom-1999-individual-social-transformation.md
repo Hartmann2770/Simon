@@ -1,5 +1,6 @@
 ---
 title: "Activity Theory and Individual and Social Transformation"
+aliases: ["Activity Theory and Individual and Social Transformation"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

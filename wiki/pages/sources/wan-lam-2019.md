@@ -1,5 +1,6 @@
 ---
 title: "The Effectiveness of Virtual Reality-Based Simulation in Health Professions Education Relating to Mental Illness: A Literature Review"
+aliases: ["The Effectiveness of Virtual Reality-Based Simulation in"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [virtual-reality, simulation, health-education, mental-illness, literature
 ## Citation
 
 Wan, Wai Hin, and Angie Ho Yan Lam. "The Effectiveness of Virtual Reality-Based Simulation in Health Professions Education Relating to Mental Illness: A Literature Review." *Health* 11, no. 6 (2019): 654–668. https://doi.org/10.4236/health.2019.116054
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/IIVHKTCZ/attachment/7VEXYYCA/reader)
 
 ## Key Findings
 

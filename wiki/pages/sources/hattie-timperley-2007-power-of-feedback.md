@@ -1,5 +1,6 @@
 ---
 title: "The Power of Feedback"
+aliases: ["The Power of Feedback"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [feedback, hattie, timperley, learning-achievement, formative-assessment, 
 ## Citation
 
 Hattie, J., & Timperley, H. (2007). The power of feedback. *Review of Educational Research, 77*(1), 81–112. https://doi.org/10.3102/003465430298487
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/W96T3526/attachment/ERYU3VHM/reader)
 
 ## Key Findings
 

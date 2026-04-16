@@ -1,5 +1,6 @@
 ---
 title: "AI Tutoring Outperforms Active Learning"
+aliases: ["AI Tutoring Outperforms Active Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [AI-tutoring, active-learning, generative-ai, physics-education, learning-
 ## Citation
 
 Kestin, G., & Miller, K. (2024). AI tutoring outperforms active learning. Preprint. https://arxiv.org/abs/2409.16852
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/4BRSCJCY/attachment/MH94PBLQ/reader)
 
 ## Key Findings
 

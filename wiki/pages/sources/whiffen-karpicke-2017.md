@@ -1,5 +1,6 @@
 ---
 title: "The Role of Episodic Context in Retrieval Practice Effects"
+aliases: ["The Role of Episodic Context in Retrieval Practice Effects"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [retrieval-practice, episodic-memory, context, testing-effect, recall-orga
 ## Citation
 
 Whiffen, J. W., & Karpicke, J. D. (2017). The role of episodic context in retrieval practice effects. *Journal of Experimental Psychology: Learning, Memory, and Cognition, 43*(7), 1036–1046. https://doi.org/10.1037/xlm0000379
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/N75KYZBA/attachment/DA39PRZE/reader)
 
 ## Key Findings
 

@@ -1,5 +1,6 @@
 ---
 title: "Cognitive Load Theory"
+aliases: ["Cognitive Load Theory"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [cognitive-load, instructional-design, working-memory, long-term-memory, s
 ## Citation
 
 Sweller, J. (2011). Cognitive load theory. In B. H. Ross (Ed.), *Psychology of Learning and Motivation* (Vol. 55, pp. 37–76). Elsevier. https://doi.org/10.1016/B978-0-12-387691-1.00002-8
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/P4T6ZBSR/attachment/QLXCXFXL/reader)
 
 ## Key Findings
 

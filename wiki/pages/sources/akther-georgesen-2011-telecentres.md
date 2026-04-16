@@ -1,5 +1,6 @@
 ---
 title: "Telecentres: One-Stop Learning Hubs in Rural Bangladesh"
+aliases: ["Telecentres"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [telecentres, rural-learning, bangladesh, communities-of-practice, situate
 
 ## Citation
 
-Akther, Farzana, and Marianne Georgesen. "Telecentres: One-Stop Learning Hubs in Rural Bangladesh." Unpublished document, 2011.
+Akther, Farzana, and Marianne Georgesen. "Telecentres: One-Stop Learning Hubs in Rural Bangladesh." Unpublished document, 2011. http://vbn.aau.dk/files/47313715/Akther_Georgsen_Telecentres_as_learning_hubs_final.pdf
 
 ## Key Findings
 

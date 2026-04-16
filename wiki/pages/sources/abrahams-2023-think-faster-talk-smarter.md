@@ -1,5 +1,6 @@
 ---
 title: "Think Faster, Talk Smarter: How to Speak Successfully When You're Put on the Spot"
+aliases: ["Think Faster, Talk Smarter"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

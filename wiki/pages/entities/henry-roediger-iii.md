@@ -1,5 +1,6 @@
 ---
 title: Henry Roediger III
+aliases: ["Henry Roediger III"]
 type: entity
 created: 2026-04-15
 updated: 2026-04-15

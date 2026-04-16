@@ -1,5 +1,6 @@
 ---
 title: "Learning in Virtual Reality: Effects on Performance, Emotion and Engagement"
+aliases: ["Learning in Virtual Reality"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [virtual-reality, emotion, engagement, performance, learning]
 ## Citation
 
 Allcoat, Devon, and Adrian von Mühlenen. "Learning in Virtual Reality: Effects on Performance, Emotion and Engagement." *Research in Learning Technology* 26 (2018): 2140. https://doi.org/10.25304/rlt.v26.2140
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/PDFEZH4I/attachment/A3STLR2N/reader)
 
 ## Key Findings
 

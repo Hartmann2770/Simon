@@ -1,5 +1,6 @@
 ---
 title: How Cognitive Load Relates to Feedback
+aliases: ["How Cognitive Load Relates to Feedback"]
 type: synthesis
 created: 2026-04-15
 updated: 2026-04-15

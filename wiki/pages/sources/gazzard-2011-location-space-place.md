@@ -1,5 +1,6 @@
 ---
 title: "Location, Location, Location: Collecting Space and Place in Mobile Media"
+aliases: ["Location, Location, Location"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [mobile-media, space, place, location, games, geolocative, gazzard]
 
 ## Citation
 
-Gazzard, A. (2011). Location, location, location: Collecting space and place in mobile media. *Convergence: The International Journal of Research into New Media Technologies*, 17(4), 405–417.
+Gazzard, A. (2011). Location, location, location: Collecting space and place in mobile media. *Convergence: The International Journal of Research into New Media Technologies*, 17(4), 405–417. https://doi.org/10.1177/1354856511414344
 
 ## Key Findings
 

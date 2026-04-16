@@ -1,5 +1,6 @@
 ---
 title: "Systematic Review and Meta-Analysis of Augmented Reality in Educational Settings"
+aliases: ["Systematic Review and Meta-Analysis of Augmented Reality in"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [augmented-reality, meta-analysis, systematic-review, education, learning-
 ## Citation
 
 Garzón, Juan, Juan Pavón, and Silvia Baldiris. "Systematic Review and Meta-Analysis of Augmented Reality in Educational Settings." *Virtual Reality* 23 (2019): 447–459. https://doi.org/10.1007/s10055-019-00379-9
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/MQS3WPVV/attachment/KI2RTHAY/reader)
 
 ## Key Findings
 

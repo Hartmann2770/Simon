@@ -1,5 +1,6 @@
 ---
 title: "Chapter 2: Cognitive Load Theory and Instructional Message Design"
+aliases: ["Chapter 2"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

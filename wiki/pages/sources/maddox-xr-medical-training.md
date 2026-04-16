@@ -1,5 +1,6 @@
 ---
 title: "Report: XR Medical Device Training"
+aliases: ["Report"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

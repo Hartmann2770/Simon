@@ -1,5 +1,6 @@
 ---
 title: "Diffusion of Innovations, Fourth Edition"
+aliases: ["Diffusion of Innovations, Fourth Edition"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

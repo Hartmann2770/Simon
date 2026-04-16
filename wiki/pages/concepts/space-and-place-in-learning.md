@@ -1,5 +1,6 @@
 ---
 title: "Space and Place in Learning"
+aliases: ["Space and Place in Learning"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

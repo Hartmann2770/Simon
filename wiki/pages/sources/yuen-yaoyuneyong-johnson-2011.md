@@ -1,5 +1,6 @@
 ---
 title: "Augmented Reality: An Overview and Five Directions for AR in Education"
+aliases: ["Augmented Reality"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [augmented-reality, education, overview, directions, AR, mobile-learning]
 ## Citation
 
 Yuen, Steve Chi-Yin, Gallayanee Yaoyuneyong, and Erik Johnson. "Augmented Reality: An Overview and Five Directions for AR in Education." *Journal of Educational Technology Development and Exchange* 4, no. 1 (2011): 119–140. https://doi.org/10.18785/jetde.0401.10
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/VNLF5N3Z/attachment/G74GBS94/reader)
 
 ## Key Findings
 

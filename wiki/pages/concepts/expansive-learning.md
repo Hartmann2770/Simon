@@ -1,5 +1,6 @@
 ---
 title: Expansive Learning
+aliases: ["Expansive Learning"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

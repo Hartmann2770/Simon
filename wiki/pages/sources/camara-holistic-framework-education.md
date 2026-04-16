@@ -1,5 +1,6 @@
 ---
 title: "Beyond Academics: A Holistic Framework for Enhancing Education and Workplace Success"
+aliases: ["Beyond Academics"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

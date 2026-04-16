@@ -1,5 +1,6 @@
 ---
 title: "Promoting and Assessing Value Creation in Communities and Networks: A Conceptual Framework"
+aliases: ["Promoting and Assessing Value Creation in Communities and"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [value-creation, communities-of-practice, networks, assessment, social-lea
 
 ## Citation
 
-Wenger, Etienne, Beverly Trayner, and Maarten De Laat. *Promoting and Assessing Value Creation in Communities and Networks: A Conceptual Framework*. Heerlen: Ruud de Moor Centrum, Open Universiteit, 2011. ISBN: 978-90-358-1808-8.
+Wenger, Etienne, Beverly Trayner, and Maarten De Laat. *Promoting and Assessing Value Creation in Communities and Networks: A Conceptual Framework*. Heerlen: Ruud de Moor Centrum, Open Universiteit, 2011. ISBN: 978-90-358-1808-8. http://www.open.ou.nl/rslmlt/Wenger_Trayner_DeLaat_Value_creation.pdf
 
 ## Key Findings
 

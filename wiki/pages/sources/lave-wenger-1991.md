@@ -1,5 +1,6 @@
 ---
 title: "Situated Learning: Legitimate Peripheral Participation"
+aliases: ["Situated Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,9 @@ tags: [situated-learning, legitimate-peripheral-participation, communities-of-pr
 
 ## Citation
 
-Lave, Jean, and Etienne Wenger. *Situated Learning: Legitimate Peripheral Participation*. Cambridge: Cambridge University Press, 1991. DOI: 10.1017/CBO9780511815355. ISBN: 978-0-521-41308-4.
+Lave, Jean, and Etienne Wenger. *Situated Learning: Legitimate Peripheral Participation*. Cambridge: Cambridge University Press, 1991. DOI: 10.1017/CBO9780511815355. ISBN: 978-0-521-41308-4. https://doi.org/10.1017/CBO9780511815355
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/EIJ3VRXM/attachment/ZJMJ272F/reader)
 
 ## Key Findings
 

@@ -11,6 +11,14 @@ tags: [log, meta]
 
 Chronological record of all wiki operations.
 
+## [2026-04-16] ingest | Cognitive Offloading Paradox (Zotero API auto-detect)
+- Source: Wang, S., & Zhang, H. (2026). Pedagogical partnerships with generative AI in higher education. *IJETHE* 23(1).
+- Source: Hardman, P. (2026). The "cognitive offloading" paradox. *Dr Phil's Newsletter*.
+- Source summaries created: wang-zhang-2026-pedagogical-partnerships-genai.md, hardman-2026-cognitive-offloading-paradox.md
+- Concept page created: cognitive-offloading.md
+- Updated: ai-in-education.md (new evidence + connection), philippa-hardman.md (new source), lodge-loble-2026-ai-cognitive-offloading.md (added concept links)
+- Skipped: Lodge & Loble (2026) — already ingested
+
 ## [2026-04-15] lint-fix | Fix all lint issues
 - Fixed factual error in evidence-based-learning-strategies.md
 - Fixed broken link in desirable-difficulties.md

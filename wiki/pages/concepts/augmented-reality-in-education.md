@@ -1,5 +1,6 @@
 ---
 title: Augmented Reality in Education
+aliases: ["Augmented Reality in Education"]
 type: concept
 created: 2026-04-15
 updated: 2026-04-15

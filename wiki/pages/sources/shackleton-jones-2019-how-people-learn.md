@@ -1,5 +1,6 @@
 ---
 title: "How People Learn: Designing Education and Training that Works to Improve Performance"
+aliases: ["How People Learn"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15

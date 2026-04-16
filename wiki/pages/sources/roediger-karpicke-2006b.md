@@ -1,5 +1,6 @@
 ---
 title: "Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention"
+aliases: ["Test-Enhanced Learning"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -10,6 +11,8 @@ tags: [testing-effect, retrieval-practice, long-term-retention, prose-recall]
 ## Citation
 
 Roediger, H. L., & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. *Psychological Science, 17*(3), 249–255. https://doi.org/10.1111/j.1467-9280.2006.01693.x
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/NMGVFHWX/attachment/6ZL8GVVR/reader)
 
 ## Key Findings
 

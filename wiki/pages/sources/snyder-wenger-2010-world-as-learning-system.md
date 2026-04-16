@@ -1,5 +1,6 @@
 ---
 title: "Our World as a Learning System: A Communities-of-Practice Approach"
+aliases: ["Our World as a Learning System"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -9,7 +10,7 @@ tags: [communities-of-practice, social-learning-systems, systems-thinking, globa
 
 ## Citation
 
-Snyder, William M., and Etienne Wenger. "Our World as a Learning System: A Communities-of-Practice Approach." In *Social Learning Systems and Communities of Practice*, edited by Chris Blackmore. London: Springer, 2010. ISBN: 978-1-84996-132-5.
+Snyder, William M., and Etienne Wenger. "Our World as a Learning System: A Communities-of-Practice Approach." In *Social Learning Systems and Communities of Practice*, edited by Chris Blackmore. London: Springer, 2010. ISBN: 978-1-84996-132-5. http://www.springerlink.com/index/10.1007/978-1-84996-133-2_7
 
 ## Key Findings
 

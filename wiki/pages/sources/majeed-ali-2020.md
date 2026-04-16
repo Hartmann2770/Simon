@@ -1,5 +1,6 @@
 ---
 title: "A Review of Augmented Reality in Educational Applications"
+aliases: ["A Review of Augmented Reality in Educational Applications"]
 type: source
 created: 2026-04-15
 updated: 2026-04-15
@@ -12,6 +13,8 @@ tags: [augmented-reality, education, review, AR, 3D, interaction]
 ## Citation
 
 Majeed, Zainab H., and Huda A. Ali. "A Review of Augmented Reality in Educational Applications." *International Journal of Advanced Technology and Engineering Exploration* 7, no. 62 (2020): 20–27. https://doi.org/10.19101/IJATEE.2019.650068
+
+[Read PDF in Zotero](https://www.zotero.org/esaitch/items/DADYT2PY/attachment/ABD2CBKP/reader)
 
 ## Key Findings
 
