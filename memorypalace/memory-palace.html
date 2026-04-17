@@ -3176,6 +3176,7 @@
     if (answer && answer.trim()) loc.memories.push({ id: genId(), text: answer.trim(), createdAt: now });
     if (mnemonic && mnemonic.trim()) loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: now });
     p.locations.push(loc);
+    _userEdited = true;
     saveData();
   }
 
@@ -3189,6 +3190,7 @@
     else if (answer && answer.trim()) loc.memories.unshift({ id: genId(), text: answer.trim(), createdAt: Date.now() });
     if (mnemonicEntry) mnemonicEntry.text = '🧠 ' + mnemonic.trim();
     else if (mnemonic && mnemonic.trim()) loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: Date.now() });
+    _userEdited = true;
     saveData();
   }
 
@@ -3232,6 +3234,7 @@
     if (mnemonic && mnemonic.trim()) {
       loc.memories.push({ id: genId(), text: '🧠 ' + mnemonic.trim(), createdAt: now });
     }
+    _userEdited = true;
     saveData();
   }
 
@@ -3239,7 +3242,7 @@
     const loc = getLoc(palaceId, locId);
     if (!loc) return;
     const mem = loc.memories.find(m => m.id === memId);
-    if (mem) { mem.text = text.trim(); saveData(); }
+    if (mem) { mem.text = text.trim(); _userEdited = true; saveData(); }
   }
 
   function deleteMemory(palaceId, locId, memId) {
@@ -3252,6 +3255,7 @@
       if (!loc._deletedMnemonics.includes(mem.text)) loc._deletedMnemonics.push(mem.text);
     }
     loc.memories = loc.memories.filter(m => m.id !== memId);
+    _userEdited = true;
     saveData();
   }
 
