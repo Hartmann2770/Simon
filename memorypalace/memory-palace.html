@@ -5732,33 +5732,46 @@
 
   // ── LANDESYMBOLER SIDEBAR ──────────────────────────────────────────
   const DEFAULT_COUNTRY_SYMBOLS = [
+    ['Argentina', '⚽ Maradona'],
     ['Armenien', '♟️ Armé (Risk-brik)'],
     ['Balkan', '🧨 Krudttønde'],
     ['Belgien', '🍫 Chokolade'],
+    ['Canada', '🍁 Ahornblad'],
     ['Cuba', '🚬 Cigar'],
     ['Danmark', '🇩🇰 Dannebrog'],
     ['Egypten', '🔺 Pyramide'],
-    ['Finland', '🧖 Sauna'],
+    ['Etiopien', '🦍 Menneske-abe (Lucy)'],
+    ['Filippinerne', '👩 KD (veninde)'],
+    ['Finland', '🛖 Sauna'],
     ['Frankrig', '🥖 Baguette'],
     ['Grækenland', '🧀 Fetaost'],
-    ['Holland', '🏗️ Vindmølle'],
+    ['Holland', '🌬️ Vindmølle'],
     ['Indien', '🧘 Gandhi i løst klæde'],
     ['Irland', '☘️ Trekløver'],
+    ['Island', '♨️ Gejser'],
+    ['Israel', '✡️ Davidsstjerne'],
     ['Italien', '🍕 Pizza'],
     ['Japan', '⚔️ Samurai'],
+    ['Kenya', '🦁 Savanne med vilde dyr'],
     ['Kina', '🐉 Drage'],
     ['Korea', '🎮 Faker der spiller LOL'],
+    ['Mexico', '🌮 Nachos'],
     ['Norge', '🪖 Vikingehjelm'],
-    ['Palæstina', '🫒 Oliventræ'],
-    ['Portugal', '🇵🇹 Portugisisk flag'],
+    ['Palæstina', '👳‍♂️ Yassar Arafat'],
+    ['Polen', '🥟 Pierogi'],
+    ['Portugal', '⚽ Christiano Ronaldo'],
     ['Rusland', '🐻 Bjørn'],
-    ['Spanien', '🐂 Tyr'],
+    ['Saudi-Arabien', '🛢️ Oliepumpe'],
+    ['Spanien', '🟥 Tyrefægter'],
     ['Storbritannien', '📞 Rød telefonboks'],
     ['Sverige', '🏡 Rød ødegård'],
     ['Sydafrika', '💎 Diamant'],
+    ['Tjekkoslovakiet', '🍺 Stort ølkrus (pilsner)'],
     ['Tyrkiet/Osmanner', '🎩 Fez + knurbart'],
-    ['Tyskland', '🪖 Pikkelhue'],
-    ['USA', '🍔 Burger'],
+    ['Tyskland', '👩‍🦰 Angela Merkel'],
+    ['Ukraine', '🌻 Gult kornmark'],
+    ['Uruguay', '👨 Jonathan (kammerat)'],
+    ['USA', '👨‍🦰 Donald Trump'],
     ['Østrig-Ungarn', '🟤 Mozartkugle'],
   ];
 
@@ -5767,6 +5780,21 @@
   function _ensureCountrySymbols() {
     if (!data.settings.countrySymbols || data.settings.countrySymbols.length === 0) {
       data.settings.countrySymbols = DEFAULT_COUNTRY_SYMBOLS.map(function(pair) { return [pair[0], pair[1]]; });
+      saveData();
+      return;
+    }
+    // One-time migration: add new countries introduced after initial seed,
+    // without overwriting existing user edits.
+    if (!data.settings.countrySymbolsV2Migrated) {
+      var existing = {};
+      data.settings.countrySymbols.forEach(function(p) { existing[p[0]] = true; });
+      DEFAULT_COUNTRY_SYMBOLS.forEach(function(pair) {
+        if (!existing[pair[0]]) {
+          data.settings.countrySymbols.push([pair[0], pair[1]]);
+        }
+      });
+      data.settings.countrySymbols.sort(function(a, b) { return a[0].localeCompare(b[0], 'da'); });
+      data.settings.countrySymbolsV2Migrated = true;
       saveData();
     }
   }
