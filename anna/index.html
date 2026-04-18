@@ -753,12 +753,11 @@ function renderUploadPanel() {
           <input type="text" id="upload-title" placeholder="Hvad hedder det?">
         </div>
         <div class="form-group">
-          <label>Kategori</label>
-          <select id="upload-cat">
-            <option value="tegning">Tegning</option>
-            <option value="maleri">Maleri</option>
-            <option value="lerfigur">Lerfigur</option>
-            <option value="andet">Andet</option>
+          <label>Album</label>
+          <select id="upload-album">
+            <option value="">(intet album)</option>
+            ${[...(S.data.albums || [])].sort((a,b)=>(a.order??0)-(b.order??0))
+              .map(al => `<option value="${al.id}">${esc(al.name)}</option>`).join('')}
           </select>
         </div>
       </div>
@@ -779,7 +778,7 @@ async function doUpload(e) {
   fd.append('image', file);
   fd.append('title', document.getElementById('upload-title').value || 'Uden titel');
   fd.append('description', document.getElementById('upload-desc').value);
-  fd.append('category', document.getElementById('upload-cat').value);
+  fd.append('albumId', document.getElementById('upload-album').value);
   try {
     await api('upload', { body: fd });
     await loadData();
