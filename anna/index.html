@@ -441,6 +441,7 @@ main{max-width:1100px;margin:0 auto;padding:80px 24px 60px}
   <div class="admin-tabs">
     <button class="admin-tab" onclick="adminTab('upload')">Upload</button>
     <button class="admin-tab" onclick="adminTab('manage')">Galleri</button>
+    <button class="admin-tab" onclick="adminTab('albums')">Albums</button>
     <button class="admin-tab" onclick="adminTab('about-edit')">Om mig</button>
     <button class="admin-tab" onclick="adminTab('settings')">Indstillinger</button>
     <button class="admin-tab" onclick="doLogout()" style="color:var(--accent)">Log ud</button>
@@ -721,13 +722,14 @@ function adminTab(tab) {
   }
   S.adminTab = tab;
   document.querySelectorAll('.admin-tab').forEach((el, i) => {
-    el.classList.toggle('active', ['upload','manage','about-edit','settings'][i] === tab);
+    el.classList.toggle('active', ['upload','manage','albums','about-edit','settings'][i] === tab);
   });
   const panel = document.getElementById('admin-panel');
   panel.classList.add('open');
 
   if (tab === 'upload') panel.innerHTML = renderUploadPanel();
   else if (tab === 'manage') panel.innerHTML = renderManagePanel();
+  else if (tab === 'albums') panel.innerHTML = renderAlbumsPanel();
   else if (tab === 'about-edit') panel.innerHTML = renderAboutEditPanel();
   else if (tab === 'settings') panel.innerHTML = renderSettingsPanel();
 
@@ -893,6 +895,91 @@ async function deleteArt(id) {
   await api('deleteArt', { json: true, body: JSON.stringify({ id }) });
   await loadData(); render(); adminTab('manage');
   toast('Slettet');
+}
+
+/* ── Albums ── */
+function renderAlbumsPanel() {
+  const sorted = [...(S.data.albums || [])].sort((a,b)=>(a.order??0)-(b.order??0));
+  const counts = {};
+  for (const a of S.data.art) {
+    if (a.albumId) counts[a.albumId] = (counts[a.albumId] || 0) + 1;
+  }
+  let html = '<div class="admin-content"><h3>Albums</h3>';
+  html += `<form onsubmit="createAlbum(event)" style="display:flex;gap:8px;margin-bottom:20px">
+    <input type="text" id="new-album-name" placeholder="Nyt album..." maxlength="60" style="flex:1">
+    <button type="submit" class="btn btn-primary">+ Opret</button>
+  </form>`;
+  if (!sorted.length) {
+    html += '<p style="color:var(--text2);font-style:italic">Ingen albums endnu</p>';
+  }
+  sorted.forEach((al, i) => {
+    const n = counts[al.id] || 0;
+    const isEditing = S.editingAlbumId === al.id;
+    html += `<div class="art-list-item">
+      <div class="art-list-info">
+        ${isEditing
+          ? `<input type="text" id="edit-album-name" value="${esc(al.name)}" maxlength="60" style="width:100%" onkeydown="if(event.key==='Enter')saveAlbumEdit('${al.id}');if(event.key==='Escape')cancelAlbumEdit()">`
+          : `<div class="name">${esc(al.name)}</div><div class="meta">${n} værk${n===1?'':'er'}</div>`}
+      </div>
+      <div class="art-list-actions">
+        ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveAlbum(${i},-1)">↑</button>` : ''}
+        ${i < sorted.length - 1 ? `<button class="btn btn-ghost btn-sm" onclick="moveAlbum(${i},1)">↓</button>` : ''}
+        ${isEditing
+          ? `<button class="btn btn-primary btn-sm" onclick="saveAlbumEdit('${al.id}')">Gem</button>
+             <button class="btn btn-ghost btn-sm" onclick="cancelAlbumEdit()">Annuller</button>`
+          : `<button class="btn btn-ghost btn-sm" onclick="editAlbum('${al.id}')">Omdøb</button>
+             <button class="btn btn-danger btn-sm" onclick="deleteAlbum('${al.id}', ${n})">Slet</button>`}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+async function createAlbum(e) {
+  e.preventDefault();
+  const name = document.getElementById('new-album-name').value.trim();
+  if (!name) return;
+  try {
+    await api('createAlbum', { json: true, body: JSON.stringify({ name }) });
+    await loadData(); adminTab('albums');
+    toast('Album oprettet');
+  } catch (err) { toast('Fejl: ' + err.message); }
+}
+
+function editAlbum(id) { S.editingAlbumId = id; adminTab('albums'); }
+function cancelAlbumEdit() { S.editingAlbumId = null; adminTab('albums'); }
+
+async function saveAlbumEdit(id) {
+  const name = document.getElementById('edit-album-name').value.trim();
+  if (!name) { toast('Navn kan ikke være tomt'); return; }
+  try {
+    await api('updateAlbum', { json: true, body: JSON.stringify({ id, name }) });
+    S.editingAlbumId = null;
+    await loadData(); render(); adminTab('albums');
+    toast('Gemt');
+  } catch (err) { toast('Fejl: ' + err.message); }
+}
+
+async function deleteAlbum(id, count) {
+  const msg = count > 0
+    ? `Slet dette album? ${count} værk${count===1?'':'er'} mister deres album-tilknytning (billederne slettes ikke).`
+    : 'Slet dette album?';
+  if (!confirm(msg)) return;
+  if (S.albumFilter === id) S.albumFilter = null;
+  await api('deleteAlbum', { json: true, body: JSON.stringify({ id }) });
+  await loadData(); render(); adminTab('albums');
+  toast('Album slettet');
+}
+
+async function moveAlbum(fromIdx, dir) {
+  const sorted = [...S.data.albums].sort((a,b)=>(a.order??0)-(b.order??0));
+  const toIdx = fromIdx + dir;
+  if (toIdx < 0 || toIdx >= sorted.length) return;
+  [sorted[fromIdx], sorted[toIdx]] = [sorted[toIdx], sorted[fromIdx]];
+  const order = sorted.map(al => al.id);
+  await api('reorderAlbums', { json: true, body: JSON.stringify({ order }) });
+  await loadData(); render(); adminTab('albums');
 }
 
 /* ── About edit ── */
