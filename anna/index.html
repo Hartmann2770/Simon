@@ -154,6 +154,19 @@ main{max-width:1100px;margin:0 auto;padding:80px 24px 60px}
 .gallery-featured .rest{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .gallery-featured .rest .gallery-item img{aspect-ratio:1;object-fit:cover;width:100%}
 
+.album-tabs{
+  display:flex;flex-wrap:wrap;gap:8px;
+  justify-content:center;margin:0 auto 32px;max-width:960px;padding:0 20px;
+}
+.album-tab{
+  padding:8px 16px;border-radius:999px;
+  background:transparent;border:1px solid var(--card-border);
+  color:var(--text2);font-size:.9rem;cursor:pointer;
+  transition:background var(--transition),color var(--transition),border-color var(--transition);
+}
+.album-tab:hover{color:var(--text);background:var(--bg2)}
+.album-tab.active{color:var(--btn-text);background:var(--accent);border-color:var(--accent)}
+
 .gallery-item{
   cursor:pointer;position:relative;overflow:hidden;
   border-radius:var(--radius);background:var(--card);
@@ -532,11 +545,24 @@ function render() {
 
 function renderGallery() {
   const art = S.admin ? S.data.art : S.data.art.filter(a => a.visible);
-  const sorted = [...art].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const filtered = S.albumFilter
+    ? art.filter(a => a.albumId === S.albumFilter)
+    : art;
+  const sorted = [...filtered].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   const layout = S.data.settings.layout;
+  const albums = [...(S.data.albums || [])].sort((a,b) => (a.order ?? 0) - (b.order ?? 0));
 
   let html = '<div class="hero slide-up"><h1 class="site-title">Anna</h1>';
   html += '<p class="subtitle">Tegninger, malerier &amp; mere</p></div>';
+
+  if (albums.length) {
+    html += '<div class="album-tabs fade-in">';
+    html += `<button class="album-tab${S.albumFilter === null ? ' active' : ''}" onclick="filterAlbum(null)">Alle</button>`;
+    for (const al of albums) {
+      html += `<button class="album-tab${S.albumFilter === al.id ? ' active' : ''}" onclick="filterAlbum('${al.id}')">${esc(al.name)}</button>`;
+    }
+    html += '</div>';
+  }
 
   if (!sorted.length) {
     html += '<div class="gallery-empty"><div class="empty-icon">' + (THEMES[S.data.settings.theme]?.emoji || '') + '</div>';
@@ -558,13 +584,17 @@ function renderGallery() {
   return html;
 }
 
+function filterAlbum(id) {
+  S.albumFilter = id;
+  render();
+}
+
 function galleryItem(a) {
   const hiddenCls = (!a.visible && S.admin) ? ' hidden-item' : '';
   return `<div class="gallery-item${hiddenCls}" onclick="openLightbox('${a.id}')">
     <img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy">
     <div class="item-info">
       <div class="item-title">${esc(a.title)}</div>
-      <div class="item-cat">${esc(a.category)}</div>
     </div>
   </div>`;
 }
@@ -590,7 +620,10 @@ function renderAbout() {
    ══════════════════════════════════════ */
 function getVisibleArt() {
   const art = S.admin ? S.data.art : S.data.art.filter(a => a.visible);
-  return [...art].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const filtered = S.albumFilter
+    ? art.filter(a => a.albumId === S.albumFilter)
+    : art;
+  return [...filtered].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
 function openLightbox(id) {
