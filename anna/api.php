@@ -154,7 +154,7 @@ switch ($action) {
             'id'          => $id,
             'title'       => $title,
             'description' => $_POST['description'] ?? '',
-            'category'    => $_POST['category'] ?? 'andet',
+            'albumId'     => (isset($_POST['albumId']) && $_POST['albumId'] !== '') ? $_POST['albumId'] : null,
             'image'       => 'uploads/' . $filename,
             'visible'     => true,
             'featured'    => false,
@@ -183,8 +183,11 @@ switch ($action) {
                         $item['image'] = 'uploads/' . $newFilename;
                     }
                 }
-                foreach (['title','description','category'] as $k) {
+                foreach (['title','description'] as $k) {
                     if (isset($body[$k])) $item[$k] = $body[$k];
+                }
+                if (array_key_exists('albumId', $body)) {
+                    $item['albumId'] = ($body['albumId'] === '' || $body['albumId'] === null) ? null : $body['albumId'];
                 }
                 if (isset($body['visible']))  $item['visible']  = (bool)$body['visible'];
                 if (isset($body['featured']))  $item['featured'] = (bool)$body['featured'];
