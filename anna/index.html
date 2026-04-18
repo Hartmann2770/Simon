@@ -803,7 +803,7 @@ function renderManagePanel() {
       <img class="art-list-thumb" src="${esc(a.image)}" alt="">
       <div class="art-list-info">
         <div class="name">${esc(a.title)}</div>
-        <div class="meta">${esc(a.category)} \u00B7 ${a.createdAt}${a.featured ? ' \u2B50' : ''}${!a.visible ? ' \u00B7 skjult' : ''}</div>
+        <div class="meta">${a.albumId ? esc((S.data.albums.find(al => al.id === a.albumId) || {name:'?'}).name) : '<span style="color:var(--text2);font-style:italic">Intet album</span>'} \u00B7 ${a.createdAt}${a.featured ? ' \u2B50' : ''}${!a.visible ? ' \u00B7 skjult' : ''}</div>
       </div>
       <div class="art-list-actions">
         ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveArt(${i},-1)">\u2191</button>` : ''}
@@ -822,9 +822,11 @@ function renderManagePanel() {
         <div class="form-group"><label>Beskrivelse</label>
           <textarea id="edit-art-desc" rows="2">${esc(a.description)}</textarea>
         </div>
-        <div class="form-group"><label>Kategori</label>
-          <select id="edit-art-cat">
-            ${['tegning','maleri','lerfigur','andet'].map(c => `<option value="${c}"${c === a.category ? ' selected' : ''}>${c[0].toUpperCase() + c.slice(1)}</option>`).join('')}
+        <div class="form-group"><label>Album</label>
+          <select id="edit-art-album">
+            <option value=""${!a.albumId ? ' selected' : ''}>(intet album)</option>
+            ${[...(S.data.albums || [])].sort((al1,al2)=>(al1.order??0)-(al2.order??0))
+              .map(al => `<option value="${al.id}"${al.id === a.albumId ? ' selected' : ''}>${esc(al.name)}</option>`).join('')}
           </select>
         </div>
         <button class="btn btn-primary btn-sm" onclick="saveArtEdit('${a.id}')">Gem</button>
@@ -879,8 +881,8 @@ function cancelArtEdit() {
 async function saveArtEdit(id) {
   const title = document.getElementById('edit-art-title').value || 'Uden titel';
   const description = document.getElementById('edit-art-desc').value;
-  const category = document.getElementById('edit-art-cat').value;
-  await api('updateArt', { json: true, body: JSON.stringify({ id, title, description, category }) });
+  const albumId = document.getElementById('edit-art-album').value;
+  await api('updateArt', { json: true, body: JSON.stringify({ id, title, description, albumId }) });
   S.editingArtId = null;
   await loadData(); render(); adminTab('manage');
   toast('Gemt!');
