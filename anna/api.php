@@ -13,6 +13,7 @@ if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 if (!file_exists($dataFile)) {
     file_put_contents($dataFile, json_encode([
         'about'    => ['text' => '', 'image' => ''],
+        'albums'   => [],
         'art'      => [],
         'settings' => ['layout' => 'masonry', 'theme' => 'glad']
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
@@ -39,7 +40,25 @@ function requireAuth() {
 
 function readData() {
     global $dataFile;
-    return json_decode(file_get_contents($dataFile), true);
+    $data = json_decode(file_get_contents($dataFile), true);
+
+    if (!isset($data['albums'])) {
+        $data['albums'] = [
+            [
+                'id'    => bin2hex(random_bytes(8)),
+                'name'  => 'Tegneskole',
+                'order' => 0,
+            ],
+        ];
+        foreach ($data['art'] as &$a) {
+            unset($a['category']);
+            $a['albumId'] = null;
+        }
+        unset($a);
+        writeData($data);
+    }
+
+    return $data;
 }
 
 function writeData($data) {
