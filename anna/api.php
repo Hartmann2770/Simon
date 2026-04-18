@@ -271,6 +271,81 @@ switch ($action) {
         echo json_encode(['ok' => true]);
         break;
 
+    case 'createAlbum':
+        requireAuth();
+        $body = json_decode(file_get_contents('php://input'), true);
+        $name = trim($body['name'] ?? '');
+        if ($name === '' || mb_strlen($name) > 60) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Navn skal være 1–60 tegn']);
+            exit;
+        }
+        $data = readData();
+        $maxOrder = -1;
+        foreach ($data['albums'] as $al) $maxOrder = max($maxOrder, $al['order'] ?? 0);
+        $id = bin2hex(random_bytes(8));
+        $data['albums'][] = ['id' => $id, 'name' => $name, 'order' => $maxOrder + 1];
+        writeData($data);
+        echo json_encode(['ok' => true, 'id' => $id]);
+        break;
+
+    case 'updateAlbum':
+        requireAuth();
+        $body = json_decode(file_get_contents('php://input'), true);
+        $id   = $body['id'] ?? '';
+        $name = trim($body['name'] ?? '');
+        if ($name === '' || mb_strlen($name) > 60) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Navn skal være 1–60 tegn']);
+            exit;
+        }
+        $data = readData();
+        foreach ($data['albums'] as &$al) {
+            if ($al['id'] === $id) { $al['name'] = $name; break; }
+        }
+        unset($al);
+        writeData($data);
+        echo json_encode(['ok' => true]);
+        break;
+
+    case 'deleteAlbum':
+        requireAuth();
+        $body = json_decode(file_get_contents('php://input'), true);
+        $id   = $body['id'] ?? '';
+        $data = readData();
+        $data['albums'] = array_values(array_filter(
+            $data['albums'],
+            fn($al) => $al['id'] !== $id
+        ));
+        foreach ($data['art'] as &$a) {
+            if (($a['albumId'] ?? null) === $id) $a['albumId'] = null;
+        }
+        unset($a);
+        writeData($data);
+        echo json_encode(['ok' => true]);
+        break;
+
+    case 'reorderAlbums':
+        requireAuth();
+        $body  = json_decode(file_get_contents('php://input'), true);
+        $order = $body['order'] ?? [];
+        $data  = readData();
+        $byId = [];
+        foreach ($data['albums'] as $al) $byId[$al['id']] = $al;
+        $sorted = [];
+        foreach ($order as $i => $id) {
+            if (isset($byId[$id])) {
+                $byId[$id]['order'] = $i;
+                $sorted[] = $byId[$id];
+                unset($byId[$id]);
+            }
+        }
+        foreach ($byId as $al) $sorted[] = $al;
+        $data['albums'] = $sorted;
+        writeData($data);
+        echo json_encode(['ok' => true]);
+        break;
+
     default:
         http_response_code(400);
         echo json_encode(['error' => 'Ukendt handling']);
